@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginCredentials } from '@/types/auth.types';
 
-export default function SuperadminLoginForm() {
+export default function AdminLoginForm() {
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: ''
@@ -17,7 +17,7 @@ export default function SuperadminLoginForm() {
     e.preventDefault();
     try {
       await handleAdminLogin(credentials);
-      window.location.href = '/superadmin';
+      window.location.href = '/admin';
     } catch (error) {
       // Error already in state
     }
@@ -52,13 +52,21 @@ export default function SuperadminLoginForm() {
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center p-6 relative">
         <div className="w-full max-w-md relative">
-
+          {/* Central Security Icon */}
+          <div className="flex justify-center mb-10">
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full group-hover:bg-primary/30 transition-all duration-500 opacity-50"></div>
+              <div className="relative bg-primary text-primary-foreground p-4 rounded-full">
+                <span className="text-2xl">security</span>
+              </div>
+            </div>
+          </div>
 
           {/* Main Auth Card */}
           <div className="glass-card premium-shadow rounded-[1.4rem] p-10 border border-outline-variant/15">
             <div className="text-center mb-10">
               <h1 className="font-headline text-3xl font-bold tracking-tight text-on-surface mb-3">
-                SuperAdmin Access
+                Admin Access
               </h1>
             </div>
 
@@ -77,7 +85,7 @@ export default function SuperadminLoginForm() {
                   <input
                     id="email"
                     type="email"
-                    placeholder="superadmin@bruteforce.sec"
+                    placeholder="admin@bruteforce.sec"
                     value={credentials.email}
                     onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                     className="w-full bg-surface-container-lowest border-0 focus:ring-2 focus:ring-primary/50 focus:ring-offset-4 focus:ring-offset-surface rounded-[1.4rem] py-4 px-6 text-on-surface placeholder-on-surface-variant/30 transition-all duration-300"

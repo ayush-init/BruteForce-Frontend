@@ -1,4 +1,4 @@
-export default function SuperadminLoginLayout({
+export default function AdminLoginLayout({
   children,
 }: {
   children: React.ReactNode;
