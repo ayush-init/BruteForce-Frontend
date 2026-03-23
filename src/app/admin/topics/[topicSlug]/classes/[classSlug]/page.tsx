@@ -18,12 +18,21 @@ import {
   BookOpen,
   Filter,
   ExternalLink,
+  FolderEdit,
   CheckCircle2,
-  Circle
+  Circle,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select } from '@/components/Select';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { DeleteModal } from '@/components/DeleteModal';
 import {
   Table,
   TableBody,
@@ -66,12 +75,15 @@ export default function AdminClassDetailsPage() {
   const [bankQuestions, setBankQuestions] = useState<any[]>([]);
   const [bankLoading, setBankLoading] = useState(false);
   const [bankSearch, setBankSearch] = useState('');
-  const [bankLevel, setBankLevel] = useState('');
-  const [bankPlatform, setBankPlatform] = useState('');
+  const [bankLevel, setBankLevel] = useState('all');
+  const [bankPlatform, setBankPlatform] = useState('all');
   const [bankPage, setBankPage] = useState(1);
   const [bankTotalPages, setBankTotalPages] = useState(1);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<number[]>([]);
   
+  // Delete Modal States
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deletingQuestion, setDeletingQuestion] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -80,8 +92,8 @@ export default function AdminClassDetailsPage() {
     setLoading(true);
     try {
       const data = await getAdminClassQuestions(selectedBatch.slug, topicSlug, classSlug);
-      // Backend returns either direct array or { questions: [] }
-      setAssignedQuestions(Array.isArray(data) ? data : (data.questions || []));
+      // Backend returns { message: "...", data: [...] }
+      setAssignedQuestions(data.data || []);
     } catch (err: any) {
       console.error("Failed to fetch assigned questions", err);
       // If the current deeply tracked class does not exist in the active batch context, redirect out safely.
@@ -101,11 +113,12 @@ export default function AdminClassDetailsPage() {
   const fetchBankQuestions = async () => {
     setBankLoading(true);
     try {
-      const params: any = { page: bankPage, limit: 10 };
-      if (bankSearch) params.search = bankSearch;
-      if (bankLevel) params.level = bankLevel;
-      if (bankPlatform) params.platform = bankPlatform;
-      params.topicSlug = topicSlug; // Only search questions mapped to this topic by default? The backend supports cross-topic querying if topicSlug is omitted. Let's force topic-scope to prevent confusion.
+      const params: any = { page: bankPage, limit: 50 };
+      if (bankSearch && bankSearch !== 'all') params.search = bankSearch;
+      if (bankLevel && bankLevel !== 'all') params.level = bankLevel;
+      if (bankPlatform && bankPlatform !== 'all') params.platform = bankPlatform;
+      params.topicSlug = topicSlug; // Only search questions mapped to this topic by default?
+      //  The backend supports cross-topic querying if topicSlug is omitted. Let's force topic-scope to prevent confusion.
       
       const res = await getAdminQuestions(params);
       setBankQuestions(res.data);
@@ -135,7 +148,7 @@ export default function AdminClassDetailsPage() {
     setSubmitting(true);
     try {
       await assignQuestionsToClass(selectedBatch!.slug, topicSlug, classSlug, {
-        questionIds: selectedQuestionIds
+        question_ids: selectedQuestionIds
       });
       setIsAssignOpen(false);
       setSelectedQuestionIds([]);
@@ -148,12 +161,31 @@ export default function AdminClassDetailsPage() {
   };
 
   const handleRemoveQuestion = async (questionId: number) => {
-    if(!confirm("Are you sure you want to detach this question from the class?")) return;
+    const questionObj = assignedQuestions.find(q => {
+      const questionData = q.question || q;
+      return questionData.id === questionId;
+    });
+    
+    if (questionObj) {
+      setDeletingQuestion(questionObj);
+      setIsDeleteOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingQuestion) return;
+    
     try {
-      await removeQuestionFromClass(selectedBatch!.slug, topicSlug, classSlug, questionId);
+      setSubmitting(true);
+      const q = deletingQuestion.question || deletingQuestion;
+      await removeQuestionFromClass(selectedBatch!.slug, topicSlug, classSlug, q.id);
       fetchAssigned();
+      setIsDeleteOpen(false);
+      setDeletingQuestion(null);
     } catch (err: any) {
       alert(err.response?.data?.error || "Failed to remove question");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -224,20 +256,21 @@ export default function AdminClassDetailsPage() {
                     <TableHead>Platform</TableHead>
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Type</TableHead>
-                    <TableHead className="text-right">Manage</TableHead>
+                    <TableHead>Assigned Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                  </TableRow>
                </TableHeader>
                <TableBody>
                  {loading ? (
                     <TableRow>
-                       <TableCell colSpan={5} className="h-48 text-center text-muted-foreground">
+                       <TableCell colSpan={6} className="h-48 text-center text-muted-foreground">
                           <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                           Loading assignments...
                        </TableCell>
                     </TableRow>
                  ) : filteredAssigned.length === 0 ? (
                     <TableRow>
-                       <TableCell colSpan={5} className="h-48 text-center text-muted-foreground">
+                       <TableCell colSpan={6} className="h-48 text-center text-muted-foreground">
                           No questions have been attached to this class.
                        </TableCell>
                     </TableRow>
@@ -266,10 +299,15 @@ export default function AdminClassDetailsPage() {
                                 {q.type?.toLowerCase() || 'Homework'}
                              </span>
                           </TableCell>
+                          <TableCell>
+                             <span className="text-xs text-muted-foreground">
+                                {qObj.assigned_at ? new Date(qObj.assigned_at).toLocaleDateString('en-GB') : 'N/A'}
+                             </span>
+                          </TableCell>
                           <TableCell className="text-right">
-                             <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button variant="ghost" size="icon" onClick={() => handleRemoveQuestion(q.id)} className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive text-muted-foreground">
-                                   <Trash2 className="w-4 h-4" />
+                             <div className="flex items-center justify-end gap-2">
+                                <Button variant="outline" size="icon" onClick={() => handleRemoveQuestion(q.id)} className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive border-border/50">
+                                   <Trash2 className="w-4 h-4 opacity-70" />
                                 </Button>
                              </div>
                           </TableCell>
@@ -292,108 +330,191 @@ export default function AdminClassDetailsPage() {
              </DialogHeader>
              {errorMsg && <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md">{errorMsg}</div>}
              
-             <div className="mt-4 flex gap-3">
-               <div className="relative flex-1">
-                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+             {/* Search Bar */}
+             <div className="mt-4">
+               <div className="relative">
+                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
                  <Input 
-                    placeholder="Search query..." 
+                    placeholder="Search questions by name..." 
                     value={bankSearch}
                     onChange={(e) => setBankSearch(e.target.value)}
-                    className="pl-9 h-9"
+                    className="pl-12 h-12 text-base bg-background focus-visible:ring-2 focus-visible:ring-primary focus:border-primary transition-all"
                  />
                </div>
-               <Select 
-                 value={bankLevel} 
-                 onChange={(v) => setBankLevel(v as string)}
-                 options={[
-                   {label: 'All Levels', value: ''},
-                   {label: 'Easy', value: 'EASY'},
-                   {label: 'Medium', value: 'MEDIUM'},
-                   {label: 'Hard', value: 'HARD'},
-                 ]}
-                 placeholder="Difficulty"
-                 className="w-32 h-9 text-sm"
-               />
-               <Select 
-                 value={bankPlatform} 
-                 onChange={(v) => setBankPlatform(v as string)}
-                 options={[
-                   {label: 'All Platforms', value: ''},
-                   {label: 'LeetCode', value: 'LEETCODE'},
-                   {label: 'GeeksForGeeks', value: 'GFG'},
-                   {label: 'Other', value: 'OTHER'},
-                 ]}
-                 placeholder="Platform"
-                 className="w-36 h-9 text-sm"
-               />
+             </div>
+
+             {/* Filters */}
+             <div className="mt-4 flex gap-3">
+               <Select value={bankLevel} onValueChange={(v) => setBankLevel(v as string)}>
+                 <SelectTrigger className="w-40 h-10">
+                   <SelectValue placeholder="Difficulty" />
+                 </SelectTrigger>
+                 <SelectContent>
+                   <SelectItem value="all">All Levels</SelectItem>
+                   <SelectItem value="EASY">Easy</SelectItem>
+                   <SelectItem value="MEDIUM">Medium</SelectItem>
+                   <SelectItem value="HARD">Hard</SelectItem>
+                 </SelectContent>
+               </Select>
+               <Select value={bankPlatform} onValueChange={(v) => setBankPlatform(v as string)}>
+                 <SelectTrigger className="w-44 h-10">
+                   <SelectValue placeholder="Platform" />
+                 </SelectTrigger>
+                 <SelectContent>
+                   <SelectItem value="all">All Platforms</SelectItem>
+                   <SelectItem value="LEETCODE">LeetCode</SelectItem>
+                   <SelectItem value="GFG">GeeksForGeeks</SelectItem>
+                   <SelectItem value="OTHER">Other</SelectItem>
+                 </SelectContent>
+               </Select>
+             </div>
+
+             {/* Info Bar */}
+             <div className="mt-4 p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+               <p className="text-sm text-destructive font-medium flex items-center gap-2">
+                 <AlertTriangle className="w-4 h-4" />
+                 Showing questions only for this topic
+               </p>
              </div>
           </div>
           
-          <div className="flex-1 overflow-y-auto p-0 min-h-[300px]">
-             <Table>
-               <TableBody>
-                 {bankLoading ? (
-                    <TableRow>
-                       <TableCell className="h-48 text-center text-muted-foreground">
-                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                          Searching bank...
-                       </TableCell>
-                    </TableRow>
-                 ) : bankQuestions.length === 0 ? (
-                    <TableRow>
-                       <TableCell className="h-48 text-center text-muted-foreground">
-                          No questions matched your search criteria.
-                       </TableCell>
-                    </TableRow>
-                 ) : (
-                    bankQuestions.map((q) => {
-                       const isAssigned = assignedQuestions.some(aq => (aq.question?.id || aq.id) === q.id);
-                       const isSelected = selectedQuestionIds.includes(q.id);
-                       return (
-                       <TableRow key={q.id} className={`cursor-pointer transition-colors ${isSelected ? 'bg-primary/5' : ''} ${isAssigned ? 'opacity-50 pointer-events-none' : 'hover:bg-muted/50'}`} onClick={() => !isAssigned && toggleSelection(q.id)}>
-                          <TableCell className="w-[40px] pl-6">
-                             {isAssigned ? (
-                                <CheckCircle2 className="w-5 h-5 text-muted-foreground" />
-                             ) : isSelected ? (
-                                <CheckCircle2 className="w-5 h-5 text-primary" />
-                             ) : (
-                                <Circle className="w-5 h-5 text-muted-foreground/30 border-dashed" />
-                             )}
-                          </TableCell>
-                          <TableCell>
-                             <div className="font-medium text-foreground">{q.question_name}</div>
-                             <div className="text-xs text-muted-foreground line-clamp-1">{q.question_link}</div>
-                          </TableCell>
-                          <TableCell>
-                             <div className="flex items-center gap-2 justify-end pr-4">
-                               <BadgeByLevel level={q.level} />
-                               <span className="text-xs uppercase bg-muted text-muted-foreground font-semibold px-2 py-0.5 rounded">{q.platform}</span>
-                             </div>
-                          </TableCell>
-                       </TableRow>
-                       );
-                    })
-                 )}
-               </TableBody>
-             </Table>
+          <div className="flex-1 overflow-y-auto p-0 min-h-[300px] scrollbar-thin scrollbar-track-border scrollbar-thumb-border/30">
+             <div className="grid grid-cols-1 gap-3 p-4">
+               {bankLoading ? (
+                  <div className="flex items-center justify-center h-32">
+                     <svg className="animate-spin -ml-1 mr-3 h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                     <span className="ml-2 text-sm text-muted-foreground">Loading questions...</span>
+                  </div>
+               ) : bankQuestions.length === 0 ? (
+                  <div className="flex items-center justify-center h-32">
+                     <p className="text-muted-foreground">No questions found matching your criteria.</p>
+                  </div>
+               ) : (
+                  bankQuestions.map((q) => {
+                     const isAssigned = assignedQuestions.some(aq => (aq.question?.id || aq.id) === q.id);
+                     const isSelected = selectedQuestionIds.includes(q.id);
+                     return (
+                        <div 
+                           key={q.id}
+                           className={`p-4 border rounded-lg transition-all cursor-pointer ${
+                             isSelected ? 'bg-primary/10 border-primary/30' : 
+                             isAssigned ? 'bg-muted/50 border-border/50 opacity-60 cursor-not-allowed' : 
+                             'bg-card border-border hover:border-primary/50 hover:bg-muted/50'
+                           }`}
+                           onClick={() => !isAssigned && toggleSelection(q.id)}
+                        >
+                           <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1 min-w-0">
+                                 <div className="flex items-center gap-2 mb-3">
+                                    <BadgeByLevel level={q.level} />
+                                    <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
+                                       {q.type?.toLowerCase() === 'classwork' ? 'Classwork' : 'Homework'}
+                                    </span>
+                                    <span className="text-xs font-medium text-muted-foreground bg-blue-500/10 text-blue-600 px-2 py-1 rounded">
+                                       {q.platform === 'LEETCODE' ? 'LeetCode' : q.platform === 'GFG' ? 'GeeksForGeeks' : q.platform || 'Other'}
+                                    </span>
+                                 </div>
+                                 <h4 className="font-bold text-foreground text-base leading-tight mb-2 line-clamp-2">
+                                    {q.question_name}
+                                 </h4>
+                                 <a 
+                                    href={q.question_link} 
+                                    target="_blank" 
+                                    rel="noreferrer" 
+                                    className="text-sm text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1.5 font-medium"
+                                    onClick={(e) => e.stopPropagation()}
+                                 >
+                                    View Question <ExternalLink className="w-3 h-3" />
+                                 </a>
+                              </div>
+                           </div>
+                           <div className="flex items-center gap-2 mt-3">
+                              {!isAssigned && (
+                                 <div className="flex items-center">
+                                    {isSelected ? (
+                                       <CheckCircle2 className="w-5 h-5 text-primary" />
+                                    ) : (
+                                       <Circle className="w-5 h-5 text-muted-foreground/30 border-2 border-dashed" />
+                                    )}
+                                 </div>
+                              )}
+                              {isAssigned && (
+                                 <span className="text-xs text-muted-foreground font-medium bg-muted px-2 py-1 rounded">Already Assigned</span>
+                              )}
+                           </div>
+                        </div>
+                     );
+                  })
+               )}
+             </div>
           </div>
 
+          {/* Pagination */}
           <div className="p-4 border-t border-border shrink-0 flex items-center justify-between bg-muted/20">
-             <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={() => setBankPage(p => Math.max(1, p - 1))} disabled={bankPage === 1 || bankLoading}>Prev</Button>
-                <span className="text-sm font-medium text-muted-foreground px-2">Page {bankPage} of {bankTotalPages}</span>
-                <Button variant="outline" size="sm" onClick={() => setBankPage(p => Math.min(bankTotalPages, p + 1))} disabled={bankPage === bankTotalPages || bankLoading}>Next</Button>
+             <div className="text-sm text-muted-foreground">
+                {bankQuestions.length > 0 && (
+                   <span>{bankQuestions.length} questions found</span>
+                )}
              </div>
              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium">{selectedQuestionIds.length} Selected</span>
-                <Button type="button" variant="ghost" onClick={() => setIsAssignOpen(false)} disabled={submitting}>Cancel</Button>
-                <Button type="button" onClick={handleAssignSubmit} disabled={submitting || selectedQuestionIds.length === 0}>
+                <Button 
+                   variant="outline" 
+                   onClick={() => setBankPage(p => Math.max(1, p - 1))} 
+                   disabled={bankPage === 1 || bankLoading}
+                   className="h-8"
+                >
+                   Previous
+                </Button>
+                <Button 
+                   variant="outline" 
+                   onClick={() => setBankPage(p => Math.min(bankTotalPages, p + 1))} 
+                   disabled={bankPage === bankTotalPages || bankLoading}
+                   className="h-8"
+                >
+                   Next
+                </Button>
+             </div>
+          </div>
+
+          {/* Footer */}
+          <div className="p-4 border-t border-border shrink-0 flex items-center justify-between">
+             <div className="text-sm font-medium text-foreground">
+                {selectedQuestionIds.length} Selected
+             </div>
+             <div className="flex items-center gap-3">
+                <Button 
+                   variant="outline" 
+                   onClick={() => setIsAssignOpen(false)} 
+                   disabled={submitting}
+                   className="h-9"
+                >
+                   Cancel
+                </Button>
+                <Button 
+                   onClick={handleAssignSubmit} 
+                   disabled={submitting || selectedQuestionIds.length === 0}
+                   className="h-9"
+                >
                    {submitting ? 'Assigning...' : 'Add Selected'}
                 </Button>
              </div>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* DELETE QUESTION MODAL */}
+      <DeleteModal
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setDeletingQuestion(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        submitting={submitting}
+        title="Remove Question"
+        itemName={deletingQuestion?.question?.question_name || deletingQuestion?.question_name || 'this question'}
+        warningText="This will detach the question from this class. Students will no longer see this question in their class assignments."
+      />
     </div>
   );
 }

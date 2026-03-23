@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { CalendarDays, Flame, Trophy } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pagination } from '@/components/Pagination';
-import TableShimmer from '@/components/shimmers/TableShimmer';
+import TableShimmer from '@/components/admin/leaderboard/shimmers/TableShimmer';
 import { getAdminLeaderboard } from '@/services/admin.service';
 import { useEffect, useState } from 'react';
 

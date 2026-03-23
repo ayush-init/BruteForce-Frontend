@@ -14,7 +14,8 @@ import {
   FolderEdit,
   Trash2,
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  RotateCcw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -115,6 +116,7 @@ export default function AdminQuestionsBankPage() {
       if (qLevel) p.level = qLevel;
       if (qPlatform) p.platform = qPlatform;
       if (qType) p.type = qType;
+      if (searchParams.get('topic') && searchParams.get('topic') !== 'all') p.topic_id = searchParams.get('topic');
 
       const res = await getAdminQuestions(p);
       setQuestions(res.data);
@@ -226,9 +228,27 @@ export default function AdminQuestionsBankPage() {
             {totalRecords} Total Questions
           </p>
         </div>
-        <Button onClick={() => { resetForms(); setIsCreateOpen(true); }} className="gap-2">
-          <Plus className="w-4 h-4" /> Add Question
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setQSearch('');
+              setQLevel('');
+              setQPlatform('');
+              setQType('');
+              const params = new URLSearchParams();
+              params.set('page', '1');
+              router.replace(`/admin/questions?${params.toString()}`);
+            }}
+            className="h-9"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Clear Filters
+          </Button>
+          <Button onClick={() => { resetForms(); setIsCreateOpen(true); }} className="gap-2">
+            <Plus className="w-4 h-4" /> Add Question
+          </Button>
+        </div>
       </div>
 
       <div className="bg-card border border-border shadow-sm rounded-xl overflow-hidden flex flex-col min-h-[600px]">
@@ -268,6 +288,22 @@ export default function AdminQuestionsBankPage() {
             ]}
             className="w-[160px] h-9 text-sm"
             placeholder="Platform"
+          />
+
+          <Select
+            value={searchParams.get('topic') || 'all'}
+            onChange={(v) => { 
+              const params = new URLSearchParams(searchParams.toString());
+              if (v && v !== 'all') params.set('topic', v.toString()); else params.delete('topic');
+              params.set('page', '1');
+              router.replace(`/admin/questions?${params.toString()}`);
+            }}
+            options={[
+              { label: 'All Topics', value: 'all' },
+              ...allTopics
+            ]}
+            className="w-[180px] h-9 text-sm"
+            placeholder={allTopics.length > 0 ? "All Topics" : "Loading..."}
           />
         </div>
 
@@ -317,7 +353,7 @@ export default function AdminQuestionsBankPage() {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-2">
                         <Button variant="ghost" size="icon" onClick={() => openEdit(q)} className="h-8 w-8 hover:bg-muted text-muted-foreground">
                           <FolderEdit className="w-4 h-4" />
                         </Button>

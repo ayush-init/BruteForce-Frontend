@@ -19,7 +19,6 @@ import {
   ArrowRight,
   BookOpen,
   CalendarDays,
-  Clock,
   Link as LinkIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -219,10 +218,10 @@ export default function AdminClassesPage() {
             <Table>
                <TableHeader>
                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableHead>Class Timeline</TableHead>
                     <TableHead>Overview</TableHead>
+                    <TableHead>Class Date</TableHead>
                     <TableHead className="text-center">Resources</TableHead>
-                    <TableHead className="text-right">Manage</TableHead>
+                    <TableHead className="text-right"></TableHead>
                  </TableRow>
                </TableHeader>
                <TableBody>
@@ -241,24 +240,32 @@ export default function AdminClassesPage() {
                     </TableRow>
                  ) : (
                     filteredClasses.map((cls) => (
-                       <TableRow key={cls.id} className="group">
-                          <TableCell>
-                             <div className="flex flex-col gap-1.5">
-                               <div className="flex items-center gap-2 text-foreground font-medium text-sm">
-                                 <CalendarDays className="w-4 h-4 text-primary" />
-                                 {new Date(cls.class_date).toLocaleDateString()}
-                               </div>
-                               <div className="flex items-center gap-2 text-muted-foreground font-medium text-xs">
-                                 <Clock className="w-3.5 h-3.5" />
-                                 {cls.duration_minutes} Minutes
-                               </div>
-                             </div>
-                          </TableCell>
+                       <TableRow 
+                          key={cls.id} 
+                          className="group hover:bg-muted/30 cursor-pointer transition-colors"
+                          onClick={(e) => {
+                            // Prevent navigation if clicking on buttons
+                            if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('a')) {
+                              return;
+                            }
+                            // Navigate to view questions page (same as row click)
+                            window.location.href = `/admin/topics/${topicSlug}/classes/${cls.slug}`;
+                          }}
+                       >
                           <TableCell>
                              <div className="font-semibold text-foreground text-base">{cls.class_name}</div>
                              {cls.description && (
-                               <p className="text-xs text-muted-foreground line-clamp-2 max-w-sm mt-0.5">{cls.description}</p>
+                               <p className="text-xs text-muted-foreground mt-0.5 max-w-sm">
+                                 {cls.description.split(' ').slice(0, 7).join(' ')}
+                                 {cls.description.split(' ').length > 7 && '...'}
+                               </p>
                              )}
+                          </TableCell>
+                          <TableCell>
+                             <div className="flex items-center gap-2 text-foreground font-medium text-sm">
+                               <CalendarDays className="w-4 h-4 text-primary" />
+                               {new Date(cls.class_date).toLocaleDateString()}
+                             </div>
                           </TableCell>
                           <TableCell className="text-center">
                              {cls.pdf_url ? (
@@ -270,17 +277,40 @@ export default function AdminClassesPage() {
                              )}
                           </TableCell>
                           <TableCell className="text-right">
-                             <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Link href={`/admin/topics/${topicSlug}/classes/${cls.slug}`}>
-                                   <Button variant="outline" size="sm" className="h-8 gap-1.5 font-medium">
-                                      View Questions <ArrowRight className="w-3.5 h-3.5" />
-                                   </Button>
-                                </Link>
-                                <Button variant="ghost" size="icon" onClick={() => openEdit(cls)} className="h-8 w-8 hover:bg-muted">
-                                   <FolderEdit className="w-4 h-4 text-muted-foreground" />
+                             <div className="flex items-center justify-end gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="h-8 gap-1.5 font-medium bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/30 text-primary"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    window.location.href = `/admin/topics/${topicSlug}/classes/${cls.slug}`;
+                                  }}
+                                >
+                                  View Questions
                                 </Button>
-                                <Button variant="ghost" size="icon" onClick={() => { setSelectedClass(cls); setIsDeleteOpen(true); }} className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive">
-                                   <Trash2 className="w-4 h-4 opacity-70" />
+                                <Button 
+                                  variant="outline" 
+                                  size="icon" 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openEdit(cls);
+                                  }} 
+                                  className="h-8 w-8 hover:bg-muted border-border/50"
+                                >
+                                  <FolderEdit className="w-4 h-4 text-muted-foreground" />
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="icon" 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedClass(cls);
+                                    setIsDeleteOpen(true);
+                                  }} 
+                                  className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive border-border/50"
+                                >
+                                  <Trash2 className="w-4 h-4 opacity-70" />
                                 </Button>
                              </div>
                           </TableCell>
