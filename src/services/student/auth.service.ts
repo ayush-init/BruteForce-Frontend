@@ -16,8 +16,18 @@ export const studentAuthService = {
     return res.data;
   },
 
-  googleLogin: async (tokenId: string) => {
-    const res = await api.post('/api/auth/google-login', { token: tokenId, role: 'STUDENT' });
+  googleLogin: async (idToken: string) => {
+    const res = await api.post('/api/auth/google-login', { idToken });
+    return res.data;
+  },
+
+  forgotPassword: async (email: string) => {
+    const res = await api.post('/api/auth/forgot-password', { email });
+    return res.data;
+  },
+
+  resetPassword: async (data: any) => {
+    const res = await api.post('/api/auth/reset-password', data);
     return res.data;
   }
 };
