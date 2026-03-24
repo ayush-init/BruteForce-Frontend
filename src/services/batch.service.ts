@@ -21,8 +21,8 @@ export const getAllBatches = async (city?: string, year?: number): Promise<Batch
   if (city) params.city = city;
   if (year) params.year = year;
   
-  // Use admin endpoint - works for all admin roles including superadmin
-  const response = await api.get('/api/admin/batches', { params });
+  // Use public endpoint - accessible without admin authentication
+  const response = await api.get('/api/batches', { params });
   return response.data;
 };
 

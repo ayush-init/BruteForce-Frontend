@@ -57,13 +57,13 @@ export const getCurrentAdmin = async () => {
 };
 
 export const getAdminCities = async () => {
-  const response = await api.get('/api/admin/cities');
+  const response = await api.get('/api/cities');
   return response.data;
 };
 
 export const getAdminBatches = async (cityName?: string) => {
   const params = cityName ? { city: cityName } : {};
-  const response = await api.get('/api/admin/batches', { params });
+  const response = await api.get('/api/batches', { params });
   return response.data;
 };
 
