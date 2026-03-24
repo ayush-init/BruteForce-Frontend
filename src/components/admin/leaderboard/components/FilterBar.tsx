@@ -8,7 +8,8 @@ export function FilterBar({
   lSearch, setLSearch, 
   lType, setLType, typeOptionsObj,
   lCity, setLCity, cityOptionsObj, setLYear,
-  lYear, yearOptionsObj, allYears 
+  lYear, yearOptionsObj, allYears,
+  mode = 'admin'
 }: any) {
   return (
     <div className="p-4 border-b border-border flex flex-wrap items-center gap-3 bg-card/60 backdrop-blur-md sticky top-0 z-20">
@@ -26,37 +27,41 @@ export function FilterBar({
         />
       </div>
       
-      <Select 
-          value={lType} 
-          onChange={(v: any) => { setLType(v); }}
-          options={typeOptionsObj}
-          className="w-[140px] h-9 text-sm"
-          icon={<TrendingUp className="w-3.5 h-3.5" />}
-          placeholder="Timeframe"
-      />
-      
-      <Select 
-          value={lCity} 
-          onChange={(v: any) => { 
-            setLCity(v); 
-          }}
-          options={cityOptionsObj}
-          className="w-[150px] h-9 text-sm"
-          icon={<MapPin className="w-3.5 h-3.5" />}
-          placeholder="City"
-      />
+      {mode !== 'student' && (
+        <>
+          <Select 
+              value={lType} 
+              onChange={(v: any) => { setLType(v); }}
+              options={typeOptionsObj}
+              className="w-[140px] h-9 text-sm"
+              icon={<TrendingUp className="w-3.5 h-3.5" />}
+              placeholder="Timeframe"
+          />
+          
+          <Select 
+              value={lCity} 
+              onChange={(v: any) => { 
+                setLCity(v); 
+              }}
+              options={cityOptionsObj}
+              className="w-[150px] h-9 text-sm"
+              icon={<MapPin className="w-3.5 h-3.5" />}
+              placeholder="City"
+          />
 
-      <Select 
-          value={lYear.toString()} 
-          onChange={(v: any) => { setLYear(Number(v)); }}
-          options={yearOptionsObj}
-          className="w-[130px] h-9 text-sm"
-          icon={<CalendarDays className="w-3.5 h-3.5" />}
-          placeholder="Year"
-          disabled={allYears.length === 0}
-      />
-      {allYears.length === 0 && (
-        <span className="text-xs text-muted-foreground ml-2">No years available</span>
+          <Select 
+              value={lYear.toString()} 
+              onChange={(v: any) => { setLYear(Number(v)); }}
+              options={yearOptionsObj}
+              className="w-[130px] h-9 text-sm"
+              icon={<CalendarDays className="w-3.5 h-3.5" />}
+              placeholder="Year"
+              disabled={allYears.length === 0}
+          />
+          {allYears.length === 0 && (
+            <span className="text-xs text-muted-foreground ml-2">No years available</span>
+          )}
+        </>
       )}
     </div>
   );

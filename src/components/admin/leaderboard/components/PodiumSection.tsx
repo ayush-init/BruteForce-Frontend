@@ -2,6 +2,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import PodiumShimmer from '@/components/admin/leaderboard/shimmers/PodiumShimmer';
 import { getAdminLeaderboard } from '@/services/admin.service';
+import { studentLeaderboardService } from '@/services/student/leaderboard.service';
 
 const PodiumItem = ({ student, rank, color, glow, height, isCenter, borderCol }: any) => {
 
@@ -38,7 +39,7 @@ const PodiumItem = ({ student, rank, color, glow, height, isCenter, borderCol }:
   );
 };
 
-export function PodiumSection({ lType, lCity, lYear, debouncedSearch }: any) {
+export function PodiumSection({ lType, lCity, lYear, debouncedSearch, mode = 'admin' }: any) {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,10 +47,16 @@ export function PodiumSection({ lType, lCity, lYear, debouncedSearch }: any) {
     const fetchPodium = async () => {
       setLoading(true);
       try {
-        const query = { page: 1, limit: 3, search: debouncedSearch || undefined };
         const body = { city: lCity, type: lType, year: lYear === 0 ? undefined : Number(lYear) }; 
-        const res = await getAdminLeaderboard(query, body);
-        setLeaderboard(res.leaderboard || []);
+        let res;
+        if (mode === 'student') {
+          res = await studentLeaderboardService.getLeaderboard(body, debouncedSearch);
+          setLeaderboard(res.top10 || []);
+        } else {
+          const query = { page: 1, limit: 3, search: debouncedSearch || undefined };
+          res = await getAdminLeaderboard(query, body);
+          setLeaderboard(res.leaderboard || []);
+        }
       } catch (err) {
         setLeaderboard([]);
       } finally {

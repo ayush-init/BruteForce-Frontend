@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Users, BarChart, CheckCircle2 } from 'lucide-react';
 import StatsShimmer from '@/components/admin/leaderboard/shimmers/StatsShimmer';
 import { getAdminLeaderboard } from '@/services/admin.service';
+import { studentLeaderboardService } from '@/services/student/leaderboard.service';
 
 const StatsCard = ({ icon, title, value, color, bg }: any) => (
   <div className="bg-card border border-border rounded-xl p-5 flex items-center gap-4 shadow-sm group hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
@@ -16,7 +17,7 @@ const StatsCard = ({ icon, title, value, color, bg }: any) => (
   </div>
 );
 
-export function StatsSection({ lCity, lType, lYear, debouncedSearch }: any) {
+export function StatsSection({ lCity, lType, lYear, debouncedSearch, mode = 'admin' }: any) {
   const [totalRecords, setTotalRecords] = useState(0);
   const [avgCompletion, setAvgCompletion] = useState(0);
   const [highestCompletion, setHighestCompletion] = useState(0);
@@ -26,12 +27,21 @@ export function StatsSection({ lCity, lType, lYear, debouncedSearch }: any) {
     const fetchStats = async () => {
       setLoading(true);
       try {
-        const query = { page: 1, limit: 5, search: debouncedSearch || undefined };
         const body = { city: lCity, type: lType, year: lYear === 0 ? undefined : Number(lYear) }; 
-        const res = await getAdminLeaderboard(query, body);
-        setTotalRecords(res.total || 0);
+        let res;
+        let leaderboard = [];
 
-        const leaderboard = res.leaderboard || [];
+        if (mode === 'student') {
+          res = await studentLeaderboardService.getLeaderboard(body, debouncedSearch);
+          leaderboard = res.top10 || [];
+          setTotalRecords(leaderboard.length);
+        } else {
+          const query = { page: 1, limit: 5, search: debouncedSearch || undefined };
+          res = await getAdminLeaderboard(query, body);
+          leaderboard = res.leaderboard || [];
+          setTotalRecords(res.total || 0);
+        }
+
         let avgC = 0;
         let highestC = 0;
         if (leaderboard.length > 0) {

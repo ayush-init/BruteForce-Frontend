@@ -6,11 +6,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Pagination } from '@/components/Pagination';
 import TableShimmer from '@/components/admin/leaderboard/shimmers/TableShimmer';
 import { getAdminLeaderboard } from '@/services/admin.service';
+import { studentLeaderboardService } from '@/services/student/leaderboard.service';
 import { useEffect, useState } from 'react';
 
 export function LeaderboardTable({ 
   lCity, lType, lYear, debouncedSearch,
-  page, limit, setPage, setLimit 
+  page, limit, setPage, setLimit,
+  mode = 'admin' 
 }: any) {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -21,12 +23,20 @@ export function LeaderboardTable({
     const fetchTable = async () => {
       setLoading(true);
       try {
-        const query = { page, limit, search: debouncedSearch || undefined };
         const body = { city: lCity, type: lType, year: lYear === 0 ? undefined : Number(lYear) }; 
-        const res = await getAdminLeaderboard(query, body);
+        let res;
         
-        setLeaderboard(res.leaderboard || []);
-        setTotalRecords(res.total || 0);
+        if (mode === 'student') {
+          res = await studentLeaderboardService.getLeaderboard(body, debouncedSearch);
+          setLeaderboard(res.top10 || []);
+          setTotalRecords(res.top10?.length || 0);
+        } else {
+          const query = { page, limit, search: debouncedSearch || undefined };
+          res = await getAdminLeaderboard(query, body);
+          setLeaderboard(res.leaderboard || []);
+          setTotalRecords(res.total || 0);
+        }
+        
         setErrorMsg(null);
       } catch (err: any) {
         setErrorMsg(err.message || 'Failed to fetch leaderboard data');
@@ -176,18 +186,20 @@ export function LeaderboardTable({
         </div>
       )}
 
-      <Pagination 
-        currentPage={page}
-        totalItems={totalRecords}
-        limit={limit}
-        onPageChange={setPage}
-        onLimitChange={(newLimit: number) => {
-          setLimit(newLimit);
-          setPage(1); 
-        }}
-        showLimitSelector={true}
-        loading={false}
-      />
+      {mode !== 'student' && (
+        <Pagination 
+          currentPage={page}
+          totalItems={totalRecords}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={(newLimit: number) => {
+            setLimit(newLimit);
+            setPage(1); 
+          }}
+          showLimitSelector={true}
+          loading={false}
+        />
+      )}
     </>
   );
 }
