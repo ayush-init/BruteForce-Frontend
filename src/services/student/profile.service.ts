@@ -6,6 +6,11 @@ export const studentProfileService = {
     return res.data;
   },
   
+  getProfileByUsername: async (username: string) => {
+    const res = await api.get(`/api/students/profile/${username}`);
+    return res.data;
+  },
+  
   updateProfileImage: async (file: File) => {
     try {
       // Validate file size (5MB limit)

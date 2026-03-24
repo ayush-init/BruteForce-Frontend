@@ -20,11 +20,30 @@ export default function StudentLayout({
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (!token) {
-      router.push('/login');
+    console.log('=== LAYOUT USEEFFECT START ===');
+    console.log('Layout pathname:', pathname);
+    console.log('Window location:', window.location.pathname);
+    
+    // Allow public access to profile routes
+    if (pathname.startsWith('/profile/')) {
+      console.log('✅ Public profile route detected, skipping auth');
+      setLoading(false);
+      console.log('=== LAYOUT USEEFFECT END (SKIP AUTH) ===');
       return;
     }
+
+    console.log('❌ Not a profile route, checking auth...');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    console.log('Token exists:', !!token);
+    
+    if (!token) {
+      console.log('🔄 No token found, redirecting to login...');
+      router.push('/login');
+      console.log('=== LAYOUT USEEFFECT END (REDIRECT) ===');
+      return;
+    }
+
+    console.log('✅ Token found, continuing with auth flow...');
 
     const checkProfile = async () => {
       try {

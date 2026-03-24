@@ -20,6 +20,11 @@ export default function StudentHeader() {
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
+    // Don't fetch profile for public profile routes
+    if (pathname.startsWith('/profile/')) {
+      return;
+    }
+
     const fetchProfile = async () => {
       try {
         const data = await studentAuthService.getCurrentStudent();
@@ -89,7 +94,7 @@ export default function StudentHeader() {
       </Link>
 
       {/* Nav */}
-      <nav className="flex gap-1 flex-1 ml-6 hidden md:flex">
+      <nav className="hidden md:flex gap-1 flex-1 ml-6">
         {navLinks.map((link) => {
           const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
           const Icon = link.icon;
@@ -110,9 +115,14 @@ export default function StudentHeader() {
             <Link 
               key={link.name} 
               href={isLocked ? '#' : link.path}
-              onClick={e => { if (isLocked) e.preventDefault(); }}
+              onClick={e => { 
+                if (isLocked) {
+                  e.preventDefault();
+                  router.push('/login');
+                }
+              }}
               className={`relative px-4 py-2 rounded-lg flex items-center gap-2 text-[13.5px] font-semibold transition-all overflow-hidden ${
-                isLocked ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
+                isLocked ? 'opacity-50 cursor-not-allowed' : ''
               } ${
                 isActive && !isLocked
                   ? 'text-primary bg-primary/10 border border-primary/20' 
@@ -132,60 +142,85 @@ export default function StudentHeader() {
         
         <ThemeToggle />
 
-        {isProfileLoaded ? (
-          isUserOnboarded ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="relative w-9 h-9 rounded-full border-2 border-border hover:border-primary focus:outline-none transition-all flex items-center justify-center overflow-hidden shrink-0 cursor-pointer">
-                  {profile?.data?.profileImageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={profile?.data?.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 text-primary-foreground flex items-center justify-center text-[12px] font-bold">
-                      {profile?.data?.name ? profile?.data?.name.charAt(0).toUpperCase() : ''}
-                    </div>
-                  )}
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl border-border/80 shadow-xl dark:shadow-black/50">
-                <div className="px-3 py-2.5 mb-1 bg-secondary/30 rounded-lg border border-border/50">
-                  <p className="text-[13.5px] font-semibold text-foreground truncate">{profile?.data?.name}</p>
-                  <p className="text-[12px] text-muted-foreground font-mono truncate">@{profile?.data?.username}</p>
-                </div>
-                
-                <DropdownMenuSeparator className="bg-border/60 my-1" />
-                
-                <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-[13px] font-medium focus:bg-primary/10 focus:text-primary py-2">
-                  <Link href="/profile" className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    <span>My Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                
-                <DropdownMenuSeparator className="bg-border/60 my-1" />
-                
-                <DropdownMenuItem 
-                  onClick={handleLogout} 
-                  className="cursor-pointer rounded-lg text-[13px] font-medium text-destructive focus:bg-destructive/10 focus:text-destructive py-2"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <button 
-              onClick={handleLogout}
-              className="px-3 py-1.5 bg-destructive/10 text-destructive border border-destructive/20 text-[13px] font-semibold rounded-lg hover:bg-destructive/20 transition-colors flex items-center gap-2 shrink-0"
-              title="Log out"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Log out
-            </button>
-          )
-        ) : (
-          <div className="w-9 h-9 rounded-full border-2 border-border animate-pulse bg-secondary/50 shrink-0"></div>
-        )}
+        {/* Check authentication and show appropriate UI */}
+        {(() => {
+          const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+          const isAuthenticated = !!token;
+          
+          // If not authenticated, show login button
+          if (!isAuthenticated) {
+            return (
+              <div className="flex items-center gap-3">
+                <Link href="/login" className="text-sm text-primary hover:underline">
+                  Login
+                </Link>
+              </div>
+            );
+          }
+          
+          // If authenticated and profile is loaded, show user dropdown
+          if (isAuthenticated && isProfileLoaded) {
+            return isUserOnboarded ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="relative w-9 h-9 rounded-full border-2 border-border hover:border-primary focus:outline-none transition-all flex items-center justify-center overflow-hidden shrink-0 cursor-pointer">
+                    {profile?.data?.profileImageUrl ? (
+                      <img src={profile?.data?.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 text-primary-foreground flex items-center justify-center text-[12px] font-bold">
+                        {profile?.data?.name ? profile?.data?.name.charAt(0).toUpperCase() : ''}
+                      </div>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl border-border/80 shadow-xl dark:shadow-black/50">
+                  <div className="px-3 py-2.5 mb-1 bg-secondary/30 rounded-lg border border-border/50">
+                    <p className="text-[13.5px] font-semibold text-foreground truncate">{profile?.data?.name}</p>
+                    <p className="text-[12px] text-muted-foreground font-mono truncate">@{profile?.data?.username}</p>
+                  </div>
+                  
+                  <DropdownMenuSeparator className="bg-border/60 my-1" />
+                  
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-[13px] font-medium focus:bg-primary/10 focus:text-primary py-2">
+                    <Link href={profile?.data?.username ? `/profile/${profile.data.username}` : '/profile'} className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator className="bg-border/60 my-1" />
+                  
+                  <DropdownMenuItem 
+                    onClick={handleLogout} 
+                    className="cursor-pointer rounded-lg text-[13px] font-medium text-destructive focus:bg-destructive/10 focus:text-destructive py-2"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <button 
+                onClick={handleLogout}
+                className="px-3 py-1.5 bg-destructive/10 text-destructive border border-destructive/20 text-[13px] font-semibold rounded-lg hover:bg-destructive/20 transition-colors flex items-center gap-2 shrink-0"
+                title="Log out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                Log out
+              </button>
+            );
+          }
+          
+          // For authenticated users on profile pages where profile isn't loaded, show loading
+          if (isAuthenticated && !isProfileLoaded) {
+            return (
+              <div className="w-9 h-9 rounded-full border-2 border-border animate-pulse bg-secondary/50 shrink-0"></div>
+            );
+          }
+          
+          // Default: no button for public profile visitors
+          return null;
+        })()}
       </div>
     </header>
   );
