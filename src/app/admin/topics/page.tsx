@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from 'react';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAdminStore } from '@/store/adminStore';
 import {
-   getAdminBatchTopics,
    createAdminTopic,
    updateAdminTopic,
    deleteAdminTopic
@@ -13,17 +11,8 @@ import {
 import {
    Plus,
    Search,
-   FolderEdit,
    Trash2,
-   Image as ImageIcon,
    BookOpen,
-   ArrowRight,
-   Layers,
-   FileQuestion,
-   ChevronLeft,
-   ChevronRight,
-   MoreVertical,
-   Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,16 +31,19 @@ import {
    SelectTrigger,
    SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
 import { Pagination } from '@/components/Pagination';
+import TopicCard from '@/components/admin/topics/components/TopicsCard';
+import TopicsPageShimmer from '@/components/admin/topics/shimmers/TopicsPageShimmer';
+import TopicsGridShimmer from '@/components/admin/topics/shimmers/TopicsGridShimmer';
+import { Topic } from '@/types/admin/topic';
+import { useTopics } from '@/hooks/admin/useTopics';
+
 
 export default function AdminTopicsPage() {
    const { selectedBatch, isLoadingContext } = useAdminStore();
    const router = useRouter();
    const searchParams = useSearchParams();
 
-   const [topics, setTopics] = useState<any[]>([]);
-   const [loading, setLoading] = useState(false);
 
    // URL Params State
    const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -59,15 +51,13 @@ export default function AdminTopicsPage() {
    const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
    const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'recent');
 
-   // Pagination State
-   const [totalPages, setTotalPages] = useState(1);
-   const [totalRecords, setTotalRecords] = useState(0);
+
 
    // Modals
    const [isCreateOpen, setIsCreateOpen] = useState(false);
    const [isEditOpen, setIsEditOpen] = useState(false);
    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-   const [selectedTopic, setSelectedTopic] = useState<any>(null);
+   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
 
    // Forms
    const [topicName, setTopicName] = useState('');
@@ -100,36 +90,19 @@ export default function AdminTopicsPage() {
       router.replace(newUrl, { scroll: false });
    }, [debouncedSearch, page, sortBy, router]);
 
-   const fetchTopics = useCallback(async () => {
-      if (!selectedBatch) return;
-      setLoading(true);
-      try {
-         const data = await getAdminBatchTopics(selectedBatch.slug, {
-            page,
-            limit,
-            search: debouncedSearch,
-            sortBy
-         });
-         // Handle the new API structure or fallback to array if backend hasn't updated
-         if (data && data.topics) {
-            setTopics(data.topics);
-            setTotalPages(data.pagination?.totalPages || 1);
-            setTotalRecords(data.pagination?.total || 0);
-         } else if (Array.isArray(data)) {
-            setTopics(data);
-            setTotalPages(1);
-            setTotalRecords(data.length);
-         }
-      } catch (err) {
-         console.error("Failed to fetch topics", err);
-      } finally {
-         setLoading(false);
-      }
-   }, [selectedBatch, page, debouncedSearch, sortBy, limit]);
 
-   useEffect(() => {
-      fetchTopics();
-   }, [fetchTopics]);
+   const {
+      topics,
+      loading,
+      totalRecords,
+      refetch,
+   } = useTopics({
+      batchSlug: selectedBatch?.slug,
+      page,
+      limit,
+      search: debouncedSearch,
+      sortBy,
+   });
 
    // File Validation handler
    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,7 +145,7 @@ export default function AdminTopicsPage() {
          await createAdminTopic(formData);
          setIsCreateOpen(false);
          resetForms();
-         fetchTopics();
+         refetch();
       } catch (err: any) {
          setFormError(err.response?.data?.error || err.response?.data?.message || 'Failed to create topic');
       } finally {
@@ -193,11 +166,12 @@ export default function AdminTopicsPage() {
          if (removePhoto) {
             formData.append('removePhoto', 'true');
          }
+         if (!selectedTopic) return;
 
          await updateAdminTopic(selectedTopic.slug, formData);
          setIsEditOpen(false);
          resetForms();
-         fetchTopics();
+         refetch();
       } catch (err: any) {
          setFormError(err.response?.data?.error || err.response?.data?.message || 'Failed to update topic');
       } finally {
@@ -209,10 +183,12 @@ export default function AdminTopicsPage() {
       setFormError('');
       setSubmitting(true);
       try {
+         if (!selectedTopic) return;
+
          await deleteAdminTopic(selectedTopic.slug);
          setIsDeleteOpen(false);
          resetForms();
-         fetchTopics();
+         refetch();
       } catch (err: any) {
          setFormError(err.response?.data?.error || err.response?.data?.message || 'Failed to delete topic. Ensure it has no classes or questions associated with it.');
       } finally {
@@ -229,34 +205,20 @@ export default function AdminTopicsPage() {
       setSelectedTopic(null);
    };
 
-   const openEdit = (topic: any) => {
+   const openEdit = (topic: Topic) => {
       setSelectedTopic(topic);
       setTopicName(topic.topic_name);
-      setPhotoPreview(topic.photo_url);
+      setPhotoPreview(topic.photo_url?? null);
       setPhotoFile(null);
       setRemovePhoto(false);
       setFormError('');
       setIsEditOpen(true);
    };
 
-   const getPaginationArray = () => {
-      const delta = 2; // Pages to show around current
-      const range: number[] = [];
-      for (let i = Math.max(2, page - delta); i <= Math.min(totalPages - 1, page + delta); i++) {
-         range.push(i);
-      }
 
-      if (page - delta > 2) range.unshift(-1); // -1 signifies '...'
-      if (page + delta < totalPages - 1) range.push(-1);
-
-      range.unshift(1);
-      if (totalPages > 1) range.push(totalPages);
-
-      return range;
-   };
 
    if (isLoadingContext) {
-      return <Skeletons />;
+      return <TopicsPageShimmer />;
    }
 
    if (!selectedBatch) {
@@ -299,7 +261,7 @@ export default function AdminTopicsPage() {
             <div className="flex items-center gap-3 w-full sm:w-auto">
                <span className="text-sm text-muted-foreground font-medium whitespace-nowrap hidden sm:inline-block">Sort by:</span>
                <Select value={sortBy} onValueChange={(val) => setSortBy(val)}>
-                  <SelectTrigger className="w-full sm:w-[180px] bg-background/50">
+                  <SelectTrigger className="w-full sm:w-45 bg-background/50">
                      <SelectValue placeholder="Sort order" />
                   </SelectTrigger>
                   <SelectContent>
@@ -314,7 +276,7 @@ export default function AdminTopicsPage() {
 
          {/* Grid Layout */}
          {loading ? (
-            <GridSkeletons />
+            <TopicsGridShimmer />
          ) : topics.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-16 text-center border border-dashed border-border/60 bg-card/30 rounded-xl">
                <Search className="w-10 h-10 text-muted-foreground/30 mb-4" />
@@ -328,92 +290,16 @@ export default function AdminTopicsPage() {
             </div>
          ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-               {topics.map((topic) => (
-                  <Card
+               {topics.map((topic: Topic) => (
+                  <TopicCard
                      key={topic.id}
-                     onClick={(e) => {
-                        // Ensure clicking card routes to topic, except when clicking action buttons
-                        const target = e.target as HTMLElement;
-                        if (!target.closest('button')) {
-                           router.push(`/admin/topics/${topic.slug}`);
-                        }
+                     topic={topic}
+                     onEdit={openEdit}
+                     onDelete={(topic) => {
+                        setSelectedTopic(topic);
+                        setIsDeleteOpen(true);
                      }}
-                     className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/50 border-border/40 bg-card rounded-xl flex flex-col h-full cursor-pointer"
-                  >
-                     {/* Aspect Ratio Cover */}
-                     <div className="aspect-[16/9] bg-muted/20 relative overflow-hidden flex items-center justify-center shrink-0 border-b border-border/30">
-                        {topic.photo_url ? (
-                           <img
-                              src={topic.photo_url}
-                              alt={topic.topic_name}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                              loading="lazy"
-                           />
-                        ) : (
-                           <ImageIcon className="w-10 h-10 text-muted-foreground/20 transition-transform duration-500 group-hover:scale-110" />
-                        )}
-
-                        {/* Floating Action Menu (Edit/Delete) - Subtle rounded icons */}
-                        <div className="absolute top-3 right-3 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-y-[-5px] group-hover:translate-y-0 duration-200">
-                           <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={(e) => { e.stopPropagation(); openEdit(topic); }}
-                              className="h-8 w-8 bg-background/90 hover:bg-background border-border/50 text-foreground shadow-sm rounded-full"
-                           >
-                              <FolderEdit className="w-3.5 h-3.5" />
-                           </Button>
-                           <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={(e) => { e.stopPropagation(); setSelectedTopic(topic); setIsDeleteOpen(true); }}
-                              className="h-8 w-8 bg-background/90 hover:bg-background border-border/50 text-destructive hover:text-destructive shadow-sm rounded-full"
-                           >
-                              <Trash2 className="w-3.5 h-3.5" />
-                           </Button>
-                        </div>
-                     </div>
-
-                     <CardContent className="flex flex-col flex-1 p-5 justify-between gap-4">
-                        <div>
-                           {/* Title - max 2 lines truncated */}
-                           <h3 className="font-semibold text-base sm:text-[1.125rem] leading-snug text-foreground line-clamp-2">
-                              {topic.topic_name}
-                           </h3>
-                        </div>
-
-                        <div className="flex flex-col gap-4 mt-auto">
-                           {/* Inline Minimal Stats */}
-                           <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
-                              <div className="flex items-center gap-1.5">
-                                 <BookOpen className="w-3.5 h-3.5 opacity-70" />
-                                 <span>Classes: <span className="text-foreground ml-0.5">{topic.classCount || 0}</span></span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                 <FileQuestion className="w-3.5 h-3.5 opacity-70" />
-                                 <span>Questions: <span className="text-foreground ml-0.5">{topic.questionCount || 0}</span></span>
-                              </div>
-
-                           </div>
-                           <div className="flex items-center gap-1.5">
-                              {/* <Calendar className="w-3.5 h-3.5 opacity-70" /> */}
-                              <p>Started At</p>
-                              <span className="text-foreground ml-0.5">
-                                 {topic.firstClassCreated_at !== null ? new Date(topic.firstClassCreated_at).toLocaleDateString('en-GB').replace(/\//g, '-') : "No Classes Yet"}
-                              </span>
-                           </div>
-
-                           {/* Minimal CTA */}
-                           <Button
-                              variant="secondary"
-                              className="w-full h-9 bg-muted/50 hover:bg-muted text-sm font-medium gap-1.5 transition-colors group-hover:bg-primary/10 group-hover:text-primary"
-                              onClick={(e) => { e.stopPropagation(); router.push(`/admin/topics/${topic.slug}`); }}
-                           >
-                              View Classes <ArrowRight className="w-3.5 h-3.5" />
-                           </Button>
-                        </div>
-                     </CardContent>
-                  </Card>
+                  />
                ))}
             </div>
          )}
@@ -432,7 +318,7 @@ export default function AdminTopicsPage() {
 
          {/* CREATE MODAL */}
          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-106.25">
                <DialogHeader>
                   <DialogTitle>Create Global Topic</DialogTitle>
                   <DialogDescription>Add a new overarching topic layer to the curriculum.</DialogDescription>
@@ -479,7 +365,7 @@ export default function AdminTopicsPage() {
                         Cover Image
                         {photoPreview && (
                            <label className="flex items-center gap-2 cursor-pointer text-xs font-normal">
-                              <input type="checkbox" checked={removePhoto} onChange={(e) => { setRemovePhoto(e.target.checked); if (e.target.checked) { setPhotoPreview(null); setPhotoFile(null); } else { setPhotoPreview(selectedTopic?.photo_url); } }} className="rounded border-input text-primary focus:ring-primary" disabled={submitting || !selectedTopic?.photo_url} />
+                              <input type="checkbox" checked={removePhoto} onChange={(e) => { setRemovePhoto(e.target.checked); if (e.target.checked) { setPhotoPreview(null); setPhotoFile(null); } else { setPhotoPreview(selectedTopic?.photo_url ?? null); } }} className="rounded border-input text-primary focus:ring-primary" disabled={submitting || !selectedTopic?.photo_url} />
                               <span className={removePhoto ? 'line-through text-destructive' : 'text-muted-foreground'}>Remove existing image</span>
                            </label>
                         )}
@@ -519,7 +405,14 @@ export default function AdminTopicsPage() {
                {formError && <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md">{formError}</div>}
                <DialogFooter className="mt-6 border-t border-border pt-4">
                   <Button type="button" variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={submitting}>Cancel</Button>
-                  <Button type="button" variant="destructive" onClick={handleDeleteSubmit} disabled={submitting || selectedTopic?.classCount > 0}>
+
+                  <Button type="button" variant="destructive" onClick={handleDeleteSubmit}
+
+                     disabled={
+                        submitting ||
+                        (selectedTopic?.classCount ?? 0) > 0
+                     }
+                  >
                      {submitting ? 'Deleting...' : 'Confirm Delete'}
                   </Button>
                </DialogFooter>
@@ -529,41 +422,3 @@ export default function AdminTopicsPage() {
    );
 }
 
-function Skeletons() {
-   return (
-      <div className="space-y-6 animate-pulse">
-         <div className="flex justify-between items-end">
-            <div className="space-y-2">
-               <div className="h-8 w-64 bg-muted rounded-md shrink-0"></div>
-               <div className="h-4 w-96 bg-muted/60 rounded-md shrink-0"></div>
-            </div>
-            <div className="h-10 w-32 bg-muted rounded-md shrink-0"></div>
-         </div>
-         <div className="h-16 w-full bg-card border border-border rounded-xl"></div>
-         <GridSkeletons />
-      </div>
-   );
-}
-
-function GridSkeletons() {
-   return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="bg-card border border-border/60 rounded-xl overflow-hidden flex flex-col h-[320px]">
-               <div className="aspect-video bg-muted w-full shrink-0"></div>
-               <div className="p-5 flex flex-col flex-1">
-                  <div className="h-6 w-3/4 bg-muted rounded mb-2"></div>
-                  <div className="h-4 w-1/2 bg-muted/50 rounded mb-6"></div>
-
-                  <div className="flex gap-3 mt-auto mb-5">
-                     <div className="h-16 w-1/2 bg-muted/40 rounded-lg"></div>
-                     <div className="h-16 w-1/2 bg-muted/40 rounded-lg"></div>
-                  </div>
-
-                  <div className="h-10 w-full bg-muted rounded shrink-0"></div>
-               </div>
-            </div>
-         ))}
-      </div>
-   );
-}

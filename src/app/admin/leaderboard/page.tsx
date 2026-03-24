@@ -6,14 +6,14 @@ import { useAdminStore } from '@/store/adminStore';
 import {  getAdminCities } from '@/services/admin.service';
 import { getAllBatches } from '@/services/batch.service';
 import { Trophy, Clock } from 'lucide-react';
-import PodiumShimmer from '@/components/shimmers/PodiumShimmer';
-import StatsShimmer from '@/components/shimmers/StatsShimmer';
-import TableShimmer from '@/components/shimmers/TableShimmer';
-import { PodiumSection } from '../../../components/admin/components/PodiumSection';
-import { StatsSection } from '../../../components/admin/components/StatsSection';
-import { LeaderboardTable } from '../../../components/admin/components/LeaderboardTable';
-import { FilterBar } from '../../../components/admin/components/FilterBar';
-import { EvaluationModal } from '../../../components/admin/components/EvaluationModal';
+import PodiumShimmer from '@/components/admin/leaderboard/shimmers/PodiumShimmer';
+import StatsShimmer from '@/components/admin/leaderboard/shimmers/StatsShimmer';
+import TableShimmer from '@/components/admin/leaderboard/shimmers/TableShimmer';
+import { PodiumSection } from '../../../components/admin/leaderboard/components/PodiumSection';
+import { StatsSection } from '../../../components/admin/leaderboard/components/StatsSection';
+import { LeaderboardTable } from '../../../components/admin/leaderboard/components/LeaderboardTable';
+import { FilterBar } from '../../../components/admin/leaderboard/components/FilterBar';
+import { EvaluationModal } from '../../../components/admin/leaderboard/components/EvaluationModal';
 
 // Hook for Debounce
 function useDebounce<T>(value: T, delay: number): T {

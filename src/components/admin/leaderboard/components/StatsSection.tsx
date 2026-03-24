@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Users, BarChart, CheckCircle2 } from 'lucide-react';
-import StatsShimmer from '@/components/shimmers/StatsShimmer';
+import StatsShimmer from '@/components/admin/leaderboard/shimmers/StatsShimmer';
 import { getAdminLeaderboard } from '@/services/admin.service';
 
 const StatsCard = ({ icon, title, value, color, bg }: any) => (

@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useEffect, useState } from 'react';
-import PodiumShimmer from '@/components/shimmers/PodiumShimmer';
+import PodiumShimmer from '@/components/admin/leaderboard/shimmers/PodiumShimmer';
 import { getAdminLeaderboard } from '@/services/admin.service';
 
 const PodiumItem = ({ student, rank, color, glow, height, isCenter, borderCol }: any) => {

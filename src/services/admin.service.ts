@@ -124,7 +124,7 @@ export const getAdminClassQuestions = async (batchSlug: string, topicSlug: strin
   return response.data;
 };
 
-export const assignQuestionsToClass = async (batchSlug: string, topicSlug: string, classSlug: string, data: { questionIds: number[] }) => {
+export const assignQuestionsToClass = async (batchSlug: string, topicSlug: string, classSlug: string, data: { question_ids: number[] }) => {
   const response = await api.post(`/api/admin/${batchSlug}/topics/${topicSlug}/classes/${classSlug}/questions`, data);
   return response.data;
 };
