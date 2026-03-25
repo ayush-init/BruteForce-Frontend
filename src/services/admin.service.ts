@@ -113,6 +113,11 @@ export const deleteAdminTopic = async (topicSlug: string) => {
   return response.data;
 };
 
+export const getAllTopics = async () => {
+  const response = await api.get('/api/admin/topics');
+  return response.data;
+};
+
 // ==========================================
 // ADMIN PANEL CLASS ENDPOINTS
 // ==========================================
@@ -190,13 +195,13 @@ export const createAdminStudent = async (data: any) => {
   return response.data;
 };
 
-export const updateAdminStudent = async (username: string, data: any) => {
-  const response = await api.patch(`/api/admin/students/${username}`, data);
+export const updateAdminStudent = async (id: number, data: any) => {
+  const response = await api.patch(`/api/admin/students/${id}`, data);
   return response.data;
 };
 
-export const deleteAdminStudent = async (username: string) => {
-  const response = await api.delete(`/api/admin/students/${username}`);
+export const deleteAdminStudent = async (id: number) => {
+  const response = await api.delete(`/api/admin/students/${id}`);
   return response.data;
 };
 

@@ -15,13 +15,31 @@ interface FiltersProps {
     type: string;
   };
   onFiltersChange: (filters: { city: string; year: number; type: string }) => void;
+  userCity?: string; // Add user's city as prop
+  userYear?: number; // Add user's year as prop
 }
 
-export function Filters({ lSearch, setLSearch, filters, onFiltersChange }: FiltersProps) {
+export function Filters({ lSearch, setLSearch, filters, onFiltersChange, userCity, userYear }: FiltersProps) {
   const [allCities, setAllCities] = useState<string[]>([]);
   const [allYears, setAllYears] = useState<number[]>([]);
   const [cityYearMap, setCityYearMap] = useState<Record<string, Set<number>>>({});
+  // console.log("userCity", userCity);
+  // console.log("userYear", userYear);
 
+  // Set initial filters to user's city and year when available
+  useEffect(() => {
+    if (userCity && userYear) {
+      // Only update if current filters are still defaults or if user's data is different
+      if (filters.city === 'all' || filters.year === 0 || filters.city !== userCity || filters.year !== userYear) {
+        onFiltersChange({
+          city: userCity,
+          year: userYear,
+          type: filters.type
+        });
+      }
+    }
+  }, [userCity, userYear, filters.city, filters.year, filters.type, onFiltersChange]);
+  
   // Fetch cities and years data
   useEffect(() => {
     getAdminCities().then(res => {
@@ -114,13 +132,17 @@ export function Filters({ lSearch, setLSearch, filters, onFiltersChange }: Filte
 
   // Prepare options for Select components
   const cityOptions = [
+    // Add user's city first if available
+    ...(userCity ? [{ label: `${userCity}`, value: userCity }] : []),
     { label: 'All Cities', value: 'all' },
-    ...allCities.map(city => ({ label: city, value: city }))
+    ...allCities.filter(city => city !== userCity).map(city => ({ label: city, value: city }))
   ];
 
   const yearOptionsList = [
+    // Add user's year first if available
+    ...(userYear ? [{ label: `${userYear} `, value: userYear }] : []),
     { label: 'All Years', value: 0 },
-    ...yearOptions.map(year => ({ label: year.toString(), value: year }))
+    ...yearOptions.filter(year => year !== userYear).map(year => ({ label: year.toString(), value: year }))
   ];
 
   const typeOptions = [

@@ -30,16 +30,15 @@ export function useOnboarding() {
     if (!confirmChecked) { showToast("Please confirm that your usernames are correct.", 'error'); return; }
     setLoading(true);
     try {
+      // Only send profile data, no city_id/batch_id needed for /me endpoint
       const payload = {
-        city_id: onboardingUser?.cityId || onboardingUser?.city?.id,
-        batch_id: onboardingUser?.batchId || onboardingUser?.batch?.id,
         leetcode_id: data.leetcode_id,
         gfg_id: data.gfg_id,
         linkedin: data.linkedin,
         github: data.github,
         username: data.username
       };
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/students/profile`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/students/me`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
         body: JSON.stringify(payload)

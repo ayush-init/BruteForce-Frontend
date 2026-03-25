@@ -32,7 +32,7 @@ export function useTopics({
         search,
         sortBy,
       });
-
+      console.log("topics dataa: ", data);
       if (data?.topics) {
         setTopics(data.topics);
         setTotalRecords(data.pagination?.total || 0);

@@ -13,6 +13,7 @@ import {
    Search,
    Trash2,
    BookOpen,
+   AlertTriangle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -208,7 +209,7 @@ export default function AdminTopicsPage() {
    const openEdit = (topic: Topic) => {
       setSelectedTopic(topic);
       setTopicName(topic.topic_name);
-      setPhotoPreview(topic.photo_url?? null);
+      setPhotoPreview(topic.photo_url ?? null);
       setPhotoFile(null);
       setRemovePhoto(false);
       setFormError('');
@@ -244,6 +245,7 @@ export default function AdminTopicsPage() {
                </p>
             </div>
             <Button onClick={() => { resetForms(); setIsCreateOpen(true); }} className="gap-2 shadow-sm">
+
                <Plus className="w-4 h-4" /> Add Global Topic
             </Button>
          </div>
@@ -318,104 +320,328 @@ export default function AdminTopicsPage() {
 
          {/* CREATE MODAL */}
          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogContent className="sm:max-w-106.25">
-               <DialogHeader>
-                  <DialogTitle>Create Global Topic</DialogTitle>
-                  <DialogDescription>Add a new overarching topic layer to the curriculum.</DialogDescription>
+            <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
+
+               {/* HEADER */}
+               <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+                  <DialogTitle className="text-lg font-semibold">
+                     Create Global Topic
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted-foreground">
+                     Add a new overarching topic layer to the curriculum.
+                  </DialogDescription>
                </DialogHeader>
-               <form onSubmit={handleCreateSubmit} className="space-y-4">
-                  {formError && <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md">{formError}</div>}
-                  <div className="space-y-2">
-                     <label className="text-sm font-medium">Topic Name <span className="text-destructive">*</span></label>
-                     <Input value={topicName} onChange={e => setTopicName(e.target.value)} required placeholder="e.g. Arrays and Strings" disabled={submitting} />
-                  </div>
-                  <div className="space-y-2">
-                     <label className="text-sm font-medium">Cover Image <span className="text-muted-foreground text-xs">(Max 2MB)</span></label>
-                     <Input type="file" accept="image/*" onChange={handleFileChange} disabled={submitting} className="file:bg-muted file:text-foreground file:border-0 file:mr-4 file:px-4 file:py-1 file:rounded-md file:text-xs file:font-semibold hover:file:bg-primary/10 cursor-pointer" />
-                     {photoPreview && (
-                        <div className="mt-4 border border-border rounded-lg p-2 bg-muted/30">
-                           <p className="text-xs text-muted-foreground mb-2 font-medium">Live Preview</p>
-                           <img src={photoPreview} alt="Preview" className="w-full h-32 object-cover rounded-md shadow-sm" />
+
+               {/* BODY */}
+               <div className="p-6 space-y-5">
+                  <form onSubmit={handleCreateSubmit} className="space-y-5">
+
+                     {/* ERROR */}
+                     {formError && (
+                        <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+                           {formError}
                         </div>
                      )}
-                  </div>
-                  <DialogFooter className="pt-4">
-                     <Button type="button" variant="ghost" onClick={() => setIsCreateOpen(false)} disabled={submitting}>Cancel</Button>
-                     <Button type="submit" disabled={submitting}>{submitting ? 'Creating...' : 'Create Topic'}</Button>
-                  </DialogFooter>
-               </form>
+
+                     {/* TOPIC NAME */}
+                     <div className="space-y-2">
+                        <label className="text-xs text-muted-foreground font-medium">
+                           Topic Name <span className="text-destructive">*</span>
+                        </label>
+
+                        <Input
+                           value={topicName}
+                           onChange={(e) => setTopicName(e.target.value)}
+                           placeholder="e.g. Arrays and Strings"
+                           disabled={submitting}
+                           className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
+                        />
+                     </div>
+
+                     {/* FILE INPUT */}
+                     <div className="space-y-2">
+                        <label className="text-xs text-muted-foreground font-medium">
+                           Cover Image{" "}
+                           <span className="text-muted-foreground text-[10px]">
+                              (Max 2MB)
+                           </span>
+                        </label>
+
+                        <Input
+                           type="file"
+                           accept="image/*"
+                           onChange={handleFileChange}
+                           disabled={submitting}
+                           className="cursor-pointer file:bg-muted file:text-foreground file:border-0 file:mr-4 file:px-4 file:py-1 file:rounded-md file:text-xs file:font-semibold hover:file:bg-primary/10 transition-all"
+                        />
+                     </div>
+
+                     {/* PREVIEW */}
+                     {photoPreview && (
+                        <div className="mt-2 border rounded-xl p-3 bg-muted/30 space-y-2">
+                           <p className="text-[11px] text-muted-foreground font-medium">
+                              Live Preview
+                           </p>
+
+                           <div className="overflow-hidden rounded-lg">
+                              <img
+                                 src={photoPreview}
+                                 alt="Preview"
+                                 className="w-full h-36 object-cover transition-all duration-300 hover:scale-[1.03]"
+                              />
+                           </div>
+                        </div>
+                     )}
+
+                     {/* FOOTER */}
+                     <DialogFooter className="pt-2 flex gap-2">
+                        <Button
+                           type="button"
+                           variant="ghost"
+                           onClick={() => setIsCreateOpen(false)}
+                           disabled={submitting}
+                           className="h-11"
+                        >
+                           Cancel
+                        </Button>
+
+                        <Button
+                           type="submit"
+                           disabled={submitting}
+                           className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                           {submitting ? "Creating..." : "Create Topic"}
+                        </Button>
+                     </DialogFooter>
+                  </form>
+               </div>
             </DialogContent>
          </Dialog>
 
+
          {/* EDIT MODAL */}
          <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-            <DialogContent className="sm:max-w-md">
-               <DialogHeader>
-                  <DialogTitle>Update Topic</DialogTitle>
-                  <DialogDescription>Make changes to the global topic details.</DialogDescription>
+            <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
+
+               {/* HEADER */}
+               <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+                  <DialogTitle className="text-lg font-semibold">
+                     Update Topic
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted-foreground">
+                     Make changes to the global topic details.
+                  </DialogDescription>
                </DialogHeader>
-               <form onSubmit={handleEditSubmit} className="space-y-4">
-                  {formError && <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md">{formError}</div>}
-                  <div className="space-y-2">
-                     <label className="text-sm font-medium">Topic Name <span className="text-destructive">*</span></label>
-                     <Input value={topicName} onChange={e => setTopicName(e.target.value)} required placeholder="e.g. Arrays and Strings" disabled={submitting} />
-                  </div>
-                  <div className="space-y-3">
-                     <label className="text-sm font-medium flex items-center justify-between">
-                        Cover Image
-                        {photoPreview && (
-                           <label className="flex items-center gap-2 cursor-pointer text-xs font-normal">
-                              <input type="checkbox" checked={removePhoto} onChange={(e) => { setRemovePhoto(e.target.checked); if (e.target.checked) { setPhotoPreview(null); setPhotoFile(null); } else { setPhotoPreview(selectedTopic?.photo_url ?? null); } }} className="rounded border-input text-primary focus:ring-primary" disabled={submitting || !selectedTopic?.photo_url} />
-                              <span className={removePhoto ? 'line-through text-destructive' : 'text-muted-foreground'}>Remove existing image</span>
-                           </label>
-                        )}
-                     </label>
-                     <Input type="file" accept="image/*" onChange={handleFileChange} disabled={submitting || removePhoto} className="file:bg-muted file:text-foreground file:border-0 file:mr-4 file:px-4 file:py-1 file:rounded-md file:text-xs file:font-semibold hover:file:bg-primary/10 cursor-pointer" />
-                     {photoPreview && !removePhoto && (
-                        <div className="mt-4 border border-border rounded-lg p-2 bg-muted/30">
-                           <p className="text-xs text-muted-foreground mb-2 font-medium">Live Preview</p>
-                           <img src={photoPreview} alt="Preview" className="w-full h-32 object-cover rounded-md shadow-sm" />
+
+               {/* BODY */}
+               <div className="p-6 space-y-5">
+                  <form onSubmit={handleEditSubmit} className="space-y-5">
+
+                     {/* ERROR */}
+                     {formError && (
+                        <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+                           {formError}
                         </div>
                      )}
-                  </div>
-                  <DialogFooter className="pt-4">
-                     <Button type="button" variant="ghost" onClick={() => setIsEditOpen(false)} disabled={submitting}>Cancel</Button>
-                     <Button type="submit" disabled={submitting}>{submitting ? 'Saving...' : 'Save Changes'}</Button>
-                  </DialogFooter>
-               </form>
+
+                     {/* TOPIC NAME */}
+                     <div className="space-y-2">
+                        <label className="text-xs text-muted-foreground font-medium">
+                           Topic Name <span className="text-destructive">*</span>
+                        </label>
+
+                        <Input
+                           value={topicName}
+                           onChange={(e) => setTopicName(e.target.value)}
+                           placeholder="e.g. Arrays and Strings"
+                           disabled={submitting}
+                           className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
+                        />
+                     </div>
+
+                     {/* IMAGE SECTION */}
+                     <div className="space-y-3">
+
+                        <label className="text-xs text-muted-foreground font-medium flex items-center justify-between">
+                           Cover Image
+
+                           {photoPreview && (
+                              <label className="flex items-center gap-2 cursor-pointer text-[11px] font-normal">
+                                 <input
+                                    type="checkbox"
+                                    checked={removePhoto}
+                                    onChange={(e) => {
+                                       setRemovePhoto(e.target.checked);
+                                       if (e.target.checked) {
+                                          setPhotoPreview(null);
+                                          setPhotoFile(null);
+                                       } else {
+                                          setPhotoPreview(selectedTopic?.photo_url ?? null);
+                                       }
+                                    }}
+                                    className="rounded border-input text-primary focus:ring-primary"
+                                    disabled={submitting || !selectedTopic?.photo_url}
+                                 />
+
+                                 <span
+                                    className={`transition ${removePhoto
+                                       ? "line-through text-red-400"
+                                       : "text-muted-foreground"
+                                       }`}
+                                 >
+                                    Remove existing image
+                                 </span>
+                              </label>
+                           )}
+                        </label>
+
+                        {/* FILE INPUT */}
+                        <Input
+                           type="file"
+                           accept="image/*"
+                           onChange={handleFileChange}
+                           disabled={submitting || removePhoto}
+                           className="cursor-pointer file:bg-muted file:text-foreground file:border-0 file:mr-4 file:px-4 file:py-1 file:rounded-md file:text-xs file:font-semibold hover:file:bg-primary/10 transition-all"
+                        />
+
+                        {/* PREVIEW */}
+                        {photoPreview && !removePhoto && (
+                           <div className="mt-2 border rounded-xl p-3 bg-muted/30 space-y-2">
+                              <p className="text-[11px] text-muted-foreground font-medium">
+                                 Live Preview
+                              </p>
+
+                              <div className="overflow-hidden rounded-lg relative">
+                                 <img
+                                    src={photoPreview}
+                                    alt="Preview"
+                                    className="w-full h-36 object-cover transition-all duration-300 hover:scale-[1.03]"
+                                 />
+
+                                 {/* subtle overlay */}
+                                 <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition" />
+                              </div>
+                           </div>
+                        )}
+                     </div>
+
+                     {/* FOOTER */}
+                     <DialogFooter className="pt-2 flex gap-2">
+
+                        <Button
+                           type="button"
+                           variant="ghost"
+                           onClick={() => setIsEditOpen(false)}
+                           disabled={submitting}
+                           className="h-11"
+                        >
+                           Cancel
+                        </Button>
+
+                        <Button
+                           type="submit"
+                           disabled={submitting}
+                           className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                           {submitting ? "Saving..." : "Save Changes"}
+                        </Button>
+
+                     </DialogFooter>
+                  </form>
+               </div>
             </DialogContent>
          </Dialog>
 
          {/* DELETE MODAL */}
          <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-            <DialogContent className="sm:max-w-md">
-               <DialogHeader>
-                  <DialogTitle className="text-destructive">Delete Topic</DialogTitle>
-                  <DialogDescription>This action cannot be undone. You can only delete topics if they have 0 classes assigned across the platform.</DialogDescription>
+            <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
+
+               {/* HEADER */}
+               <DialogHeader className="px-6 py-4 border-b bg-red-500/5">
+                  <DialogTitle className="text-red-500 font-semibold flex items-center gap-2">
+                     Delete Topic
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted-foreground">
+                     This action cannot be undone. You can only delete topics if they have 0 classes assigned.
+                  </DialogDescription>
                </DialogHeader>
-               <div className="mt-4 bg-muted/50 border border-border p-4 rounded-lg flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
-                     <Trash2 className="w-5 h-5 text-destructive" />
+
+               {/* BODY */}
+               <div className="p-6 space-y-5">
+
+                  {/* TOPIC INFO CARD */}
+                  <div className="bg-muted/40 border rounded-xl p-4 flex items-center gap-3">
+
+                     <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+                        <Trash2 className="w-5 h-5 text-red-500" />
+                     </div>
+
+                     <div className="space-y-1">
+                        <p className="text-sm font-semibold">
+                           {selectedTopic?.topic_name}
+                        </p>
+
+                        <p className="text-xs text-muted-foreground">
+                           Contains{" "}
+                           <span
+                              className={
+                                 (selectedTopic?.classCount ?? 0) > 0
+                                    ? "text-red-400 font-medium"
+                                    : ""
+                              }
+                           >
+                              {selectedTopic?.classCount}
+                           </span>{" "}
+                           active classes
+                        </p>
+                     </div>
                   </div>
-                  <div>
-                     <p className="text-sm font-semibold">{selectedTopic?.topic_name}</p>
-                     <p className="text-xs text-muted-foreground">Contains {selectedTopic?.classCount} active classes</p>
-                  </div>
+
+                  {/* ERROR */}
+                  {formError && (
+                     <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+                        {formError}
+                     </div>
+                  )}
+
+                  {/* WARNING */}
+                  {(selectedTopic?.classCount ?? 0) > 0 && (
+                     <div className="flex gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3 text-sm text-yellow-400">
+                        <AlertTriangle className="w-4 h-4 mt-[2px]" />
+                        <div>
+                           This topic cannot be deleted because it still has active classes.
+                        </div>
+                     </div>
+                  )}
+
+                  {/* FOOTER */}
+                  <DialogFooter className="mt-2 border-t pt-4 flex gap-2">
+
+                     <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setIsDeleteOpen(false)}
+                        disabled={submitting}
+                        className="h-11"
+                     >
+                        Cancel
+                     </Button>
+
+                     <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={handleDeleteSubmit}
+                        disabled={
+                           submitting ||
+                           (selectedTopic?.classCount ?? 0) > 0
+                        }
+                        className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                     >
+                        {submitting ? "Deleting..." : "Confirm Delete"}
+                     </Button>
+
+                  </DialogFooter>
                </div>
-               {formError && <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md">{formError}</div>}
-               <DialogFooter className="mt-6 border-t border-border pt-4">
-                  <Button type="button" variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={submitting}>Cancel</Button>
-
-                  <Button type="button" variant="destructive" onClick={handleDeleteSubmit}
-
-                     disabled={
-                        submitting ||
-                        (selectedTopic?.classCount ?? 0) > 0
-                     }
-                  >
-                     {submitting ? 'Deleting...' : 'Confirm Delete'}
-                  </Button>
-               </DialogFooter>
             </DialogContent>
          </Dialog>
       </div>

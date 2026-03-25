@@ -50,6 +50,9 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Pagination } from '@/components/Pagination';
+import CreateQuestion from './components/createQuestion';
+import UpdateQuestion from './components/updateQuestion';
+import DeleteQuestion from './components/deleteQuestion';
 
 function BadgeByLevel({ level }: { level: string }) {
   const variant = level === 'EASY' ? 'default' :
@@ -266,48 +269,41 @@ export default function AdminQuestionsBankPage() {
     setFormError('');
   };
 
-  const openEdit = (q: any) => {
-    setSelectedQ(q);
-    setFormName(q.question_name);
-    setFormLink(q.question_link);
-    setFormTopicId(q.topic_id?.toString() || '');
-    setFormLevel(q.level);
-    setFormPlatform(q.platform);
-    setFormType(q.type);
-    setFormError('');
+  const openEdit = (question: any) => {
+    setSelectedQ(question);
     setIsEditOpen(true);
   };
 
   return (
-    <div className="flex flex-col space-y-6">
+  <div className="flex flex-col space-y-6">
 
-      <div className="flex items-end justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-3">
-            <HelpCircle className="w-6 h-6 text-primary" /> Global Question Bank
-          </h2>
-          <p className="text-muted-foreground mt-1 text-sm bg-muted inline-block px-2 py-0.5 rounded-md border border-border mt-2">
-            {totalRecords} Total Questions
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button onClick={() => { resetForms(); setIsCreateOpen(true); }} className="gap-2">
-            <Plus className="w-4 h-4" /> Add Question
-          </Button>
-        </div>
+    <div className="flex items-end justify-between">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-3">
+          <HelpCircle className="w-6 h-6 text-primary" /> Global Question Bank
+        </h2>
+        <p className="text-muted-foreground mt-1 text-sm bg-muted inline-block px-2 py-0.5 rounded-md border border-border mt-2">
+          {totalRecords} Total Questions
+        </p>
       </div>
+      <div className="flex items-center gap-3">
+        <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
+          <Plus className="w-4 h-4" /> Add Question
+        </Button>
+      </div>
+    </div>
 
-      <div className="bg-card border border-border shadow-sm rounded-xl overflow-hidden flex flex-col min-h-[600px]">
-        <div className="p-4 border-b border-border flex flex-wrap items-center gap-3 bg-muted/20">
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Search by name..."
-              value={qSearch}
-              onChange={(e) => { setQSearch(e.target.value); setPage(1); }}
-              className="pl-9 h-9"
-            />
-          </div>
+    <div className="bg-card border border-border shadow-sm rounded-xl overflow-hidden flex flex-col min-h-[600px]">
+      <div className="p-4 border-b border-border flex flex-wrap items-center gap-3 bg-muted/20">
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Search by name..."
+            value={qSearch}
+            onChange={(e) => { setQSearch(e.target.value); setPage(1); }}
+            className="pl-9 h-9"
+          />
+        </div>
 
           <Select
             value={qLevel}
@@ -496,108 +492,29 @@ export default function AdminQuestionsBankPage() {
         />
       </div>
 
-      {/* CREATE / EDIT Modals */}
-      {[
-        { open: isCreateOpen, setOpen: setIsCreateOpen, title: "Add to Question Bank", submit: handleCreateSubmit, isEdit: false },
-        { open: isEditOpen, setOpen: setIsEditOpen, title: "Edit Question", submit: handleEditSubmit, isEdit: true }
-      ].map((modalProps, idx) => (
-        <Dialog key={idx} open={modalProps.open} onOpenChange={modalProps.setOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>{modalProps.title}</DialogTitle>
-              <DialogDescription>Define the details of this specific learning challenge.</DialogDescription>
-            </DialogHeader>
-            <form onSubmit={modalProps.submit} className="space-y-4">
-              {formError && <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md">{formError}</div>}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Question Title <span className="text-destructive">*</span></label>
-                <Input value={formName} onChange={e => setFormName(e.target.value)} required placeholder="e.g. Two Sum" disabled={submitting} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">URI Anchor <span className="text-destructive">*</span></label>
-                <Input type="url" value={formLink} onChange={e => setFormLink(e.target.value)} required placeholder="https://leetcode.com/..." disabled={submitting} />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Mapped Topic <span className="text-destructive">*</span></label>
-                  <Select
-                    value={formTopicId}
-                    onChange={(v) => setFormTopicId(v as string)}
-                    options={allTopics}
-                    placeholder={allTopics.length > 0 ? "Select Topic" : "Loading..."}
-                    disabled={submitting}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Difficulty Level <span className="text-destructive">*</span></label>
-                  <Select
-                    value={formLevel}
-                    onChange={(v) => setFormLevel(v as string)}
-                    options={[
-                      { label: 'Easy', value: 'EASY' }, { label: 'Medium', value: 'MEDIUM' }, { label: 'Hard', value: 'HARD' }
-                    ]}
-                    disabled={submitting}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Platform Variant <span className="text-destructive">*</span></label>
-                  <Select
-                    value={formPlatform}
-                    onChange={(v) => setFormPlatform(v as string)}
-                    options={[
-                      { label: 'LeetCode', value: 'LEETCODE' }, { label: 'GeeksForGeeks', value: 'GFG' }, { label: 'InterviewBit', value: 'INTERVIEWBIT' }, { label: 'Other', value: 'OTHER' }
-                    ]}
-                    disabled={submitting}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Distribution <span className="text-destructive">*</span></label>
-                  <Select
-                    value={formType}
-                    onChange={(v) => setFormType(v as string)}
-                    options={[
-                      { label: 'Homework', value: 'HOMEWORK' }, { label: 'Classwork', value: 'CLASSWORK' }
-                    ]}
-                    disabled={submitting}
-                  />
-                </div>
-              </div>
-              <DialogFooter className="pt-4">
-                <Button type="button" variant="ghost" onClick={() => modalProps.setOpen(false)} disabled={submitting}>Cancel</Button>
-                <Button type="submit" disabled={submitting || !formTopicId}>{submitting ? 'Saving...' : modalProps.isEdit ? 'Save Changes' : 'Create Question'}</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      ))}
+      {/* CREATE MODAL */}
+          
+      <CreateQuestion
+        open={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+        onSuccess={loadQuestions}
+      />
+
+      {/* UPDATE MODAL */}
+      <UpdateQuestion
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        question={selectedQ}
+        onSuccess={loadQuestions}
+      />
 
       {/* DELETE MODAL */}
-      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-destructive">Delete Global Question</DialogTitle>
-            <DialogDescription>This action inherently violates dependencies if assigned elsewhere. Only unused questions can be safely destroyed.</DialogDescription>
-          </DialogHeader>
-          <div className="mt-4 bg-muted/50 border border-border p-4 rounded-lg flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
-              <Trash2 className="w-5 h-5 text-destructive" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold">{selectedQ?.question_name}</p>
-              <p className="text-xs text-muted-foreground">Difficulty: {selectedQ?.level}</p>
-            </div>
-          </div>
-          {formError && <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md">{formError}</div>}
-          <DialogFooter className="mt-6 border-t border-border pt-4">
-            <Button type="button" variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={submitting}>Cancel</Button>
-            <Button type="button" variant="destructive" onClick={handleDeleteSubmit} disabled={submitting}>
-              {submitting ? 'Terminating...' : 'Confirm Purge'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteQuestion
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+        question={selectedQ}
+        onSuccess={loadQuestions}
+      />
     </div>
   );
 }

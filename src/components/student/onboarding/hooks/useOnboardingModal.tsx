@@ -31,9 +31,8 @@ export function useOnboardingModal(onComplete?: () => void) {
         return;
       }
       
+      // Only send profile data, no city_id/batch_id needed for /me endpoint
       const payload = {
-        city_id: data.city_id,
-        batch_id: data.batch_id,
         leetcode_id: data.leetcode_id,
         gfg_id: data.gfg_id,
         linkedin: data.linkedin,
@@ -43,7 +42,7 @@ export function useOnboardingModal(onComplete?: () => void) {
       
       console.log("Submitting onboarding payload:", payload);
       
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/students/profile`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/students/me`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json', 

@@ -60,8 +60,11 @@ export const studentProfileService = {
   },
 
   updateProfileDetails: async (data: any) => {
-    // Assuming a PUT /api/students/profile exists, or we might need to check backend
-    const res = await api.put('/api/students/profile', data);
+    // Use the new PUT /api/students/me endpoint for updating current student profile
+    const res = await api.put('/api/students/me', data);
+
+
+    
     return res.data;
   }
 };

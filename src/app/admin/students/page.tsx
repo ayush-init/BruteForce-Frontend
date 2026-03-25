@@ -16,7 +16,8 @@ import {
   Trash2,
   Users,
   Award,
-  ExternalLink
+  ExternalLink,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -141,7 +142,7 @@ export default function AdminStudentsPage() {
     e.preventDefault();
     setFormError(''); setSubmitting(true);
     try {
-      await updateAdminStudent(selectedStudent.username, {
+      await updateAdminStudent(selectedStudent.id, {
         name: formName,
         email: formEmail,
         username: formUsername,
@@ -162,7 +163,7 @@ export default function AdminStudentsPage() {
   const handleDeleteSubmit = async () => {
     setFormError(''); setSubmitting(true);
     try {
-      await deleteAdminStudent(selectedStudent.username);
+      await deleteAdminStudent(selectedStudent.id);
       setIsDeleteOpen(false);
       resetForms();
       fetchStudents();
@@ -343,88 +344,225 @@ export default function AdminStudentsPage() {
         { open: isEditOpen, setOpen: setIsEditOpen, title: "Modify Identity", submit: handleEditSubmit, isEdit: true }
       ].map((modalProps, idx) => (
         <Dialog key={idx} open={modalProps.open} onOpenChange={modalProps.setOpen}>
-          <DialogContent className="sm:max-w-[450px]">
-            <DialogHeader>
-              <DialogTitle>{modalProps.title}</DialogTitle>
-              <DialogDescription>
-                {modalProps.isEdit ? 'Updating student details directly overrides DB values.' : 'Manually bind a student directly into the active batch context.'}
+
+          <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
+
+            {/* HEADER */}
+            <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+              <DialogTitle className="text-lg font-semibold">
+                {modalProps.title}
+              </DialogTitle>
+
+              <DialogDescription className="text-xs text-muted-foreground">
+                {modalProps.isEdit
+                  ? "Updating student details directly overrides DB values."
+                  : "Manually bind a student into the active batch context."}
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={modalProps.submit} className="space-y-4 tracking-tight">
-              {formError && <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md font-medium">{formError}</div>}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium">Full Name <span className="text-destructive">*</span></label>
-                  <Input value={formName} onChange={e => setFormName(e.target.value)} required placeholder="John Doe" disabled={submitting} />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium">Internal Username <span className="text-destructive">*</span></label>
-                  <Input value={formUsername} onChange={e => setFormUsername(e.target.value)} required placeholder="johndoe123" disabled={submitting} />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium">Email Address <span className="text-destructive">*</span></label>
-                  <Input type="email" value={formEmail} onChange={e => setFormEmail(e.target.value)} required placeholder="john@example.com" disabled={submitting} />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium">Enrollment ID</label>
-                  <Input value={formEnrollmentId} onChange={e => setFormEnrollmentId(e.target.value)} placeholder="BF-2024-..." disabled={submitting} />
-                </div>
-              </div>
 
-              {/* Separate credential logic block */}
-              {!modalProps.isEdit && (
-                <div className="space-y-1.5 pt-2">
-                  <label className="text-sm font-medium">Account Password <span className="text-destructive">*</span></label>
-                  <Input type="password" value={formPassword} onChange={e => setFormPassword(e.target.value)} required placeholder="••••••••" disabled={submitting} />
-                </div>
-              )}
+            {/* BODY */}
+            <div className="p-6 space-y-5">
+              <form onSubmit={modalProps.submit} className="space-y-5 tracking-tight">
 
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-orange-500 flex items-center gap-1.5">LeetCode Username</label>
-                  <Input value={formLeetcodeId} onChange={e => setFormLeetcodeId(e.target.value)} placeholder="Required for Tracking" disabled={submitting} />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-green-500 flex items-center gap-1.5">GFG Username</label>
-                  <Input value={formGfgId} onChange={e => setFormGfgId(e.target.value)} placeholder="Required for Tracking" disabled={submitting} />
-                </div>
-              </div>
+                {/* ERROR */}
+                {formError && (
+                  <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-medium">
+                    {formError}
+                  </div>
+                )}
 
-              <DialogFooter className="pt-4">
-                <Button type="button" variant="ghost" onClick={() => modalProps.setOpen(false)} disabled={submitting}>Cancel</Button>
-                <Button type="submit" disabled={submitting}>{submitting ? 'Saving...' : modalProps.isEdit ? 'Save Changes' : 'Onboard User'}</Button>
-              </DialogFooter>
-            </form>
+                {/* BASIC INFO */}
+                <div className="space-y-4 p-4 rounded-xl border bg-muted/30">
+                  <p className="text-xs font-semibold text-muted-foreground">
+                    Basic Information
+                  </p>
+
+                  <div className=" gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-muted-foreground font-medium">
+                        Full Name <span className="text-destructive">*</span>
+                      </label>
+                      <Input
+                        className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50"
+                        value={formName}
+                        onChange={e => setFormName(e.target.value)}
+                        placeholder="Enter your name"
+                        disabled={submitting}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-muted-foreground font-medium">
+                        Email <span className="text-destructive">*</span>
+                      </label>
+                      <Input
+                        type="email"
+                        className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50"
+                        value={formEmail}
+                        onChange={e => setFormEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        disabled={submitting}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-muted-foreground font-medium">
+                        Enrollment ID
+                      </label>
+                      <Input
+                        className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50"
+                        value={formEnrollmentId}
+                        onChange={e => setFormEnrollmentId(e.target.value)}
+                        placeholder="23****24"
+                        disabled={submitting}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      {/* Empty space for layout balance */}
+                    </div>
+                  </div>
+                </div>
+
+                {/* PASSWORD (CREATE ONLY) */}
+                {!modalProps.isEdit && (
+                  <div className="space-y-2 p-4 rounded-xl border bg-muted/30">
+                    <p className="text-xs font-semibold text-muted-foreground">
+                      Password
+                    </p>
+
+                    <Input
+                      type="password"
+                      className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50"
+                      value={formPassword}
+                      onChange={e => setFormPassword(e.target.value)}
+                      placeholder="••••••••"
+                      disabled={submitting}
+                    />
+                  </div>
+                )}
+
+                {/* FOOTER */}
+                <DialogFooter className="pt-2 flex gap-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => modalProps.setOpen(false)}
+                    disabled={submitting}
+                    className="h-11"
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    disabled={submitting}
+                    className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    {submitting
+                      ? "Saving..."
+                      : modalProps.isEdit
+                        ? "Save Changes"
+                        : "Onboard User"}
+                  </Button>
+                </DialogFooter>
+
+              </form>
+            </div>
           </DialogContent>
         </Dialog>
       ))}
 
       {/* DELETE MODAL */}
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-destructive flex items-center gap-2 border-b border-border pb-3">
-              <Trash2 className="w-5 h-5" /> Terminate Account
+        <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
+
+          {/* HEADER */}
+          <DialogHeader className="px-6 py-4 border-b bg-red-500/5">
+            <DialogTitle className="text-red-500 flex items-center gap-3 font-semibold">
+              <div className="p-2 rounded-lg bg-red-500/10">
+                <Trash2 className="w-4 h-4 text-red-500" />
+              </div>
+              Terminate Account
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-2 text-sm text-foreground space-y-3">
-            <p>You are about to irreversibly delete this student profile from the database.</p>
-            <div className="p-3 bg-muted/50 rounded-md font-mono text-xs border border-border">
-              NAME: {selectedStudent?.name}<br />
-              EMAIL: {selectedStudent?.email}<br />
-              ENROLL: {selectedStudent?.enrollment_id}
+
+          {/* BODY */}
+          <div className="p-6 space-y-5">
+
+            {/* DESCRIPTION */}
+            <div className="text-sm text-foreground space-y-2">
+              <p>
+                You are about to permanently remove this student profile from the system.
+              </p>
+
+              <p className="text-red-400 font-medium">
+                This action cannot be undone.
+              </p>
             </div>
-            <p className="font-semibold text-destructive mt-4">This action cannot be undone.</p>
+
+            {/* USER INFO CARD */}
+            <div className="p-4 bg-muted/40 rounded-xl border text-xs font-mono space-y-1.5">
+              <div>
+                <span className="text-muted-foreground">NAME:</span>{" "}
+                <span className="font-semibold text-foreground">
+                  {selectedStudent?.name}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-muted-foreground">EMAIL:</span>{" "}
+                {selectedStudent?.email}
+              </div>
+
+              <div>
+                <span className="text-muted-foreground">ENROLL:</span>{" "}
+                {selectedStudent?.enrollment_id}
+              </div>
+            </div>
+
+            {/* ERROR */}
+            {formError && (
+              <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 font-semibold">
+                {formError}
+              </div>
+            )}
+
+            {/* EXTRA WARNING */}
+            <div className="flex gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3 text-sm text-yellow-400">
+              <AlertTriangle className="w-4 h-4 mt-[2px]" />
+              <div>
+                All associated progress and records will be permanently lost.
+              </div>
+            </div>
+
+            {/* FOOTER */}
+            <DialogFooter className="mt-2 border-t pt-4 flex gap-2">
+
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setIsDeleteOpen(false)}
+                disabled={submitting}
+                className="h-11"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDeleteSubmit}
+                disabled={submitting}
+                className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {submitting ? "Terminating..." : "Confirm Purge"}
+              </Button>
+
+            </DialogFooter>
           </div>
-          {formError && <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm font-semibold rounded-md">{formError}</div>}
-          <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={submitting}>Cancel</Button>
-            <Button type="button" variant="destructive" onClick={handleDeleteSubmit} disabled={submitting}>
-              {submitting ? 'Terminating...' : 'Confirm Purge'}
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

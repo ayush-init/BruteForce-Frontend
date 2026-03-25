@@ -50,35 +50,30 @@ export function LeaderboardPageClient({ initialData, initialSearch }: Leaderboar
     fetchStudentData();
   }, []);
 
-  // Filter state - use student defaults when available, otherwise fall back to initialData
-  const [filters, setFilters] = useState(() => {
-    // If we have student data, use their city and year as defaults
-    if (studentData?.data) {
-      return {
-        city: studentData.data.city_name || 'all',
-        year: studentData.data.batch_year || new Date().getFullYear(),
-        type: 'all'
-      };
-    }
-    
-    // Otherwise, fall back to initialData or defaults
-    return {
-      city: initialData?.filters?.city || 'all',
-      year: initialData?.filters?.year || new Date().getFullYear(),
-      type: initialData?.filters?.type || 'all'
-    };
-  });
+  // Filter state - start with defaults, will be updated when student data loads
+  const [filters, setFilters] = useState(() => ({
+    city: initialData?.filters?.city || 'all',
+    year: initialData?.filters?.year || new Date().getFullYear(),
+    type: initialData?.filters?.type || 'all'
+  }));
 
-  // Update filters when student data is loaded
+  // Update filters when student data is loaded (only if no URL params exist)
   useEffect(() => {
-    if (studentData?.data && !initialData?.filters?.city) {
-      setFilters({
-        city: studentData.data.city_name || 'all',
-        year: studentData.data.batch_year || new Date().getFullYear(),
-        type: 'all'
-      });
+    if (studentData?.data) {
+      // Only update defaults if current filters are still the initial defaults
+      // and no URL parameters are set
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasUrlParams = urlParams.has('city') || urlParams.has('year');
+      
+      if (!hasUrlParams) {
+        setFilters({
+          city: studentData.data.city?.city_name || 'all',
+          year: studentData.data.batch?.year || new Date().getFullYear(),
+          type: 'all'
+        });
+      }
     }
-  }, [studentData, initialData?.filters]);
+  }, [studentData]);
 
   const updateUrl = useCallback(() => {
     const params = new URLSearchParams();
@@ -151,7 +146,7 @@ export function LeaderboardPageClient({ initialData, initialSearch }: Leaderboar
   const getCompletionPercentage = (entry: any) => {
     return ((entry.easy_completion + entry.medium_completion + entry.hard_completion) / 3).toFixed(1);
   };
-
+  //  console.log("vergrtgrtgrt: ",studentData)
   return (
     <>
       {/* Your Rank Section */}
@@ -216,6 +211,8 @@ export function LeaderboardPageClient({ initialData, initialSearch }: Leaderboar
           setLSearch={setLSearch}
           filters={filters}
           onFiltersChange={setFilters}
+          userCity={studentData?.data?.city.city_name}
+          userYear={studentData?.data?.batch.year}
         />
         
         <LeaderboardTable entries={leaderboardData.top10} filters={filters} />

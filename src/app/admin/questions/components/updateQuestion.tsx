@@ -1,0 +1,270 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/Select";
+import { AlertTriangle, Edit, Save } from 'lucide-react';
+import { updateAdminQuestion, getAllTopics } from '@/services/admin.service';
+import { Question, UpdateQuestionData } from '@/types/admin/question';
+
+interface UpdateQuestionProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  question: Question | null;
+  onSuccess: () => void;
+}
+
+export default function UpdateQuestion({ 
+  open, 
+  onOpenChange, 
+  question, 
+  onSuccess 
+}: UpdateQuestionProps) {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [topics, setTopics] = useState<{ label: string, value: string }[]>([]);
+
+  const [formData, setFormData] = useState({
+    question_name: '',
+    question_link: '',
+    topic_id: '',
+    level: 'MEDIUM' as 'EASY' | 'MEDIUM' | 'HARD',
+    type: 'HOMEWORK' as 'HOMEWORK' | 'CLASSWORK'
+  });
+
+  useEffect(() => {
+    if (open) loadTopics();
+  }, [open]);
+
+  useEffect(() => {
+    if (question) {
+      setFormData({
+        question_name: question.question_name,
+        question_link: question.question_link,
+        topic_id: question.topic_id.toString(),
+        level: question.level,
+        type: question.type
+      });
+      setError('');
+    }
+  }, [question]);
+
+  const loadTopics = async () => {
+    try {
+      const topicsData = await getAllTopics();
+      const formattedTopics = topicsData.map((topic: any) => ({
+        label: topic.topic_name,
+        value: topic.id.toString()
+      }));
+      setTopics(formattedTopics);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!question || !formData.question_name || !formData.question_link || !formData.topic_id) {
+      setError('Please fill all required fields');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const updateData: UpdateQuestionData = {
+        question_name: formData.question_name,
+        question_link: formData.question_link,
+        topic_id: parseInt(formData.topic_id),
+        level: formData.level,
+        type: formData.type
+      };
+
+      await updateAdminQuestion(question.id, updateData);
+      onSuccess();
+      onOpenChange(false);
+    } catch (err: any) {
+      setError(err.response?.data?.error || err.message || 'Failed to update question');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setError('');
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      
+      {/* MODAL */}
+      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
+        
+        {/* HEADER */}
+        <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+          <DialogTitle className="flex items-center gap-3 text-lg font-semibold">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Edit className="w-4 h-4 text-primary" />
+            </div>
+            Edit Question
+          </DialogTitle>
+
+          <DialogDescription className="text-xs text-muted-foreground">
+            Update the question details.
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* BODY */}
+        <div className="p-6 space-y-5">
+          
+          {/* ERROR */}
+          {error && (
+            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+              <AlertTriangle className="w-4 h-4" />
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+
+            {/* NAME */}
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                Question Name
+              </Label>
+              <Input
+                className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
+                value={formData.question_name}
+                onChange={(e) => handleInputChange('question_name', e.target.value)}
+                placeholder="Enter question name"
+                disabled={loading}
+              />
+            </div>
+
+            {/* LINK */}
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                Question Link
+              </Label>
+              <Input
+                className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
+                value={formData.question_link}
+                onChange={(e) => handleInputChange('question_link', e.target.value)}
+                placeholder="https://leetcode.com/problems/..."
+                type="url"
+                disabled={loading}
+              />
+            </div>
+
+            {/* TOPIC */}
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                Topic
+              </Label>
+              <Select
+                value={formData.topic_id}
+                onChange={(value: string | number) => handleInputChange('topic_id', value.toString())}
+                options={topics}
+                placeholder="Select topic"
+                disabled={loading}
+              />
+            </div>
+
+            {/* LEVEL + TYPE */}
+            <div className="grid grid-cols-2 gap-4">
+              
+              {/* LEVEL */}
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">
+                  Difficulty
+                </Label>
+
+                <div className="flex gap-2">
+                  {["EASY", "MEDIUM", "HARD"].map((lvl) => (
+                    <button
+                      key={lvl}
+                      type="button"
+                      onClick={() => handleInputChange('level', lvl)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                        formData.level === lvl
+                          ? "bg-primary text-white"
+                          : "bg-muted hover:bg-muted/70"
+                      }`}
+                    >
+                      {lvl}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* TYPE */}
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">
+                  Type
+                </Label>
+                <Select
+                  value={formData.type}
+                  onChange={(value: string | number) => handleInputChange('type', value.toString())}
+                  options={[
+                    { label: 'Homework', value: 'HOMEWORK' },
+                    { label: 'Classwork', value: 'CLASSWORK' }
+                  ]}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            {/* FOOTER */}
+            <DialogFooter className="pt-2 flex gap-2">
+              
+              <Button 
+                type="button"
+                variant="ghost"
+                onClick={() => onOpenChange(false)}
+                disabled={loading}
+                className="h-11"
+              >
+                Cancel
+              </Button>
+
+              <Button 
+                type="submit"
+                disabled={
+                  loading ||
+                  !formData.question_name ||
+                  !formData.question_link ||
+                  !formData.topic_id
+                }
+                className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {loading ? (
+                  "Saving..."
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+
+            </DialogFooter>
+          </form>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

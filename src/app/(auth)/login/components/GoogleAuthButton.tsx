@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
 import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
+import { AlertTriangle, Loader2 } from 'lucide-react';
 
 export function GoogleAuthButton() {
   const router = useRouter();
@@ -11,10 +12,9 @@ export function GoogleAuthButton() {
   const [error, setError] = useState('');
   const [, setOnboardingUser] = useLocalStorage('onboardingUser', null);
 
-  // set onboarding if user doesn't have any platform IDs or username
   const processPostLogin = (u: any) => {
-    if ( !u.leetcode_id || !u.gfg_id || !u.username) {
-      setOnboardingUser(u); 
+    if (!u.leetcode_id || !u.gfg_id || !u.username) {
+      setOnboardingUser(u);
     }
     router.push('/');
   };
@@ -22,15 +22,18 @@ export function GoogleAuthButton() {
   const handleGoogleCallback = async (idToken: string) => {
     setLoading(true);
     setError('');
+
     try {
       const payload = JSON.parse(atob(idToken.split('.')[1]));
+
       if (!payload.email?.endsWith('@pwioi.com')) {
-        setError('Access denied: Please sign in with your @pwioi.com email address.');
+        setError('Access denied: Use your @pwioi.com email.');
         setLoading(false);
         return;
       }
 
       const data = await studentAuthService.googleLogin(idToken);
+
       if (data.accessToken) {
         localStorage.setItem('accessToken', data.accessToken);
         document.cookie = `accessToken=${data.accessToken}; path=/`;
@@ -39,7 +42,11 @@ export function GoogleAuthButton() {
         setError('Login failed: No token received.');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || err.response?.data?.message || 'Google login failed.');
+      setError(
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        'Google login failed.'
+      );
     } finally {
       setLoading(false);
     }
@@ -47,12 +54,12 @@ export function GoogleAuthButton() {
 
   const initGoogleLogin = () => {
     setError('');
+
     if (typeof window !== 'undefined' && (window as any).google) {
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-      console.log('Client ID:', clientId);
-      console.log('Current origin:', window.location.origin);
+
       if (!clientId) {
-        setError('Google Client ID is missing. Check your environment variables.');
+        setError('Google Client ID missing.');
         return;
       }
 
@@ -64,17 +71,22 @@ export function GoogleAuthButton() {
       });
 
       const btnContainer = document.getElementById("googleSignInDiv");
+
       if (btnContainer) {
         (window as any).google.accounts.id.renderButton(
           btnContainer,
-          { theme: "outline", size: "large", text: "continue_with", width: 400 }
+          {
+            theme: "outline",
+            size: "large",
+            text: "continue_with",
+            width: 400,
+          }
         );
       }
     }
   };
 
   React.useEffect(() => {
-    // Attempt initialization if script is already loaded
     if (typeof window !== 'undefined' && (window as any).google) {
       initGoogleLogin();
     }
@@ -82,18 +94,37 @@ export function GoogleAuthButton() {
 
   return (
     <>
-      <Script 
-        src="https://accounts.google.com/gsi/client" 
-        strategy="afterInteractive" 
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
         onLoad={initGoogleLogin}
       />
+
+      {/* ERROR */}
       {error && (
-        <div className="mb-5 px-4 py-3 bg-destructive/10 border border-destructive/20 text-destructive text-[13px] font-medium rounded-xl text-center">
+        <div className="mb-5 flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl justify-center">
+          <AlertTriangle className="w-4 h-4" />
           {error}
         </div>
       )}
-      <div className="w-full flex justify-center mb-6">
-        <div id="googleSignInDiv" className="w-full flex justify-center [&>div]:w-full"></div>
+
+      {/* BUTTON CONTAINER */}
+      <div className="w-full flex flex-col items-center gap-3 mb-6">
+
+        {/* GOOGLE BUTTON */}
+        <div
+          id="googleSignInDiv"
+          className="w-full flex justify-center [&>div]:w-full transition-all"
+        />
+
+        {/* LOADING STATE */}
+        {loading && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Authenticating securely...
+          </div>
+        )}
+
       </div>
     </>
   );
