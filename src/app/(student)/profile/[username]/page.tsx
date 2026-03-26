@@ -16,7 +16,7 @@ import {
 import { EditProfileModal } from '@/components/student/profile/EditProfileModal';
 import { EditUsernameModal } from '@/components/student/profile/EditUsernameModal';
 import { Toast } from '@/app/(auth)/shared/components/Toast';
-import { TopicProgressModal } from '@/components/student/topics/TopicProgressModal';
+
 import { ProfilePageShimmer } from '@/components/student/profile/shimmers';
 import { ProfileHeader } from '@/components/student/profile/ProfileHeader';
 import { OverviewStats } from '@/components/student/profile/OverviewStats';
@@ -25,6 +25,7 @@ import { SocialLinks } from '@/components/student/profile/SocialLinks';
 import { ProblemSolvingStats } from '@/components/student/profile/ProblemSolvingStats';
 import { ActivityHeatmap } from '@/components/student/profile/ActivityHeatmap';
 import { RecentActivity } from '@/components/student/profile/RecentActivity';
+import TopicProgressModal from '@/components/student/topics/TopicProgressModal';
 
 export default function PublicProfilePage() {
   const params = useParams();
@@ -33,6 +34,7 @@ export default function PublicProfilePage() {
   const [profileData, setProfileData] = useState<ProfileDataState>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showUsernameEditModal, setShowUsernameEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -174,18 +176,18 @@ export default function PublicProfilePage() {
 
   const handleSaveProfile = async () => {
     try {
-      setUploading(true);
+      setSavingProfile(true);
       await studentProfileService.updateProfileDetails({
         github: editForm.github,
         linkedin: editForm.linkedin
       });
       await fetchProfileByUsername();
       setShowEditModal(false);
-      alert('Profile updated successfully!');
+      
     } catch (error) {
       ErrorHandler.showAlert(error, 'handleSaveProfile');
     } finally {
-      setUploading(false);
+      setSavingProfile(false);
     }
   };
 
@@ -310,13 +312,14 @@ export default function PublicProfilePage() {
 };
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto pb-16">
+    <div className="w-full max-w-[1200px] mx-auto pb-16 mt-3">
       {/* PROFILE HEADER */}
       <ProfileHeader
         student={student}
         canEdit={canEdit()}
         onEditProfile={() => setShowEditModal(true)}
         onShowTopicProgress={() => setShowTopicProgressModal(true)}
+        onEditUsername={() => setShowUsernameEditModal(true)}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -327,6 +330,9 @@ export default function PublicProfilePage() {
             leaderboard={leaderboard}
             streak={streak}
           />
+
+          {/* PLATFORM LINKS */}
+          <ProfileInfo student={student} />
 
           {/* SOCIAL LINKS */}
           <SocialLinks
@@ -357,6 +363,7 @@ export default function PublicProfilePage() {
         editForm={editForm}
         setEditForm={setEditForm}
         uploading={uploading}
+        savingProfile={savingProfile}
         fileInputRef={fileInputRef}
         handleImageUpload={handleImageUpload}
         handleDeleteImage={handleDeleteImage}

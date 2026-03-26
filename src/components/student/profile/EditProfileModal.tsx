@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, Camera, Trash2, Github, Linkedin, Lock } from 'lucide-react';
 import { ProfileEditForm, StudentProfile } from '@/types/student';
-
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -13,7 +12,8 @@ interface EditProfileModalProps {
   editForm: ProfileEditForm;
   setEditForm: (form: ProfileEditForm) => void;
   uploading: boolean;
-  fileInputRef: React.RefObject<HTMLInputElement |null>;
+  savingProfile: boolean;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDeleteImage: () => void;
   handleSaveProfile: () => void;
@@ -26,135 +26,137 @@ export function EditProfileModal({
   editForm,
   setEditForm,
   uploading,
+  savingProfile,
   fileInputRef,
   handleImageUpload,
   handleDeleteImage,
-  handleSaveProfile
+  handleSaveProfile,
 }: EditProfileModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-background rounded-2xl border border-border w-full max-w-md shadow-xl">
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-xl font-bold">Edit Profile</h2>
-          <Button
-            variant="ghost"
-            size="sm"
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-background rounded-2xl border border-border w-full max-w-md shadow-2xl overflow-hidden">
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h2 className="text-lg font-semibold tracking-tight">Edit Profile</h2>
+          <button
             onClick={onClose}
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           >
             <X className="w-4 h-4" />
-          </Button>
+          </button>
         </div>
 
-        <div className="p-6 space-y-4">
-          {/* Profile Image Upload */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Profile Image</label>
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full border-2 border-border bg-muted flex items-center justify-center overflow-hidden">
+        <div className="p-5 space-y-4">
+
+          {/* Profile Image */}
+          <div className="flex flex-col items-center gap-2">
+            <div className="relative group">
+              <div className="w-20 h-20 rounded-full border-2 border-border bg-muted overflow-hidden shadow-md">
                 {student.profileImageUrl ? (
                   <img src={student.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 text-white flex items-center justify-center text-sm font-bold">
+                  <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-white text-2xl font-bold">
                     {student.name?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
                 )}
               </div>
-              <div className="flex-1">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  accept="image/*"
-                  className="hidden"
-                />
-                <Button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                >
-                  {uploading ? 'Uploading...' : (student.profileImageUrl ? 'Change Image' : 'Add Image')}
-                </Button>
-                {student.profileImageUrl && (
-                  <Button
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+              >
+                <Camera className="w-6 h-6 text-white" />
+              </button>
+            </div>
+
+            <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="text-sm font-medium text-primary hover:underline underline-offset-4 transition-colors disabled:opacity-50"
+              >
+                {uploading ? 'Uploading…' : student.profileImageUrl ? 'Change photo' : 'Upload photo'}
+              </button>
+              {student.profileImageUrl && (
+                <>
+                  <span className="text-muted-foreground/40 text-xs">·</span>
+                  <button
                     onClick={handleDeleteImage}
                     disabled={uploading}
-                    variant="ghost"
-                    size="sm"
-                    className="w-full mt-1 text-destructive hover:text-destructive"
+                    className="text-sm font-medium text-destructive hover:underline underline-offset-4 transition-colors disabled:opacity-50 flex items-center gap-1"
                   >
-                    Remove Image
-                  </Button>
-                )}
-              </div>
+                    <Trash2 className="w-3 h-3" /> Remove
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
+          <div className="border-t border-border" />
+
           {/* GitHub */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">GitHub URL</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium flex items-center gap-1.5">
+              <Github className="w-3.5 h-3.5 text-muted-foreground" /> GitHub URL
+            </label>
             <input
               type="url"
               value={editForm.github}
               onChange={(e) => setEditForm({ ...editForm, github: e.target.value })}
               placeholder="https://github.com/username"
-              className="w-full border border-border p-3 rounded-lg bg-background"
+              className="w-full border border-border px-3 py-2 rounded-lg bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
             />
           </div>
 
           {/* LinkedIn */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">LinkedIn URL</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium flex items-center gap-1.5">
+              <Linkedin className="w-3.5 h-3.5 text-muted-foreground" /> LinkedIn URL
+            </label>
             <input
               type="url"
               value={editForm.linkedin}
               onChange={(e) => setEditForm({ ...editForm, linkedin: e.target.value })}
               placeholder="https://linkedin.com/in/username"
-              className="w-full border border-border p-3 rounded-lg bg-background"
+              className="w-full border border-border px-3 py-2 rounded-lg bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
             />
           </div>
 
-          {/* Non-Editable Fields */}
-          <div className="border-t border-border pt-4">
-            <p className="text-xs text-muted-foreground mb-3">The following fields cannot be edited. Contact admin to make changes.</p>
-            
-            {/* LeetCode ID */}
-            <div className="space-y-2 mb-3">
-              <label className="text-sm font-medium text-muted-foreground">LeetCode ID</label>
-              <input
-                type="text"
-                value={student.leetcode || 'Not set'}
-                disabled
-                className="w-full border border-border p-3 rounded-lg bg-muted/50 text-muted-foreground cursor-not-allowed"
-                readOnly
-              />
+          {/* Locked fields */}
+          <div className="rounded-2xl border border-border px-4 py-3 grid grid-cols-2 gap-3">
+            <div className="col-span-2 flex items-center gap-1.5">
+              <Lock className="w-3 h-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Fields locked · contact admin to update</span>
             </div>
-
-            {/* GFG ID */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">GeeksforGeeks ID</label>
-              <input
-                type="text"
-                value={student.gfg || 'Not set'}
-                disabled
-                className="w-full border border-border p-3 rounded-lg bg-muted/50 text-muted-foreground cursor-not-allowed"
-                readOnly
-              />
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">LeetCode ID</label>
+              <div className="border border-border px-3 py-2 rounded-2xl bg-muted/20 text-sm text-muted-foreground">
+                {student.leetcode || '—'}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">GFG ID</label>
+              <div className="border border-border px-3 py-2 rounded-2xl bg-muted/20 text-sm text-muted-foreground">
+                {student.gfg || '—'}
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2">
-            <Button onClick={handleSaveProfile} disabled={uploading} className="flex-1">
-              {uploading ? 'Saving...' : 'Save Changes'}
+          {/* Actions */}
+          <div className="flex gap-2">
+            <Button onClick={handleSaveProfile} disabled={savingProfile} className="flex-1">
+              {savingProfile ? 'Saving…' : 'Save Changes'}
             </Button>
             <Button onClick={onClose} variant="outline" className="flex-1">
               Cancel
             </Button>
           </div>
+
         </div>
       </div>
     </div>
