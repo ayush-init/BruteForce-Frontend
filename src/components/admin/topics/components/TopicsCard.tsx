@@ -19,7 +19,7 @@ export default function TopicCard({ topic, onEdit, onDelete }
          }}
          className="group cursor-pointer"
       >
-         <div className="aspect-video bg-muted/20 relative overflow-hidden flex items-center justify-center shrink-0 border-b border-border/30">
+         <div className="aspect-video bg-muted/20 relative overflow-hidden flex items-center justify-center shrink-0 border-border/30">
             {topic.photo_url ? (
                <img
                   src={topic.photo_url}

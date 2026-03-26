@@ -23,7 +23,7 @@ export function SocialLinks({ student, canEdit, onEditSocialLinks }: SocialLinks
           href={student.github || '#'} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.github ? '' : 'opacity-60 pointer-events-none'} rounded-[var(--radius-lg)] border border-[var(--border)]`}
+          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.github ? '' : 'opacity-60 pointer-events-none'} rounded-[var(--radius-lg)] border-border border-[var(--border)]`}
           style={{
             backgroundColor: student.github ? 'var(--accent-secondary)' : 'var(--muted)'
           }}
@@ -48,7 +48,7 @@ export function SocialLinks({ student, canEdit, onEditSocialLinks }: SocialLinks
           href={student.linkedin || '#'} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.linkedin ? '' : 'opacity-60 pointer-events-none'} rounded-[var(--radius-lg)] border border-[var(--border)]`}
+          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.linkedin ? '' : 'opacity-60 pointer-events-none'} rounded-[var(--radius-lg)] border-border border-[var(--border)]`}
           style={{
             backgroundColor: student.linkedin ? 'var(--accent-secondary)' : 'var(--muted)'
           }}

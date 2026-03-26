@@ -83,7 +83,7 @@ export default function BulkUploadModal({
         <DialogContent className="w-[95vw]  max-w-[1500px] p-0 overflow-hidden flex flex-col rounded-2xl">
 
           {/* HEADER */}
-          <DialogHeader className="px-6 py-5 border-b bg-muted/40">
+          <DialogHeader className="px-6 py-5 bg-muted/40">
             <DialogTitle className="text-xl font-semibold flex items-center gap-2">
               <Upload className="w-5 h-5 text-primary" />
               Bulk Upload Questions
@@ -118,12 +118,19 @@ export default function BulkUploadModal({
             <div className="space-y-2">
               <Label className="text-sm font-medium">CSV File</Label>
 
-              <label className="w-full flex items-center justify-between border rounded-xl px-5 py-4 cursor-pointer hover:bg-muted/40 transition">
-                <span className="text-sm text-muted-foreground">
-                  {file ? file.name : "Choose CSV file"}
-                </span>
+              <label className="w-full flex items-center justify-between rounded-2xl px-5 py-4 cursor-pointer bg-muted/30 hover:bg-muted/50 border border-border/50 transition">
 
-                <span className="text-xs font-semibold bg-primary/10 text-primary px-3 py-1 rounded-md">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded bg-primary/10">
+                    <Upload className="w-4 h-4 text-primary" />
+                  </div>
+
+                  <span className="text-sm text-muted-foreground">
+                    {file ? file.name : "Upload your CSV file"}
+                  </span>
+                </div>
+
+                <span className="text-xs font-semibold bg-primary/10 text-primary px-3 py-1 rounded">
                   Browse
                 </span>
 
@@ -140,40 +147,41 @@ export default function BulkUploadModal({
             </div>
 
             {/* GUIDE BUTTON */}
-            <div className="flex justify-between items-center border rounded-lg px-4 py-3 bg-muted/30">
+            <div className="flex items-center justify-between rounded-2xl px-4 py-3 bg-muted/30 border border-border/50">
               <p className="text-sm text-muted-foreground">
-                Need CSV format help?
+                Not sure about CSV format?
               </p>
 
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowGuide(true)}
+                className="rounded"
               >
                 <FileText className="w-4 h-4 mr-1" />
-                View Guide
+                View Format Guide
               </Button>
             </div>
 
             {/* STATUS */}
             {validationError && (
-              <div className="flex items-center gap-2 text-sm p-3 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+              <div className="flex items-center gap-2 text-sm p-3 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
                 <AlertCircle className="w-4 h-4" />
                 {validationError}
               </div>
             )}
 
             {uploadError && (
-              <div className="flex items-center gap-2 text-sm p-3 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+              <div className="flex items-center gap-2 text-sm p-3 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
                 <AlertCircle className="w-4 h-4" />
                 {uploadError}
               </div>
             )}
 
             {csvData.length > 0 && (
-              <div className="flex items-center gap-2 text-sm p-3 rounded-lg border border-green-500/30 bg-green-500/10 text-green-400">
+              <div className="flex items-center gap-2 text-sm p-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
                 <CheckCircle2 className="w-4 h-4" />
-                {csvData.length} questions ready 
+                {csvData.length} questions ready to upload
               </div>
             )}
 
@@ -187,7 +195,7 @@ export default function BulkUploadModal({
 
             <Button
               disabled={isUploadDisabled}
-              className="w-full h-12 text-sm font-semibold bg-gradient-to-r from-primary to-amber-600"
+              className="w-full h-12 text-sm font-semibold bg-primary"
             >
               {loading ? "Uploading..." : "Upload Questions"}
             </Button>
@@ -201,7 +209,7 @@ export default function BulkUploadModal({
         <DialogContent className="w-[95vw] max-w-[920px] p-0 overflow-hidden rounded-2xl">
 
           {/* HEADER */}
-          <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+          <DialogHeader className="px-6 py-4 bg-muted/40">
             <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
               <FileText className="w-5 h-5 text-primary" />
               CSV Format Guide
@@ -217,7 +225,7 @@ export default function BulkUploadModal({
                 Required Columns
               </p>
 
-              <div className="bg-background border rounded-lg p-4 text-sm font-mono overflow-x-auto">
+              <div className="bg-background rounded-lg p-4 text-sm font-mono overflow-x-auto">
                 question_name, question_link, level, type
               </div>
             </div>
@@ -225,12 +233,12 @@ export default function BulkUploadModal({
             {/* RULES */}
             <div className="grid grid-cols-2 gap-4">
 
-              <div className="border rounded-xl p-4 bg-muted/30 space-y-1">
+              <div className="rounded-xl p-4 bg-muted/30 space-y-1">
                 <p className="text-xs text-muted-foreground">Level</p>
                 <p className="text-sm font-semibold">EASY / MEDIUM / HARD</p>
               </div>
 
-              <div className="border rounded-xl p-4 bg-muted/30 space-y-1">
+              <div className="rounded-xl p-4 bg-muted/30 space-y-1">
                 <p className="text-xs text-muted-foreground">Type</p>
                 <p className="text-sm font-semibold">HOMEWORK / CLASSWORK</p>
               </div>
@@ -243,13 +251,13 @@ export default function BulkUploadModal({
                 Example Row
               </p>
 
-              <div className="bg-background border rounded-lg p-4 text-sm font-mono overflow-x-auto">
+              <div className="bg-background rounded-lg p-4 text-sm font-mono overflow-x-auto">
                 "Two Sum", "https://leetcode.com/problems/two-sum/", "EASY", "HOMEWORK"
               </div>
             </div>
 
             {/* WARNING */}
-            <div className="flex items-start gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400">
+            <div className="flex items-start gap-3 rounded-lg border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400">
               <AlertCircle className="w-4 h-4 mt-0.5" />
               <p>
                 Do <span className="font-semibold">NOT</span> include topic in CSV.

@@ -44,7 +44,7 @@ export function SelectTrigger({
         h-10 px-4 rounded-full
 
         bg-accent/40
-        border border-border
+        border-border border-border
 
         text-m font-medium
 
@@ -54,7 +54,7 @@ export function SelectTrigger({
 
         focus:outline-none
         focus:ring-2 focus:ring-primary/20
-        focus:border-primary
+        focus:border-border-primary
 
         disabled:opacity-50 disabled:cursor-not-allowed
 
@@ -103,7 +103,7 @@ export function SelectContent({
 
           backdrop-blur-md
 
-          border border-[var(--glass-border)]
+          border-border border-[var(--glass-border)]
 
           p-1.5
 
@@ -155,15 +155,12 @@ export function SelectItem({
 
         transition-all duration-200
         
-        text-foreground/80
+        text-foreground/90
 
         hover:text-foreground
         hover:bg-accent/60
         hover:scale-105
-        hover:font-bold
-        
-        
-
+      
         focus:bg-accent
         focus:text-foreground
 

@@ -145,7 +145,7 @@ export default function AdminDashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* By Level */}
             <div className="glass hover-glow rounded-xl shadow-sm overflow-hidden flex flex-col">
-              <div className="px-6 py-4 border-b border-glass-border bg-muted/20 flex flex-row items-center gap-3">
+              <div className="px-6 py-4 border-glass-border bg-muted/20 flex flex-row items-center gap-3">
                 <BarChart3 className="w-5 h-5 text-primary" />
                 <h3 className="font-semibold text-foreground">By Difficulty</h3>
               </div>
@@ -158,7 +158,7 @@ export default function AdminDashboardPage() {
 
             {/* By Type */}
             <div className="glass hover-glow rounded-xl shadow-sm overflow-hidden flex flex-col">
-              <div className="px-6 py-4 border-b border-glass-border bg-muted/20 flex flex-row items-center gap-3">
+              <div className="px-6 py-4 border-glass-border bg-muted/20 flex flex-row items-center gap-3">
                 <Target className="w-5 h-5 text-primary" />
                 <h3 className="font-semibold text-foreground">By Type</h3>
               </div>
@@ -170,7 +170,7 @@ export default function AdminDashboardPage() {
 
             {/* By Platform */}
             <div className="glass hover-glow rounded-xl shadow-sm overflow-hidden flex flex-col">
-              <div className="px-6 py-4 border-b border-glass-border bg-muted/20 flex flex-row items-center gap-3">
+              <div className="px-6 py-4 border-glass-border bg-muted/20 flex flex-row items-center gap-3">
                 <Globe className="w-5 h-5 text-primary" />
                 <h3 className="font-semibold text-foreground">By Platform</h3>
               </div>

@@ -22,7 +22,7 @@ interface TopicsGridProps {
 export function TopicsGrid({ topics, searchQuery }: TopicsGridProps) {
   if (topics.length === 0) {
     return (
-      <div className="col-span-full py-16 text-center text-muted-foreground bg-card rounded-2xl border border-border border-dashed">
+      <div className="col-span-full py-16 text-center text-muted-foreground bg-card rounded-2xl border-border border-border border-dashed">
         {searchQuery ? "No topics matched your search." : "No topics assigned to your batch yet."}
       </div>
     );

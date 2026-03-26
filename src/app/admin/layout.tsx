@@ -305,7 +305,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       
       {/* Sidebar - mapped exactly from theme */}
       <aside className="w-[240px] flex-shrink-0 bg-sidebar border-r border-border flex flex-col z-20 shadow-sm relative animate-in slide-in-from-left duration-500">
-        <div className="p-6 border-b border-border/50">
+        <div className="p-6 border-border/50">
           <div className="text-[10px] uppercase tracking-[0.15em] text-primary font-mono mb-1.5 font-bold">Admin Portal</div>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center p-1.5">
@@ -364,7 +364,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 flex flex-col relative z-10 min-w-0">
         
         {/* Topbar */}
-        <header className="h-14 bg-card/80 backdrop-blur border-b flex items-center justify-between px-6 shrink-0 z-10 w-full">
+        <header className="h-14 bg-card/80 backdrop-blur flex items-center justify-between px-6 shrink-0 z-10 w-full">
           {/* Dropdown Selectors */}
           <div className="flex items-center gap-4">
              {selectedCity ? (

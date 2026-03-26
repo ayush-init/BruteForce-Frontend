@@ -152,7 +152,7 @@ export function Filters({ lSearch, setLSearch, filters, onFiltersChange, userCit
   ];
 
   return (
-    <div className="p-4 border-b border-border flex flex-wrap items-center gap-3 bg-card/60 backdrop-blur-md">
+    <div className="p-4 border-border flex flex-wrap items-center gap-3 bg-card/60 backdrop-blur-md">
       <div className="flex items-center gap-1.5 text-foreground font-semibold px-2 border-r border-border mr-2 opacity-80">
         <Search className="w-4 h-4"/> Filter
       </div>

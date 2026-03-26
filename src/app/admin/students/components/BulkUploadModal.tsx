@@ -288,7 +288,7 @@ export default function BulkUploadModal({
         <DialogContent className="w-[95vw] max-w-[700px] p-0 overflow-hidden flex flex-col rounded-2xl">
 
           {/* HEADER */}
-          <DialogHeader className="px-6 py-5 border-b bg-muted/40">
+          <DialogHeader className="px-6 py-5 bg-muted/40">
             <DialogTitle className="text-xl font-semibold flex items-center gap-2">
               <Upload className="w-5 h-5 text-primary" />
               Bulk Upload Students

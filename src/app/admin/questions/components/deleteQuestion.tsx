@@ -49,21 +49,21 @@ export default function DeleteQuestion({
   };
   console.log(process.env.NEXT_PUBLIC_MY_LINK);
   return (
-
     <Dialog open={open} onOpenChange={onOpenChange}>
-
-      <DialogContent className="sm:max-w-[440px] p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[440px] p-0 overflow-hidden rounded-2xl">
 
         {/* HEADER */}
-        <DialogHeader className="px-6 py-4 border-b bg-red-500/5">
+        <DialogHeader className="px-6 py-5 bg-red-500/5 border-b border-red-500/10">
           <DialogTitle className="flex items-center gap-3 text-red-500 font-semibold">
-            <div className="p-2 rounded-lg bg-red-500/10">
+
+            <div className="p-2 rounded bg-red-500/10 border border-red-500/20">
               <Trash2 className="w-4 h-4 text-red-500" />
             </div>
+
             Delete Question
           </DialogTitle>
 
-          <DialogDescription className="text-xs text-muted-foreground">
+          <DialogDescription className="text-sm text-muted-foreground">
             This action is permanent and cannot be undone.
           </DialogDescription>
         </DialogHeader>
@@ -73,43 +73,52 @@ export default function DeleteQuestion({
 
           {/* QUESTION INFO */}
           {question && (
-            <div className="rounded-xl border bg-muted/30 p-4 space-y-2 text-sm">
-              <div>
-                <span className="text-muted-foreground">Question:</span>{" "}
-                <span className="font-medium">{question.question_name}</span>
+            <div className="rounded-2xl border border-border/50 bg-muted/20 p-4 space-y-3 text-sm">
+
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Question</span>
+                <span className="font-medium text-right max-w-[65%] truncate">
+                  {question.question_name}
+                </span>
               </div>
 
-              <div>
-                <span className="text-muted-foreground">Topic:</span>{" "}
-                {question.topic?.topic_name || 'Unknown'}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Topic</span>
+                <span className="font-medium">
+                  {question.topic?.topic_name || "Unknown"}
+                </span>
               </div>
 
-              <div>
-                <span className="text-muted-foreground">Level:</span>{" "}
-                {question.level}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Level</span>
+                <span className="font-medium">{question.level}</span>
               </div>
 
-              <div>
-                <span className="text-muted-foreground">Type:</span>{" "}
-                {question.type.toLowerCase()}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Type</span>
+                <span className="font-medium capitalize">
+                  {question.type.toLowerCase()}
+                </span>
               </div>
             </div>
           )}
 
           {/* ERROR */}
           {error && (
-            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
               <AlertTriangle className="w-4 h-4" />
               {error}
             </div>
           )}
 
           {/* WARNING */}
-          <div className="flex gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3 text-sm text-yellow-400">
+          <div className="flex gap-3 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400">
             <AlertTriangle className="w-4 h-4 mt-[2px]" />
             <div>
-              <strong>Note:</strong> You cannot delete questions that are assigned
-              to classes or have student progress.
+              <p className="font-semibold mb-1">Important</p>
+              <p className="text-[13px]">
+                You cannot delete questions assigned to classes or with student progress.
+              </p>
             </div>
           </div>
 
@@ -121,7 +130,7 @@ export default function DeleteQuestion({
               variant="ghost"
               onClick={() => onOpenChange(false)}
               disabled={loading}
-              className="h-11"
+              className="h-11 rounded"
             >
               Cancel
             </Button>
@@ -131,7 +140,7 @@ export default function DeleteQuestion({
               variant="destructive"
               onClick={handleDelete}
               disabled={loading}
-              className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="h-11 w-full font-semibold rounded transition-all hover:scale-[1.02] active:scale-[0.97]"
             >
               {loading ? (
                 "Deleting..."

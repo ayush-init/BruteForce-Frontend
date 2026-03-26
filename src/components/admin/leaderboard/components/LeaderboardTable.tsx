@@ -59,7 +59,7 @@ console.log("LeaderboardTable - leaderboard:", leaderboard);
         <div className="overflow-x-auto flex-1 p-0 scrollbar-hide [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50 border-b border-border/80">
+              <TableRow className="bg-muted/50 hover:bg-muted/50 border-border/80">
                 <TableHead className="w-[80px] text-center font-bold">Rank</TableHead>
                 <TableHead className="font-bold">Student</TableHead>
                 <TableHead className="font-bold">Location</TableHead>
@@ -131,7 +131,7 @@ console.log("LeaderboardTable - leaderboard:", leaderboard);
                       
                       <TableCell>
                           <div className="w-full flex flex-col gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
-                            <div className="flex items-center gap-2 text-[10px] w-full border-b border-border/50 pb-0.5 mb-0.5 justify-between">
+                            <div className="flex items-center gap-2 text-[10px] w-full border-border/50 pb-0.5 mb-0.5 justify-between">
                               <span className="font-bold text-foreground">Total: {totalCompletion}%</span>
                             </div>
                             <div className="flex items-center gap-2 text-[10px] w-full">

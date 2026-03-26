@@ -459,7 +459,7 @@ export default function AdminQuestionsBankPage() {
     </div>
 
     <div className="bg-card border border-border shadow-sm rounded-xl overflow-hidden flex flex-col min-h-[600px]">
-      <div className="p-4 border-b border-border flex flex-wrap items-center gap-3 bg-muted/20">
+      <div className="p-4 border-border flex flex-wrap items-center gap-3 bg-muted/20">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input

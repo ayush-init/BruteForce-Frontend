@@ -108,10 +108,10 @@ export default function TopicProgressModal({
       />
 
       {/* MODAL */}
-      <div className="relative w-[95vw] max-w-[1000px] h-[85vh] bg-background border rounded-2xl shadow-xl flex flex-col overflow-hidden">
+      <div className="relative w-[95vw] max-w-[1000px] h-[85vh] bg-background  rounded-2xl shadow-xl flex flex-col overflow-hidden">
 
         {/* HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
+        <div className="flex items-center justify-between px-6 py-4 ">
           <div>
             <div className="text-xl font-bold flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-primary" />
@@ -157,7 +157,7 @@ export default function TopicProgressModal({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="border rounded px-2 py-1 bg-background"
+              className=" rounded px-2 py-1 bg-background"
             >
               <option value="weak">Weakest First</option>
               <option value="strong">Strongest First</option>
@@ -184,7 +184,7 @@ export default function TopicProgressModal({
                 return (
                   <div
                     key={topic.id}
-                    className="p-4 rounded-xl border bg-muted/30 hover:bg-muted/50 transition-all"
+                    className="p-4 rounded-xl  bg-muted/30 hover:bg-muted/50 transition-all"
                   >
                     {/* TOP */}
                     <div className="flex justify-between items-center mb-2">
@@ -227,7 +227,7 @@ export default function TopicProgressModal({
 /* STAT CARD */
 function Stat({ icon, label, value }: any) {
   return (
-    <div className="border rounded-xl p-4 flex items-center gap-3 bg-muted/30">
+    <div className=" rounded-xl p-4 flex items-center gap-3 bg-muted/30">
       <div className="p-2 bg-primary/10 rounded">{icon}</div>
       <div>
         <p className="text-sm text-muted-foreground">{label}</p>

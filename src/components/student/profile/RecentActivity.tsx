@@ -24,7 +24,7 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
             return (
               <div 
                 key={idx} 
-                className="flex items-center justify-between p-5 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border border-[var(--border)]" 
+                className="flex items-center justify-between p-5 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border-border border-[var(--border)]" 
                 style={{
                   backgroundColor: levelBg
                 }}

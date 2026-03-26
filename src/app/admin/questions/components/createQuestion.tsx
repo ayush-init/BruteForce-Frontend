@@ -109,47 +109,55 @@ export default function CreateQuestion({
     setFormData((prev) => ({ ...prev, [field]: value }));
     setError("");
   };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
-        
+      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden rounded-2xl">
+
         {/* HEADER */}
-        <DialogHeader className="border-b px-6 py-4 bg-muted/40">
+        <DialogHeader className="px-6 py-5 bg-muted/30 border-b border-border/50">
           <DialogTitle className="flex items-center gap-3 text-lg font-semibold">
-            <div className="p-2 rounded-lg bg-primary/10">
+
+            <div className="p-2 rounded bg-primary/10 border border-primary/20">
               <Plus className="w-4 h-4 text-primary" />
             </div>
+
             Add Question
           </DialogTitle>
 
-          <DialogDescription className="text-xs text-muted-foreground">
+          <DialogDescription className="text-sm text-muted-foreground">
             Add a new problem to the global question bank.
           </DialogDescription>
         </DialogHeader>
 
         {/* BODY */}
         <div className="p-6 space-y-6">
+
           {/* ERROR */}
           {error && (
-            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
               <AlertTriangle className="w-4 h-4" />
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            
+
             {/* BASIC INFO */}
-            <div className="p-4 rounded-xl border bg-muted/30 space-y-4">
+            <div className="p-5 rounded-2xl border border-border/50 bg-muted/20 space-y-4">
               <h3 className="text-xs font-semibold text-muted-foreground">
                 Basic Information
               </h3>
 
-              <div className="space-y-2">
-                <Label className="text-xs">Question Title</Label>
+              <div className="space-y-2 flex justify-between ">
+                <div>
+                <Label className="text-xs text-muted-foreground ">
+                  Question Title
+                </Label>
+
+                </div>
+                <div>
                 <Input
-                  className="h-11 rounded-lg focus-visible:ring-primary/50"
+                  className="h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40"
                   value={formData.question_name}
                   onChange={(e) =>
                     handleChange("question_name", e.target.value)
@@ -157,12 +165,19 @@ export default function CreateQuestion({
                   placeholder="e.g. Two Sum"
                   disabled={loading}
                 />
+
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs">Question Link</Label>
+              <div className="space-y-2 flex justify-between ">
+                <div>
+                <Label className="text-xs text-muted-foreground">
+                  Question Link
+                </Label>
+                </div>
+                <div>
                 <Input
-                  className="h-11 rounded-lg focus-visible:ring-primary/50"
+                  className="h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40"
                   value={formData.question_link}
                   onChange={(e) =>
                     handleChange("question_link", e.target.value)
@@ -171,17 +186,20 @@ export default function CreateQuestion({
                   type="url"
                   disabled={loading}
                 />
+                </div>
               </div>
             </div>
 
             {/* CONFIG */}
-            <div className="p-4 rounded-xl border bg-muted/30 space-y-4">
+            <div className="p-5 rounded-2xl border border-border/50 bg-muted/20 space-y-4">
               <h3 className="text-xs font-semibold text-muted-foreground">
                 Configuration
               </h3>
 
               <div className="space-y-2">
-                <Label className="text-xs">Topic</Label>
+                <Label className="text-xs text-muted-foreground">
+                  Topic
+                </Label>
                 <Select
                   value={formData.topic_id}
                   onChange={(val: string | number) =>
@@ -190,23 +208,26 @@ export default function CreateQuestion({
                   options={topics}
                   placeholder="Select topic"
                   disabled={loading}
+                  className="h-11"
                 />
               </div>
 
-              {/* Difficulty Pills */}
+              {/* 🔥 Difficulty (UPGRADED) */}
               <div className="space-y-2">
-                <Label className="text-xs">Difficulty</Label>
-                <div className="flex gap-2">
+                <Label className="text-xs text-muted-foreground">
+                  Difficulty
+                </Label>
+
+                <div className="flex gap-2 bg-muted/30 p-1 rounded-2xl border border-border/50">
                   {["EASY", "MEDIUM", "HARD"].map((lvl) => (
                     <button
                       key={lvl}
                       type="button"
                       onClick={() => handleChange("level", lvl)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium transition ${
-                        formData.level === lvl
-                          ? "bg-primary text-white"
-                          : "bg-muted hover:bg-muted/70"
-                      }`}
+                      className={`flex-1 py-2 text-xs font-semibold rounded transition-all ${formData.level === lvl
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground hover:bg-muted"
+                        }`}
                     >
                       {lvl}
                     </button>
@@ -216,7 +237,9 @@ export default function CreateQuestion({
 
               {/* TYPE */}
               <div className="space-y-2">
-                <Label className="text-xs">Distribution</Label>
+                <Label className="text-xs text-muted-foreground">
+                  Distribution
+                </Label>
                 <Select
                   value={formData.type}
                   onChange={(val: string | number) =>
@@ -227,18 +250,20 @@ export default function CreateQuestion({
                     { label: "Classwork", value: "CLASSWORK" },
                   ]}
                   disabled={loading}
+                  className="h-11"
                 />
               </div>
             </div>
 
             {/* FOOTER */}
             <DialogFooter className="flex gap-2 pt-2">
+
               <Button
                 type="button"
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
-                className="h-11"
+                className="h-11 rounded"
               >
                 Cancel
               </Button>
@@ -251,7 +276,7 @@ export default function CreateQuestion({
                   !formData.question_link ||
                   !formData.topic_id
                 }
-                className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="h-11 w-full font-semibold rounded transition-all hover:scale-[1.02] active:scale-[0.97]"
               >
                 {loading ? (
                   "Creating..."
@@ -262,6 +287,7 @@ export default function CreateQuestion({
                   </>
                 )}
               </Button>
+
             </DialogFooter>
           </form>
         </div>

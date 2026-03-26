@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function TableShimmer() {
   return (
     <div className="bg-card border border-border shadow-sm rounded-xl overflow-hidden">
-      <div className="p-4 border-b border-border">
+      <div className="p-4 border-border">
         <Skeleton className="h-10 w-48" />
       </div>
       <div className="overflow-x-auto">
@@ -22,7 +22,7 @@ export default function TableShimmer() {
           </thead>
           <tbody>
             {Array.from({ length: 5 }).map((_, i) => (
-              <tr key={i} className="border-b border-border">
+              <tr key={i} className="border-border">
                 <td className="p-4"><Skeleton className="h-8 w-8" /></td>
                 <td className="p-4">
                   <div className="flex items-center gap-3">

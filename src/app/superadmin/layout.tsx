@@ -73,7 +73,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
       
       {/* Sidebar - mapped exactly from theme */}
       <aside className="w-[240px] flex-shrink-0 bg-sidebar border-r border-border flex flex-col z-20 shadow-sm relative animate-in slide-in-from-left duration-500">
-        <div className="p-6 border-b border-border/50">
+        <div className="p-6 border-border/50">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center p-1.5">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full text-primary-foreground"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -137,7 +137,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
       <main className="flex-1 flex flex-col relative z-10 min-w-0">
         
         {/* Topbar */}
-        <header className="h-14 bg-card/80 backdrop-blur border-b flex items-center justify-between px-6 shrink-0 z-10 w-full">
+        <header className="h-14 bg-card/80 backdrop-blur flex items-center justify-between px-6 shrink-0 z-10 w-full">
           <div className="flex items-center gap-3">
             <Breadcrumb />
           </div>

@@ -39,7 +39,7 @@ export function EditProfileModal({
       <div className="bg-background rounded-2xl border border-border w-full max-w-md shadow-2xl overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="flex items-center justify-between px-6 py-4 border-border">
           <h2 className="text-lg font-semibold tracking-tight">Edit Profile</h2>
           <button
             onClick={onClose}

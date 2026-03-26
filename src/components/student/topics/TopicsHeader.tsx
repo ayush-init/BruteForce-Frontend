@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 interface TopicsHeaderProps {
   searchQuery: string;
@@ -22,14 +23,14 @@ export function TopicsHeader({ searchQuery, setSearchQuery }: TopicsHeaderProps)
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="flex bg-secondary/30 border border-border rounded-2xl p-1 overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 transition-all items-center">
-            <Search className="w-4 h-4 text-muted-foreground ml-3 mr-2" />
-            <input 
-              type="text" 
-              placeholder="Search topics..." 
-              className="w-[180px] bg-transparent border-none text-[13.5px] outline-none px-2 py-2"
+          {/* Search */}
+          <div className="relative w-full sm:max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Search topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              className="!pl-9 bg-background/60 border-border/60 w-full  focus:ring-2 focus:ring-primary/30 h-10"
             />
           </div>
         </div>

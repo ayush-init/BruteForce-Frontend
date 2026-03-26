@@ -110,30 +110,31 @@ export default function UpdateQuestion({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      
-      {/* MODAL */}
-      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
-        
+
+      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden rounded-2xl">
+
         {/* HEADER */}
-        <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+        <DialogHeader className="px-6 py-5 bg-muted/30 border-b border-border/50">
           <DialogTitle className="flex items-center gap-3 text-lg font-semibold">
-            <div className="p-2 rounded-lg bg-primary/10">
+
+            <div className="p-2 rounded bg-primary/10 border border-primary/20">
               <Edit className="w-4 h-4 text-primary" />
             </div>
+
             Edit Question
           </DialogTitle>
 
-          <DialogDescription className="text-xs text-muted-foreground">
+          <DialogDescription className="text-sm text-muted-foreground">
             Update the question details.
           </DialogDescription>
         </DialogHeader>
 
         {/* BODY */}
-        <div className="p-6 space-y-5">
-          
+        <div className="p-6 space-y-6">
+
           {/* ERROR */}
           {error && (
-            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">
+            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
               <AlertTriangle className="w-4 h-4" />
               {error}
             </div>
@@ -147,7 +148,7 @@ export default function UpdateQuestion({
                 Question Name
               </Label>
               <Input
-                className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
+                className="h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40"
                 value={formData.question_name}
                 onChange={(e) => handleInputChange('question_name', e.target.value)}
                 placeholder="Enter question name"
@@ -161,7 +162,7 @@ export default function UpdateQuestion({
                 Question Link
               </Label>
               <Input
-                className="h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
+                className="h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40"
                 value={formData.question_link}
                 onChange={(e) => handleInputChange('question_link', e.target.value)}
                 placeholder="https://leetcode.com/problems/..."
@@ -181,29 +182,29 @@ export default function UpdateQuestion({
                 options={topics}
                 placeholder="Select topic"
                 disabled={loading}
+                className="h-11"
               />
             </div>
 
             {/* LEVEL + TYPE */}
             <div className="grid grid-cols-2 gap-4">
-              
+
               {/* LEVEL */}
               <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">
                   Difficulty
                 </Label>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 bg-muted/30 p-1 rounded-2xl border border-border/50">
                   {["EASY", "MEDIUM", "HARD"].map((lvl) => (
                     <button
                       key={lvl}
                       type="button"
                       onClick={() => handleInputChange('level', lvl)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium transition ${
-                        formData.level === lvl
-                          ? "bg-primary text-white"
-                          : "bg-muted hover:bg-muted/70"
-                      }`}
+                      className={`flex-1 py-2 text-xs font-semibold rounded transition-all ${formData.level === lvl
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-muted-foreground hover:bg-muted"
+                        }`}
                     >
                       {lvl}
                     </button>
@@ -224,24 +225,26 @@ export default function UpdateQuestion({
                     { label: 'Classwork', value: 'CLASSWORK' }
                   ]}
                   disabled={loading}
+                  className="h-11"
                 />
               </div>
+
             </div>
 
             {/* FOOTER */}
             <DialogFooter className="pt-2 flex gap-2">
-              
-              <Button 
+
+              <Button
                 type="button"
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
-                className="h-11"
+                className="h-11 rounded"
               >
                 Cancel
               </Button>
 
-              <Button 
+              <Button
                 type="submit"
                 disabled={
                   loading ||
@@ -249,7 +252,7 @@ export default function UpdateQuestion({
                   !formData.question_link ||
                   !formData.topic_id
                 }
-                className="h-11 w-full font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="h-11 w-full font-semibold rounded transition-all hover:scale-[1.02] active:scale-[0.97]"
               >
                 {loading ? (
                   "Saving..."

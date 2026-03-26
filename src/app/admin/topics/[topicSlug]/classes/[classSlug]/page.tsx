@@ -254,7 +254,7 @@ export default function AdminClassDetailsPage() {
                <div className="
     flex items-center justify-between
     px-5 py-4
-    border-b border-border/60
+    border-border/60
   ">
 
                   {/* SEARCH */}
@@ -448,7 +448,7 @@ export default function AdminClassDetailsPage() {
             <DialogContent className="max-w-[760px] max-h-[90vh] flex flex-col p-0 rounded-2xl border border-border bg-background/95 backdrop-blur-xl">
 
                {/* Header */}
-               <div className="p-6 border-b border-border shrink-0 space-y-4">
+               <div className="p-6 border-border shrink-0 space-y-4">
                   <DialogHeader className="space-y-1">
                      <DialogTitle className="text-xl font-semibold">
                         Assign Questions

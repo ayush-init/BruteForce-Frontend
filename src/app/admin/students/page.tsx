@@ -249,7 +249,7 @@ export default function AdminStudentsPage() {
       </div>
 
       <div className="bg-card border border-border shadow-sm rounded-xl overflow-hidden flex flex-col min-h-[600px]">
-        <div className="p-4 border-b border-border flex items-center bg-muted/20">
+        <div className="p-4 border-border flex items-center bg-muted/20">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
@@ -374,7 +374,7 @@ export default function AdminStudentsPage() {
           <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
 
             {/* HEADER */}
-            <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+            <DialogHeader className="px-6 py-4 bg-muted/40">
               <DialogTitle className="text-lg font-semibold">
                 {modalProps.title}
               </DialogTitle>
@@ -506,7 +506,7 @@ export default function AdminStudentsPage() {
         <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
 
           {/* HEADER */}
-          <DialogHeader className="px-6 py-4 border-b bg-red-500/5">
+          <DialogHeader className="px-6 py-4 bg-red-500/5">
             <DialogTitle className="text-red-500 flex items-center gap-3 font-semibold">
               <div className="p-2 rounded-lg bg-red-500/10">
                 <Trash2 className="w-4 h-4 text-red-500" />

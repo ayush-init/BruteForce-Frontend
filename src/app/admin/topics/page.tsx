@@ -323,7 +323,7 @@ export default function AdminTopicsPage() {
             <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
 
                {/* HEADER */}
-               <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+               <DialogHeader className="px-6 py-4 bg-muted/40">
                   <DialogTitle className="text-lg font-semibold">
                      Create Global Topic
                   </DialogTitle>
@@ -424,7 +424,7 @@ export default function AdminTopicsPage() {
             <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
 
                {/* HEADER */}
-               <DialogHeader className="px-6 py-4 border-b bg-muted/40">
+               <DialogHeader className="px-6 py-4 bg-muted/40">
                   <DialogTitle className="text-lg font-semibold">
                      Update Topic
                   </DialogTitle>
@@ -557,7 +557,7 @@ export default function AdminTopicsPage() {
             <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden">
 
                {/* HEADER */}
-               <DialogHeader className="px-6 py-4 border-b bg-red-500/5">
+               <DialogHeader className="px-6 py-4 bg-red-500/5">
                   <DialogTitle className="text-red-500 font-semibold flex items-center gap-2">
                      Delete Topic
                   </DialogTitle>

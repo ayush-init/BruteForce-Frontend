@@ -61,8 +61,8 @@ export function ThemeToggle() {
       onClick={toggleTheme} 
       className="
         rounded-full w-9 h-9
-        border border-border
-        hover:bg-accent hover:border-primary
+        border-border border-border
+        hover:bg-accent hover:border-border-primary
         transition-all duration-200
         hover:scale-105
         active:scale-95

@@ -123,10 +123,10 @@ export function RecentQuestionsSidebar() {
           />
           
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-80 bg-background border-l shadow-2xl transform transition-transform duration-300 ease-in-out">
-            <Card className="h-full rounded-none border-0 shadow-none">
+          <div className="absolute right-0 top-0 h-full w-80 bg-background border-border-l shadow-2xl transform transition-transform duration-300 ease-in-out">
+            <Card className="h-full rounded-none border-border-0 shadow-none">
               {/* Header */}
-              <CardHeader className="border-b bg-muted/30">
+              <CardHeader className="border-border bg-muted/30">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg font-semibold flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
