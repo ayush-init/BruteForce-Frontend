@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import api from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
+import React, { useEffect, useState } from "react";
+import api from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
 import {
   BarChart3,
   TrendingUp,
@@ -11,20 +11,17 @@ import {
   BookOpen,
   Filter,
   X,
-  Loader2
-} from 'lucide-react';
+  Loader2,
+} from "lucide-react";
 
 interface Topic {
   id: number;
   topic_name: string;
-  slug: string;
-  photo_url: string;
   totalAssigned: number;
   totalSolved: number;
 }
 
 interface TopicProgressData {
-  username: string;
   studentName: string;
   batchName: string;
   topics: Topic[];
@@ -33,62 +30,85 @@ interface TopicProgressData {
   totalSolved: number;
 }
 
-interface TopicProgressModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   username: string;
 }
 
-export function TopicProgressModal({ isOpen, onClose, username }: TopicProgressModalProps) {
-  const [topicData, setTopicData] = useState<TopicProgressData | null>(null);
+export default function TopicProgressModal({
+  isOpen,
+  onClose,
+  username,
+}: Props) {
+  const [data, setData] = useState<TopicProgressData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'solved' | 'assigned' | 'name'>('solved');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'inprogress'>('all');
+  const [sortBy, setSortBy] = useState<"weak" | "strong" | "name">("weak");
 
-  const fetchTopicProgress = async () => {
-    setLoading(true);
-    setError(null);
+  // 🔥 FETCH DATA
+  const fetchData = async () => {
     try {
-      const response = await api.get(`/api/topicprogress/${username}?sortBy=${sortBy}`);
-      setTopicData(response.data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load data');
+      setLoading(true);
+      const res = await api.get(`/api/topicprogress/${username}`);
+      setData(res.data);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (isOpen && username) fetchTopicProgress();
-  }, [isOpen, username, sortBy]);
+    if (isOpen && username) fetchData();
+  }, [isOpen, username]);
 
-  const getFilteredTopics = () => {
-    if (!topicData) return [];
+  // 🔥 SORT LOGIC (IMPORTANT)
+  const getSortedTopics = () => {
+    if (!data) return [];
 
-    return topicData.topics.filter(topic => {
-      if (filterStatus === 'completed') return topic.totalSolved === topic.totalAssigned && topic.totalAssigned > 0;
-      if (filterStatus === 'inprogress') return topic.totalSolved < topic.totalAssigned && topic.totalSolved > 0;
-      return true;
-    });
+    let topics = [...data.topics];
+
+    if (sortBy === "weak") {
+      topics.sort(
+        (a, b) =>
+          a.totalSolved / (a.totalAssigned || 1) -
+          b.totalSolved / (b.totalAssigned || 1)
+      );
+    }
+
+    if (sortBy === "strong") {
+      topics.sort(
+        (a, b) =>
+          b.totalSolved / (b.totalAssigned || 1) -
+          a.totalSolved / (a.totalAssigned || 1)
+      );
+    }
+
+    if (sortBy === "name") {
+      topics.sort((a, b) => a.topic_name.localeCompare(b.topic_name));
+    }
+
+    return topics;
   };
 
-  const getStatusBadge = (topic: Topic) => {
-    if (topic.totalAssigned === 0) return { label: 'Not Started', variant: 'secondary' as const };
-    if (topic.totalSolved === topic.totalAssigned) return { label: 'Completed', variant: 'default' as const };
-    return { label: 'In Progress', variant: 'outline' as const };
+  const getColor = (progress: number) => {
+    if (progress < 30) return "from-red-500 to-rose-500";
+    if (progress < 70) return "from-yellow-400 to-orange-500";
+    return "from-lime-400 to-green-500";
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-
       {/* BACKDROP */}
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
 
       {/* MODAL */}
-      <div className="relative w-[95vw] max-w-[1100px] h-[85vh] bg-background border rounded-2xl shadow-lg flex flex-col overflow-hidden">
+      <div className="relative w-[95vw] max-w-[1000px] h-[85vh] bg-background border rounded-2xl shadow-xl flex flex-col overflow-hidden">
 
         {/* HEADER */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
@@ -98,7 +118,7 @@ export function TopicProgressModal({ isOpen, onClose, username }: TopicProgressM
               Topic Progress
             </div>
             <p className="text-sm text-muted-foreground">
-              {topicData?.studentName} • {topicData?.batchName}
+              {data?.studentName} • {data?.batchName}
             </p>
           </div>
 
@@ -111,90 +131,92 @@ export function TopicProgressModal({ isOpen, onClose, username }: TopicProgressM
         <div className="flex flex-col flex-1 overflow-hidden p-6 gap-6">
 
           {/* STATS */}
-          {topicData && (
+          {data && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Stat icon={<BookOpen />} label="Topics" value={topicData.totalTopics} />
-              <Stat icon={<Target />} label="Assigned" value={topicData.totalAssigned} />
-              <Stat icon={<TrendingUp />} label="Solved" value={topicData.totalSolved} />
+              <Stat icon={<BookOpen />} label="Topics" value={data.totalTopics} />
+              <Stat icon={<Target />} label="Assigned" value={data.totalAssigned} />
+              <Stat icon={<TrendingUp />} label="Solved" value={data.totalSolved} />
               <Stat
                 icon={<Award />}
                 label="Completion"
                 value={
-                  topicData.totalAssigned > 0
-                    ? `${Math.round((topicData.totalSolved / topicData.totalAssigned) * 100)}%`
+                  data.totalAssigned > 0
+                    ? `${Math.round(
+                        (data.totalSolved / data.totalAssigned) * 100
+                      )}%`
                     : "0%"
                 }
               />
             </div>
           )}
 
-          {/* FILTERS */}
-          <div className="flex gap-3 items-center">
+          {/* CONTROLS */}
+          <div className="flex items-center gap-3">
             <Filter className="w-4 h-4" />
 
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="border rounded px-2 py-1"
+              className="border rounded px-2 py-1 bg-background"
             >
-              <option value="solved">Solved</option>
-              <option value="assigned">Assigned</option>
-              <option value="name">Name</option>
-            </select>
-
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="border rounded px-2 py-1"
-            >
-              <option value="all">All</option>
-              <option value="completed">Completed</option>
-              <option value="inprogress">In Progress</option>
+              <option value="weak">Weakest First</option>
+              <option value="strong">Strongest First</option>
+              <option value="name">A-Z</option>
             </select>
           </div>
 
           {/* LIST */}
-          {/* LIST */}
-          <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex-1 overflow-y-auto space-y-3 pr-2">
 
             {loading ? (
-              <div className="col-span-full flex justify-center items-center">
+              <div className="flex justify-center items-center h-full">
                 <Loader2 className="animate-spin" />
               </div>
-            ) : error ? (
-              <div className="col-span-full text-center text-red-500">{error}</div>
             ) : (
-              getFilteredTopics().map(topic => {
-                const progress = topic.totalAssigned > 0
-                  ? Math.round((topic.totalSolved / topic.totalAssigned) * 100)
-                  : 0;
-
-                const status = getStatusBadge(topic);
+              getSortedTopics().map((topic) => {
+                const progress =
+                  topic.totalAssigned > 0
+                    ? Math.round(
+                        (topic.totalSolved / topic.totalAssigned) * 100
+                      )
+                    : 0;
 
                 return (
-                  <div key={topic.id} className="border rounded-xl p-4">
+                  <div
+                    key={topic.id}
+                    className="p-4 rounded-xl border bg-muted/30 hover:bg-muted/50 transition-all"
+                  >
+                    {/* TOP */}
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-semibold">
+                        {topic.topic_name}
+                      </h3>
 
-                    <div className="flex justify-between mb-2">
-                      <h3 className="font-semibold">{topic.topic_name}</h3>
-                      <Badge>{status.label}</Badge>
+                      <span className="text-sm font-semibold text-primary">
+                        {progress}%
+                      </span>
                     </div>
 
-                    <div className="text-sm text-muted-foreground mb-2">
-                      {topic.totalSolved}/{topic.totalAssigned}
+                    {/* SUB */}
+                    <div className="text-xs text-muted-foreground mb-2">
+                      {topic.totalSolved} / {topic.totalAssigned} solved
                     </div>
 
-                    <div className="w-full bg-muted h-2 rounded">
+                    {/* PROGRESS */}
+                    <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
                       <div
-                        className="bg-primary h-2 rounded"
+                        className={`h-full rounded-full bg-gradient-to-r ${getColor(
+                          progress
+                        )} transition-all duration-700 relative`}
                         style={{ width: `${progress}%` }}
-                      />
+                      >
+                        <div className="absolute inset-0 animate-[shine_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                      </div>
                     </div>
-
                   </div>
                 );
               })
             )}
-
           </div>
         </div>
       </div>
@@ -202,10 +224,10 @@ export function TopicProgressModal({ isOpen, onClose, username }: TopicProgressM
   );
 }
 
-/* SMALL STAT COMPONENT */
+/* STAT CARD */
 function Stat({ icon, label, value }: any) {
   return (
-    <div className="border rounded-xl p-4 flex items-center gap-3">
+    <div className="border rounded-xl p-4 flex items-center gap-3 bg-muted/30">
       <div className="p-2 bg-primary/10 rounded">{icon}</div>
       <div>
         <p className="text-sm text-muted-foreground">{label}</p>

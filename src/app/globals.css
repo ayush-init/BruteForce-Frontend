@@ -184,7 +184,10 @@
 .card-premium:hover {
   box-shadow: 0 0 25px var(--hover-glow);
 }
-
+@keyframes shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

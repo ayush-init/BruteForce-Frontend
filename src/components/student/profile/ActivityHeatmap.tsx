@@ -10,23 +10,20 @@ interface ActivityHeatmapProps {
 export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
   return (
     <div>
-      <h3 
-        className="font-bold mb-4 flex items-center gap-2" 
-        style={{fontSize: 'var(--text-base)', color: 'var(--foreground)'}}
-      >
-        <Activity className="w-5 h-5" style={{color: 'var(--accent-primary)'}} />
+      <h3 className="font-bold mb-4 flex items-center gap-2 text-[var(--text-base)] text-[var(--foreground)]">
+        <Activity className="w-5 h-5 text-[var(--accent-primary)]" />
         Activity Heatmap (Full Year)
       </h3>
       {heatmap && heatmap.length > 0 ? (
-        <div className="glass p-4" style={{borderRadius: 'var(--radius-lg)'}}>
+        <div className="glass p-4 rounded-[var(--radius-lg)]">
           {/* GitHub-style horizontal layout */}
           <div className="flex flex-col gap-2">
             {/* Month labels */}
             <div className="flex items-start gap-2">
-              <div className="w-10 h-3 flex items-center justify-end" style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}>
+              <div className="w-10 h-3 flex items-center justify-end text-[var(--text-xs)] text-[var(--text-secondary)]">
                 {/* Empty space for day labels */}
               </div>
-              <div className="flex-1 flex justify-between" style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}>
+              <div className="flex-1 flex justify-between text-[var(--text-xs)] text-[var(--text-secondary)]">
                 <span>Jan</span>
                 <span>Feb</span>
                 <span>Mar</span>
@@ -45,7 +42,7 @@ export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
             {/* Heatmap grid */}
             <div className="flex items-start gap-2">
               {/* Day labels */}
-              <div className="flex flex-col gap-0.5 w-10" style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}>
+              <div className="flex flex-col gap-0.5 w-10 text-[var(--text-xs)] text-[var(--text-secondary)]">
                 <div className="h-3 flex items-center justify-end">Mon</div>
                 <div className="h-3"></div>
                 <div className="h-3"></div>
@@ -100,23 +97,23 @@ export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
           </div>
 
           {/* Legend and stats */}
-          <div className="flex items-center justify-between mt-3 pt-3" style={{borderTop: `1px solid var(--border)`}}>
-            <div className="flex items-center gap-3" style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--border)]">
+            <div className="flex items-center gap-3 text-[var(--text-xs)] text-[var(--text-secondary)]">
               <span>Less</span>
               <div className="flex gap-0.5">
-                <div className="w-3 h-3" style={{backgroundColor: 'var(--muted)', border: `1px solid var(--border)`}}></div>
-                <div className="w-3 h-3" style={{backgroundColor: 'var(--primary)', opacity: 0.2, border: `1px solid var(--border)`}}></div>
-                <div className="w-3 h-3" style={{backgroundColor: 'var(--primary)', opacity: 0.4, border: `1px solid var(--border)`}}></div>
-                <div className="w-3 h-3" style={{backgroundColor: 'var(--primary)', opacity: 0.6, border: `1px solid var(--border)`}}></div>
-                <div className="w-3 h-3" style={{backgroundColor: 'var(--primary)', border: `1px solid var(--border)`}}></div>
+                <div className="w-3 h-3 bg-[var(--muted)] border border-[var(--border)]"></div>
+                <div className="w-3 h-3 border border-[var(--border)]" style={{backgroundColor: 'var(--primary)', opacity: 0.2}}></div>
+                <div className="w-3 h-3 border border-[var(--border)]" style={{backgroundColor: 'var(--primary)', opacity: 0.4}}></div>
+                <div className="w-3 h-3 border border-[var(--border)]" style={{backgroundColor: 'var(--primary)', opacity: 0.6}}></div>
+                <div className="w-3 h-3 border border-[var(--border)]" style={{backgroundColor: 'var(--primary)'}}></div>
               </div>
               <span>More</span>
             </div>
 
             {/* Stats summary */}
-            <div className="flex items-center gap-4" style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}>
+            <div className="flex items-center gap-4 text-[var(--text-xs)] text-[var(--text-secondary)]">
               <span className="flex items-center gap-1">
-                <div className="w-3 h-3" style={{backgroundColor: 'var(--primary)', opacity: 0.2, border: `1px solid var(--border)`}}></div>
+                <div className="w-3 h-3 border border-[var(--border)]" style={{backgroundColor: 'var(--primary)', opacity: 0.2}}></div>
                 {heatmap.reduce((sum: number, h: HeatmapData) => sum + (h.count > 0 ? 1 : 0), 0)} active days
               </span>
               <span className="flex items-center gap-1">
@@ -127,15 +124,16 @@ export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
           </div>
         </div>
       ) : (
-        <div className="p-8 flex items-center justify-center" style={{
-          height: 'var(--spacing-2xl)',
-          borderRadius: 'var(--radius-lg)',
-          border: `1px dashed var(--border)`,
-          backgroundColor: 'var(--card)'
-        }}>
+        <div 
+          className="p-8 flex items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-[var(--border)]"
+          style={{
+            height: 'var(--spacing-2xl)',
+            backgroundColor: 'var(--card)'
+          }}
+        >
           <div className="text-center">
-            <Activity className="w-6 h-6 mx-auto mb-2" style={{color: 'var(--text-secondary)'}} />
-            <div style={{fontSize: 'var(--text-sm)', color: 'var(--text-secondary)'}}>No activity data available yet. Start solving!</div>
+            <Activity className="w-6 h-6 mx-auto mb-2 text-[var(--text-secondary)]" />
+            <div className="text-[var(--text-sm)] text-[var(--text-secondary)]">No activity data available yet. Start solving!</div>
           </div>
         </div>
       )}

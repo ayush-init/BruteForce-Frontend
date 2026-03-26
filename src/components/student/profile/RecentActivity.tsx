@@ -9,12 +9,9 @@ interface RecentActivityProps {
 
 export function RecentActivity({ recentActivity }: RecentActivityProps) {
   return (
-    <div className="glass p-8" style={{borderRadius: 'var(--radius-lg)'}}>
-      <h3 
-        className="font-bold mb-6 flex items-center gap-2" 
-        style={{fontSize: 'var(--text-base)', color: 'var(--foreground)'}}
-      >
-        <Clock className="w-5 h-5" style={{color: 'var(--accent-primary)'}} />
+    <div className="glass p-8 rounded-[var(--radius-lg)]">
+      <h3 className="font-bold mb-6 flex items-center gap-2 text-[var(--text-base)] text-[var(--foreground)]">
+        <Clock className="w-5 h-5 text-[var(--accent-primary)]" />
         Recent Activity
       </h3>
 
@@ -27,36 +24,29 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
             return (
               <div 
                 key={idx} 
-                className="flex items-center justify-between p-5 hover-glow transition-all duration-200" 
+                className="flex items-center justify-between p-5 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border border-[var(--border)]" 
                 style={{
-                  backgroundColor: levelBg,
-                  borderRadius: 'var(--radius-lg)',
-                  border: `1px solid var(--border)`
+                  backgroundColor: levelBg
                 }}
               >
                 <div className="flex items-center gap-4 flex-1">
                   <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center" 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center rounded-[var(--radius-md)]" 
                     style={{
                       backgroundColor: 'var(--accent-primary)',
-                      color: 'var(--primary-foreground)',
-                      borderRadius: 'var(--radius-md)'
+                      color: 'var(--primary-foreground)'
                     }}
                   >
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                   <div className="flex-1">
                     <div 
-                      className="font-semibold cursor-pointer transition-colors" 
-                      style={{fontSize: 'var(--text-base)', color: 'var(--foreground)'}}
+                      className="font-semibold cursor-pointer transition-colors text-[var(--text-base)] text-[var(--foreground)]"
                       onClick={() => activity.question_link && window.open(activity.question_link, '_blank', 'noopener,noreferrer')}
                     >
                       {activity.question_name}
                     </div>
-                    <div 
-                      className="font-mono mt-1 flex items-center gap-4" 
-                      style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}
-                    >
+                    <div className="font-mono mt-1 flex items-center gap-4 text-[var(--text-xs)] text-[var(--text-secondary)]">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {new Date(activity.solvedAt).toLocaleDateString()}
@@ -69,12 +59,11 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
                   </div>
                 </div>
                 <div 
-                  className="font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg" 
+                  className="font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg rounded-[var(--radius-md)]" 
                   style={{
                     fontSize: 'var(--text-xs)',
                     backgroundColor: levelBg,
-                    color: levelColor,
-                    borderRadius: 'var(--radius-md)'
+                    color: levelColor
                   }}
                 >
                   {activity.difficulty}
@@ -84,10 +73,10 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
           })}
         </div>
       ) : (
-        <div className="text-center py-12" style={{color: 'var(--text-secondary)'}}>
-          <Target className="w-12 h-12 mx-auto mb-4" style={{color: 'var(--text-secondary)'}} />
-          <div style={{fontSize: 'var(--text-base)'}}>No recent submissions.</div>
-          <div style={{fontSize: 'var(--text-sm)', marginTop: 'var(--spacing-sm)'}}>Start solving problems to see your activity here!</div>
+        <div className="text-center py-12 text-[var(--text-secondary)]">
+          <Target className="w-12 h-12 mx-auto mb-4 text-[var(--text-secondary)]" />
+          <div className="text-[var(--text-base)]">No recent submissions.</div>
+          <div className="text-[var(--text-sm)] mt-[var(--spacing-sm)]">Start solving problems to see your activity here!</div>
         </div>
       )}
     </div>

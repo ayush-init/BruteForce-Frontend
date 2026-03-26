@@ -1,6 +1,6 @@
 // src/components/student/profile/ProblemSolvingStats.tsx
-import React from 'react';
-import { TrendingUp } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { TrendingUp } from "lucide-react";
 
 interface ProblemSolvingStatsProps {
   codingStats?: {
@@ -11,149 +11,137 @@ interface ProblemSolvingStatsProps {
   };
 }
 
+// 🔥 SEGMENTED GAUGE
+function SegmentedGauge({
+  value = 0,
+  total = 100,
+  color = "#a3e635",
+  label,
+}: {
+  value?: number;
+  total?: number;
+  color?: string;
+  label: string;
+}) {
+  const percentage = total ? (value / total) * 100 : 0;
+  const segments = 20; // number of bars
+  const filledSegments = Math.round((percentage / 100) * segments);
+
+  const [activeSegments, setActiveSegments] = useState(0);
+
+  useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setActiveSegments(i);
+      if (i >= filledSegments) clearInterval(interval);
+    }, 40); // speed of animation
+
+    return () => clearInterval(interval);
+  }, [filledSegments]);
+
+  const radius = 70;
+  const center = 80;
+
+  return (
+    <div className="flex flex-col items-center justify-center p-6 rounded-[var(--radius-lg)] bg-[var(--accent-secondary)]">
+      <svg width="160" height="100" viewBox="0 0 160 100">
+        {Array.from({ length: segments }).map((_, i) => {
+          const angle = (i / (segments - 1)) * Math.PI; // semi-circle
+          const x1 = center + Math.cos(Math.PI - angle) * (radius - 10);
+          const y1 = 80 - Math.sin(angle) * (radius - 10);
+
+          const x2 = center + Math.cos(Math.PI - angle) * radius;
+          const y2 = 80 - Math.sin(angle) * radius;
+
+          const isActive = i < activeSegments;
+
+          return (
+            <line
+              key={i}
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke={isActive ? color : "#2a2a2a"}
+              strokeWidth="8"
+              strokeLinecap="round"
+              style={{
+                transition: "all 0.3s ease",
+                filter: isActive
+                  ? "drop-shadow(0 0 6px rgba(163,230,53,0.6))"
+                  : "none",
+              }}
+            />
+          );
+        })}
+      </svg>
+
+      {/* Center text */}
+      <div className="-mt-8 text-center">
+        <div className="text-xl font-bold text-[var(--foreground)]">
+          {Math.round(percentage)}%
+        </div>
+        <div className="text-xs text-[var(--text-secondary)]">
+          {value} / {total}
+        </div>
+      </div>
+
+      {/* Label */}
+      <div className="mt-3 text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wide">
+        {label}
+      </div>
+    </div>
+  );
+}
+
 export function ProblemSolvingStats({ codingStats }: ProblemSolvingStatsProps) {
   return (
-    <div className="glass p-8" style={{borderRadius: 'var(--radius-lg)'}}>
-      <div className="flex items-end justify-between mb-8">
+    <div className="glass p-8 rounded-[var(--radius-lg)]">
+      {/* Header */}
+      <div className="flex items-end justify-between mb-10">
         <div>
-          <h2 
-            className="font-bold mb-2 flex items-center gap-3" 
-            style={{fontSize: 'var(--text-3xl)', color: 'var(--foreground)'}}
-          >
-            <TrendingUp className="w-8 h-8" style={{color: 'var(--accent-primary)'}} />
+          <h2 className="font-bold mb-2 flex items-center gap-3 text-[var(--text-3xl)] text-[var(--foreground)]">
+            <TrendingUp className="w-8 h-8 text-[var(--accent-primary)]" />
             Problem Solving Stats
           </h2>
-          <p style={{fontSize: 'var(--text-sm)', color: 'var(--text-secondary)'}}>Track your coding journey across all difficulty levels.</p>
+          <p className="text-[var(--text-sm)] text-[var(--text-secondary)]">
+            Track your coding journey across all difficulty levels.
+          </p>
         </div>
+
         <div className="text-right">
-          <div 
-            className="font-black" 
-            style={{fontSize: 'var(--text-5xl)', color: 'var(--accent-primary)'}}
-          >
+          <div className="font-black text-[var(--text-7xl)] text-[var(--accent-primary)]">
             {codingStats?.totalSolved || 0}
           </div>
-          <div 
-            className="font-mono mt-1" 
-            style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em'}}
-          >
+          <div className="font-mono mt-1 text-[var(--text-xs)] text-[var(--text-secondary)] uppercase tracking-[0.1em]">
             Total Solved
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="p-6 text-center hover-glow transition-all duration-200" style={{
-          backgroundColor: 'var(--accent-secondary)', 
-          borderRadius: 'var(--radius-lg)'
-        }}>
-          <div 
-            className="font-bold mb-3" 
-            style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em'}}
-          >
-            Easy
-          </div>
-          <div 
-            className="font-bold" 
-            style={{fontSize: 'var(--text-3xl)', color: 'var(--foreground)'}}
-          >
-            {codingStats?.easy?.solved || 0}
-          </div>
-          <div 
-            className="mt-2" 
-            style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}
-          >
-            / {codingStats?.easy?.assigned || 0} assigned
-          </div>
-          <div 
-            className="w-full rounded-full mt-3" 
-            style={{height: 'var(--spacing-xs)', backgroundColor: 'var(--border)', borderRadius: 'var(--radius-full)'}}
-          >
-            <div
-              className="rounded-full"
-              style={{
-          width: `${codingStats?.easy?.assigned ? ((codingStats.easy?.solved || 0) / codingStats.easy.assigned) * 100 : 0}%`,
-                backgroundColor: 'var(--accent-primary)',
-                borderRadius: 'var(--radius-full)'
-              }}
-            />
-          </div>
-        </div>
+      {/* Gauges */}
+      <div className="grid grid-cols-3 gap-6">
+        <SegmentedGauge
+          value={codingStats?.easy?.solved}
+          total={codingStats?.easy?.assigned}
+          color="#a3e635" // green
+          label="Easy"
+        />
 
-        <div className="p-6 text-center hover-glow transition-all duration-200" style={{
-          backgroundColor: 'var(--accent-secondary)', 
-          borderRadius: 'var(--radius-lg)'
-        }}>
-          <div 
-            className="font-bold mb-3" 
-            style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em'}}
-          >
-            Medium
-          </div>
-          <div 
-            className="font-bold" 
-            style={{fontSize: 'var(--text-3xl)', color: 'var(--foreground)'}}
-          >
-            {codingStats?.medium?.solved || 0}
-          </div>
-          <div 
-            className="mt-2" 
-            style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}
-          >
-            / {codingStats?.medium?.assigned || 0} assigned
-          </div>
-          <div 
-            className="w-full rounded-full mt-3" 
-            style={{height: 'var(--spacing-xs)', backgroundColor: 'var(--border)', borderRadius: 'var(--radius-full)'}}
-          >
-            <div
-              className="rounded-full"
-              style={{
-             width: `${codingStats?.medium?.assigned ? ((codingStats.medium?.solved || 0) / codingStats.medium.assigned) * 100 : 0}%`,
-                height: '100%',
-                backgroundColor: 'var(--accent-primary)',
-                borderRadius: 'var(--radius-full)'
-              }}
-            />
-          </div>
-        </div>
+        <SegmentedGauge
+          value={codingStats?.medium?.solved}
+          total={codingStats?.medium?.assigned}
+          color="#f59e0b" // orange
+          label="Medium"
+        />
 
-        <div className="p-6 text-center hover-glow transition-all duration-200" style={{
-          backgroundColor: 'var(--accent-secondary)', 
-          borderRadius: 'var(--radius-lg)'
-        }}>
-          <div 
-            className="font-bold mb-3" 
-            style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em'}}
-          >
-            Hard
-          </div>
-          <div 
-            className="font-bold" 
-            style={{fontSize: 'var(--text-3xl)', color: 'var(--foreground)'}}
-          >
-            {codingStats?.hard?.solved || 0}
-          </div>
-          <div 
-            className="mt-2" 
-            style={{fontSize: 'var(--text-xs)', color: 'var(--text-secondary)'}}
-          >
-            / {codingStats?.hard?.assigned || 0} assigned
-          </div>
-          <div 
-            className="w-full rounded-full mt-3" 
-            style={{height: 'var(--spacing-xs)', backgroundColor: 'var(--border)', borderRadius: 'var(--radius-full)'}}
-          >
-            <div
-              className="rounded-full"
-              style={{
-              width: `${codingStats?.hard?.assigned ? ((codingStats.hard?.solved || 0) / codingStats.hard.assigned) * 100 : 0}%`,
-                height: '100%',
-                backgroundColor: 'var(--accent-primary)',
-                borderRadius: 'var(--radius-full)'
-              }}
-            />
-          </div>
-        </div>
+        <SegmentedGauge
+          value={codingStats?.hard?.solved}
+          total={codingStats?.hard?.assigned}
+          color="#ef4444" // red
+          label="Hard"
+        />
       </div>
     </div>
   );
