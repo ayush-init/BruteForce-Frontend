@@ -37,13 +37,34 @@ function decodeJwt(token: string) {
   }
 }
 
+// Helper functions for localStorage
+const getStoredSelections = () => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('adminSelections');
+    return stored ? JSON.parse(stored) : { city: null, batch: null };
+  }
+  return { city: null, batch: null };
+};
+
+const setStoredSelections = (city: any, batch: any) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('adminSelections', JSON.stringify({ city, batch }));
+  }
+};
+
+const clearStoredSelections = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('adminSelections');
+  }
+};
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   
   const [user, setUser] = useState<{name: string, role: string} | null>(null);
   const [cities, setCities] = useState<{id: number, city_name: string}[]>([]);
-  const [batches, setBatches] = useState<{id: number, slug: string, batch_name: string}[]>([]);
+  const [batches, setBatches] = useState<{id: number, slug: string, batch_name: string, year: number}[]>([]);
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -56,6 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   } = useAdminStore();
 
   const handleLogout = () => {
+    clearStoredSelections();
     logoutUser();
     router.push('/admin/login');
   };
@@ -102,43 +124,63 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         const cityList = await getAdminCities();
         setCities(cityList);
 
-        // Decode token for cityId/batchId if available
-        const activeToken = token || cookieToken;
-        const payload = decodeJwt(activeToken || '');
-        let initialCityId = payload?.cityId;
+        // Check if we have stored selections
+        const storedSelections = getStoredSelections();
         
-        let matchingCity = null;
-        if (initialCityId) {
-           matchingCity = cityList.find((c: any) => c.id === initialCityId);
-        }
-        
-        if (!matchingCity && cityList.length > 0) {
-           matchingCity = cityList[0];
-        }
+        if (storedSelections.city) {
+          // Restore from localStorage (persisted selections)
+          setSelectedCity(storedSelections.city);
+          
+          const batchList = await getAdminBatches(storedSelections.city.name);
+          setBatches(batchList);
+          
+          if (storedSelections.batch) {
+            setSelectedBatch(storedSelections.batch);
+          }
+        } else {
+          // First time visit - use token defaults
+          const activeToken = token || cookieToken;
+          const payload = decodeJwt(activeToken || '');
+          let initialCityId = payload?.cityId;
+          
+          let matchingCity = null;
+          if (initialCityId) {
+             matchingCity = cityList.find((c: any) => c.id === initialCityId);
+          }
+          
+          if (!matchingCity && cityList.length > 0) {
+             matchingCity = cityList[0];
+          }
 
-        if (matchingCity) {
-           setSelectedCity({ id: matchingCity.id, name: matchingCity.city_name });
-           
-           const batchList = await getAdminBatches(matchingCity.city_name);
-           setBatches(batchList);
+          if (matchingCity) {
+             const cityData = { id: matchingCity.id, name: matchingCity.city_name };
+             setSelectedCity(cityData);
+             
+             const batchList = await getAdminBatches(matchingCity.city_name);
+             setBatches(batchList);
 
-           const initialBatchId = payload?.batchId;
-           let matchingBatch = null;
-           
-           if (initialBatchId) {
-             matchingBatch = batchList.find((b: any) => b.id === initialBatchId);
-           }
-           if (!matchingBatch && batchList.length > 0) {
-             matchingBatch = batchList[0];
-           }
+             const initialBatchId = payload?.batchId;
+             let matchingBatch = null;
+             
+             if (initialBatchId) {
+               matchingBatch = batchList.find((b: any) => b.id === initialBatchId);
+             }
+             if (!matchingBatch && batchList.length > 0) {
+               matchingBatch = batchList[0];
+             }
 
-           if (matchingBatch) {
-             setSelectedBatch({ 
-               id: matchingBatch.id, 
-               slug: matchingBatch.slug || matchingBatch.batch_name.toLowerCase().replace(/\s+/g, '-'), 
-               name: matchingBatch.batch_name 
-             });
-           }
+             if (matchingBatch) {
+               const batchData = {
+                 id: matchingBatch.id, 
+                 slug: matchingBatch.slug, 
+                 name: matchingBatch.batch_name,
+                 year: matchingBatch.year
+               };
+               setSelectedBatch(batchData);
+               // Store the initial selections
+               setStoredSelections(cityData, batchData);
+             }
+          }
         }
       } catch (err: any) {
         console.error("Failed to load admin data", err);
@@ -166,7 +208,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
 
     loadUserAndData();
-  }, [pathname]);
+  }, []); // Remove pathname dependency - only run once on mount
 
   // Handle City Change
   const handleCityChange = (value: string | number) => {
@@ -174,17 +216,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const cityObj = cities.find(c => c.id === cityId);
     
     if (cityObj) {
-      setSelectedCity({ id: cityObj.id, name: cityObj.city_name });
+      const cityData = { id: cityObj.id, name: cityObj.city_name };
+      setSelectedCity(cityData);
+      setStoredSelections(cityData, null); // Clear batch when city changes
       setIsLoadingContext(true);
       getAdminBatches(cityObj.city_name).then((batchList) => {
         setBatches(batchList);
         if (batchList.length > 0) {
           const first = batchList[0];
-          setSelectedBatch({ 
+          const batchData = {
             id: first.id, 
-            slug: first.slug || first.batch_name.toLowerCase().replace(/\s+/g, '-'), 
-            name: first.batch_name 
-          });
+            slug: first.slug, 
+            name: first.batch_name,
+            year: first.year
+          };
+          setSelectedBatch(batchData);
+          setStoredSelections(cityData, batchData);
         }
       }).catch(err => {
         console.error("Batch load error:", err);
@@ -198,11 +245,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const batchId = Number(value);
     const batchObj = batches.find(b => b.id === batchId);
     if (batchObj) {
-      setSelectedBatch({ 
+      const batchData = {
         id: batchObj.id, 
-        slug: batchObj.slug || batchObj.batch_name.toLowerCase().replace(/\s+/g, '-'), 
-        name: batchObj.batch_name 
-      });
+        slug: batchObj.slug, 
+        name: batchObj.batch_name,
+        year: batchObj.year
+      };
+      console.log('Setting batch with slug:', batchData.slug); // Debug log
+      setSelectedBatch(batchData);
+      setStoredSelections(selectedCity, batchData);
     }
   };
 
@@ -332,7 +383,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                  <Select 
                    value={selectedBatch.id.toString()}
                    onChange={handleBatchChange}
-                   options={batches.map(b => ({ label: b.batch_name, value: b.id.toString() }))}
+                   options={batches.map(b => ({ label: `${b.batch_name} - ${b.year}`, value: b.id.toString() }))}
                    placeholder="Select Batch"
                  />
                ) : (

@@ -9,6 +9,7 @@ export interface AdminBatch {
   id: number;
   slug: string;
   name: string;
+  year: number;
 }
 
 interface AdminStore {
