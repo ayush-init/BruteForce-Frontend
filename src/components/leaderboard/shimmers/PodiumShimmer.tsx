@@ -9,10 +9,10 @@ export default function PodiumShimmer() {
       {[1, 2, 3].map((rank) => (
         <div key={rank} className="flex flex-col items-center w-28 md:w-36">
           <div className="relative rounded-full p-1 bg-gradient-to-tr from-card to-muted mb-[-24px] z-20">
-            <Skeleton className={`w-20 h-20 ${rank === 1 ? 'md:w-32 md:h-32' : rank === 2 ? 'md:w-24 md:h-40' : 'md:w-24 md:h-36'} rounded-full`} />
-            <Skeleton className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full" />
+            <Skeleton className="w-16 h-16 rounded-full" />
+            <Skeleton className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full" />
           </div>
-          <Skeleton className={`w-full ${rank === 1 ? 'h-40 md:h-52' : rank === 2 ? 'h-32 md:h-40' : 'h-28 md:h-36'} bg-card border-x border-t border-border rounded-t-2xl`} />
+          <Skeleton className="w-full h-40 bg-card border-x border-t border-border rounded-t-2xl" />
         </div>
       ))}
     </div>

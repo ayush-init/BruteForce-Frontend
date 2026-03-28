@@ -6,9 +6,7 @@ import { useAdminStore } from '@/store/adminStore';
 import { getAdminLeaderboard } from '@/services/admin.service';
 import { Trophy, Clock } from 'lucide-react';
 import PodiumShimmer from '@/components/leaderboard/shimmers/PodiumShimmer';
-import StatsShimmer from '@/components/leaderboard/shimmers/StatsShimmer';
 import TableShimmer from '@/components/leaderboard/shimmers/TableShimmer';
-import { StatsSection } from '@/components/leaderboard/components/StatsSection';
 import { LeaderboardTable } from '@/components/leaderboard/components/LeaderboardTable';
 import { FilterBar } from '@/components/leaderboard/components/FilterBar';
 import { EvaluationModal } from '@/components/leaderboard/components/EvaluationModal';
@@ -205,7 +203,6 @@ export default function AdminLeaderboardPage() {
     return (
       <div className="flex flex-col space-y-6">
         <PodiumShimmer />
-        <StatsShimmer />
         <TableShimmer />
       </div>
     );
@@ -245,13 +242,6 @@ export default function AdminLeaderboardPage() {
 
       <PodiumSection
         top3={leaderboardData?.data?.leaderboard?.slice(0, 3) || []}
-        loading={leaderboardLoading}
-        error={leaderboardError}
-      />
-
-      <StatsSection
-        leaderboard={leaderboardData?.data?.leaderboard || []}
-        totalParticipants={leaderboardData?.data?.total || 0}
         loading={leaderboardLoading}
         error={leaderboardError}
       />
