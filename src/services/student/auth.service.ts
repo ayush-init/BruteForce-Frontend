@@ -27,7 +27,8 @@ export const studentAuthService = {
       showSuccess('LOGIN');
       return res.data;
     } catch (error) {
-      throw error;
+      handleError(error);
+      // Don't re-throw error to prevent console errors
     }
   },
 
@@ -37,7 +38,8 @@ export const studentAuthService = {
       showSuccess('REGISTER');
       return res.data;
     } catch (error) {
-      throw error;
+      handleError(error);
+      // Don't re-throw error to prevent console errors
     }
   },
 
@@ -47,6 +49,7 @@ export const studentAuthService = {
       showSuccess('LOGOUT');
       return res.data;
     } catch (error) {
+      handleError(error);
       throw error;
     }
   },
@@ -57,6 +60,7 @@ export const studentAuthService = {
       showSuccess('LOGIN');
       return res.data;
     } catch (error) {
+      handleError(error);
       throw error;
     }
   },
@@ -67,6 +71,7 @@ export const studentAuthService = {
       showSuccess('EMAIL_SENT', 'Password reset email sent!');
       return res.data;
     } catch (error) {
+      handleError(error);
       throw error;
     }
   },

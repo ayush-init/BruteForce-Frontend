@@ -49,7 +49,8 @@ export const createAdmin = async (data: any) => {
     showSuccess('ADMIN_CREATED');
     return response.data.data;
   } catch (error) {
-    throw error;
+    handleError(error);
+    // Don't re-throw error to prevent console errors
   }
 };
 
@@ -59,7 +60,8 @@ export const updateAdmin = async (id: number, data: any) => {
     showSuccess('ADMIN_UPDATED');
     return response.data.data;
   } catch (error) {
-    throw error;
+    handleError(error);
+    // Don't re-throw error to prevent console errors
   }
 };
 
@@ -69,7 +71,8 @@ export const deleteAdmin = async (id: number) => {
     showDeleteSuccess('Admin');
     return response.data;
   } catch (error) {
-    throw error;
+    handleError(error);
+    // Don't re-throw error to prevent console errors
   }
 };
 
@@ -119,6 +122,7 @@ export const createAdminTopic = async (formData: FormData) => {
     showSuccess('TOPIC_CREATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -131,6 +135,7 @@ export const updateAdminTopic = async (topicSlug: string, formData: FormData) =>
     showSuccess('TOPIC_UPDATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -141,6 +146,7 @@ export const deleteAdminTopic = async (topicSlug: string) => {
     showDeleteSuccess('Topic');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -165,6 +171,7 @@ export const createAdminClass = async (batchSlug: string, topicSlug: string, dat
     showSuccess('CLASS_CREATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -175,6 +182,7 @@ export const updateAdminClass = async (batchSlug: string, topicSlug: string, cla
     showSuccess('CLASS_UPDATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -185,6 +193,7 @@ export const deleteAdminClass = async (batchSlug: string, topicSlug: string, cla
     showDeleteSuccess('Class');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -219,6 +228,7 @@ export const createAdminQuestion = async (data: any) => {
     showSuccess('QUESTION_CREATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -229,6 +239,7 @@ export const updateAdminQuestion = async (id: number, data: any) => {
     showSuccess('QUESTION_UPDATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -239,6 +250,7 @@ export const deleteAdminQuestion = async (id: number) => {
     showDeleteSuccess('Question');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -258,6 +270,7 @@ export const createAdminStudent = async (data: any) => {
     showSuccess('STUDENT_CREATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -268,6 +281,7 @@ export const updateAdminStudent = async (id: number, data: any) => {
     showSuccess('STUDENT_UPDATED');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -278,6 +292,7 @@ export const deleteAdminStudent = async (id: number) => {
     showDeleteSuccess('Student');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };
@@ -290,6 +305,7 @@ export const bulkUploadStudents = async (formData: FormData) => {
     showSuccess('FILE_UPLOADED', 'Students uploaded successfully!');
     return response.data;
   } catch (error) {
+    handleError(error);
     throw error;
   }
 };

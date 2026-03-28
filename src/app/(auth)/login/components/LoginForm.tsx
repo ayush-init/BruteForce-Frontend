@@ -55,11 +55,6 @@ export function LoginForm() {
       }
     } catch (err: any) {
       handleError(err);
-      setError(
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        'Invalid credentials.'
-      );
     } finally {
       setLoading(false);
     }
@@ -67,7 +62,6 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleLogin} className="space-y-5">
-
   {/* ERROR */}
   {error && (
     <div className="

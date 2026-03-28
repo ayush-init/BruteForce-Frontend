@@ -79,7 +79,6 @@ export function LeaderboardTable({
             setPage(1);
           }}
           showLimitSelector={true}
-          loading={false}
         />
       )}
     </>

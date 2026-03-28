@@ -12,22 +12,7 @@ export const studentLeaderboardService = {
       return res.data;
     } catch (error: any) {
         handleError(error);
-      // Handle silent errors (like token refresh failures) without throwing
-      if (error?.silent) {
-        // Return empty leaderboard data for silent failures
-        return {
-          success: false,
-          top10: [],
-          yourRank: null,
-          message: "Unable to load leaderboard",
-          filters: {
-            city: filters?.city || "all",
-            year: filters?.year || new Date().getFullYear(),
-            type: filters?.type || "all"
-          }
-        };
-      }
-      throw error;
+        throw error;
     }
   }
 };

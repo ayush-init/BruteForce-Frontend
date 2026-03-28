@@ -4,8 +4,13 @@ import { handleError } from "@/utils/handleError";
 
 export const studentProfileService = {
   getProfile: async () => {
-    const res = await api.get('/api/students/profile');
-    return res.data;
+    try {
+      const res = await api.get('/api/students/profile');
+      return res.data;
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
   },
   
   getProfileByUsername: async (username: string) => {
@@ -14,11 +19,6 @@ export const studentProfileService = {
       return res.data;
     } catch (error: any) {
       handleError(error);
-      console.error('Profile fetch error:', error);
-      // If network error or server not available, throw a more descriptive error
-      if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
-        throw new Error('Unable to connect to server. Please check if backend is running.');
-      }
       throw error;
     }
   },
@@ -63,8 +63,13 @@ export const studentProfileService = {
   },
 
   updateProfileDetails: async (data: ProfileUpdateData) => {
-    // Use the new PUT /api/students/me endpoint for updating current student profile
-    const res = await api.put('/api/students/me', data);    
-    return res.data;
+    try {
+      // Use the new PUT /api/students/me endpoint for updating current student profile
+      const res = await api.put('/api/students/me', data);    
+      return res.data;
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
   }
 };

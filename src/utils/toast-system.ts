@@ -149,7 +149,81 @@ export const getErrorMessage = (error: any): string => {
   // Check for backend message but only if it's user-friendly
   const backendMessage = error?.response?.data?.message;
   if (backendMessage && !backendMessage.includes('/') && !backendMessage.includes('Error') && !backendMessage.includes('Exception')) {
-    return backendMessage;
+    // Map common backend messages to user-friendly ones
+    switch (backendMessage) {
+      case 'Email already exists':
+        return 'An account with this email already exists.';
+      case 'Username already exists':
+        return 'This username is already taken.';
+      case 'Student not found':
+        return 'Student not found.';
+      case 'Admin not found':
+        return 'Admin not found.';
+      case 'City not found':
+        return 'City not found.';
+      case 'Batch not found':
+        return 'Batch not found.';
+      case 'Topic not found':
+        return 'Topic not found.';
+      case 'City already exists':
+        return 'A city with this name already exists.';
+      case 'Batch with same name and year already exists in this city':
+        return 'A batch with this name and year already exists in this city.';
+      case 'Topic already exists':
+        return 'A topic with this name already exists.';
+      case 'Cannot delete city with active batches':
+        return 'Cannot delete city with active batches.';
+      case 'Cannot delete city with active students':
+        return 'Cannot delete city with active students.';
+      case 'Cannot delete batch with active students':
+        return 'Cannot delete batch with active students.';
+      case 'Email, username, or enrollment_id already exists':
+        return 'An account with this email, username, or enrollment ID already exists.';
+      case 'Name, email, username, password, and batch_id are required':
+        return 'Please fill in all required fields.';
+      case 'Invalid batch_id':
+        return 'Invalid batch selected.';
+      case 'All fields are required':
+        return 'All fields are required.';
+      case 'City name is required':
+        return 'City name is required.';
+      case 'City name is missing':
+        return 'City name is missing.';
+      case 'City name already in use':
+        return 'This city name is already in use.';
+      case 'Duplicate entry found':
+        return 'This record already exists.';
+      case 'Email, Username or Enrollment ID already exists':
+        return 'Email, username, or enrollment ID already exists.';
+      case 'Username already exists':
+        return 'This username is already taken.';
+      case 'Enrollment ID already exists':
+        return 'This enrollment ID already exists.';
+      case 'Google account already linked':
+        return 'This Google account is already linked to another account.';
+      case 'Invalid city or batch reference':
+        return 'Invalid city or batch selected.';
+      case 'Invalid batch reference':
+        return 'Invalid batch selected.';
+      case 'Student already solved this question':
+        return 'You have already solved this question.';
+      case 'Invalid student or question reference':
+        return 'Invalid student or question reference.';
+      case 'Failed to create student':
+        return 'Failed to create student. Please try again.';
+      case 'Failed to update student':
+        return 'Failed to update student. Please try again.';
+      case 'Failed to delete student':
+        return 'Failed to delete student. Please try again.';
+      case 'Failed to fetch students':
+        return 'Failed to fetch students. Please try again.';
+      case 'Failed to fetch student report':
+        return 'Failed to fetch student report. Please try again.';
+      case 'Failed to add student progress':
+        return 'Failed to add student progress. Please try again.';
+      default:
+        return backendMessage;
+    }
   }
 
   // Handle specific HTTP status codes
@@ -190,13 +264,13 @@ export const handleApiError = (error: any, context?: string) => {
   }
 
   // Log error in development for debugging
-  if (process.env.NODE_ENV === 'development') {
-    console.group(`API Error ${context ? `in ${context}` : ''}`);
-    console.error('Error:', error);
-    console.error('Status:', error?.response?.status);
-    console.error('Data:', error?.response?.data);
-    console.groupEnd();
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   console.group(`API Error ${context ? `in ${context}` : ''}`);
+  //   console.error('Error:', error);
+  //   console.error('Status:', error?.response?.status);
+  //   console.error('Data:', error?.response?.data);
+  //   console.groupEnd();
+  // }
 
   const userMessage = getErrorMessage(error);
   showToast.error(userMessage);

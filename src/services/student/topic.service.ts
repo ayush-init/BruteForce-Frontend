@@ -17,11 +17,7 @@ export const studentTopicService = {
       return res.data || [];
     } catch (e: any) {
         handleError(e);
-      if (e.response?.status === 400) {
-        // Missing batchId in token. Return empty topics instead of crashing app.
-        return [];
-      }
-      throw e;
+        throw e;
     }
   },
   

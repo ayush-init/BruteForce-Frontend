@@ -29,11 +29,7 @@ export const studentPracticeService = {
       return res.data; // expects { questions: [...], totalPages: N }
     } catch (e: any) {
         handleError(e);
-      if (e.response?.status === 400) {
-        // Missing batchId in token. Return empty questions list instead of crashing app.
-        return { questions: [], totalPages: 1 };
-      }
-      throw e;
+        throw e;
     }
   }
 };
