@@ -30,17 +30,7 @@ export default function StudentLeaderboardPage() {
     retry: false
   });
 
-  // Set default city and year based on logged-in student
-  useEffect(() => {
-    if (studentData) {
-      const student = studentData;
-      setLCity(student.city?.city_name || 'all');
-      setLYear(student.batch?.year || 2025);
-    }
-  }, [studentData]);
-
-
-
+  // Extract available years from API response
   const { data: leaderboardData, isLoading, error, refetch } = useQuery({
     queryKey: ['studentLeaderboard', lCity === 'all' ? 'all' : lCity, lYear, lType, lSearch],
     queryFn: async () => {
@@ -61,7 +51,34 @@ export default function StudentLeaderboardPage() {
     refetchOnReconnect: false,
   });
 
+  // Compute year options similar to admin leaderboard
+  const yearOptions = leaderboardData?.data?.available_cities ? (() => {
+    if (lCity === 'all' || lCity === 'All Cities') {
+      // Extract years from "All Cities" entry
+      const allCitiesEntry = leaderboardData.data.available_cities.find((city: any) => city.city_name === "All Cities");
+      return allCitiesEntry?.available_years || [];
+    } else {
+      // Find specific city and return its years
+      const cityData = leaderboardData.data.available_cities.find((city: any) => city.city_name === lCity);
+      return cityData?.available_years || [];
+    }
+  })() : [];
 
+  // Set default city and year based on logged-in student
+  useEffect(() => {
+    if (studentData) {
+      const student = studentData;
+      setLCity(student.city?.city_name || 'all');
+      setLYear(student.batch?.year || 2025);
+    }
+  }, [studentData]);
+
+  // Reset year when city changes (similar to admin)
+  useEffect(() => {
+    if (yearOptions.length > 0 && !yearOptions.includes(lYear)) {
+      setLYear(yearOptions[0]);
+    }
+  }, [lCity, yearOptions, lYear]);
 
   const data = leaderboardData?.data;
   const handleRefresh = useCallback(() => {
@@ -116,14 +133,11 @@ export default function StudentLeaderboardPage() {
           ]}
           setLYear={setLYear}
           lYear={lYear}
-          yearOptionsObj={[
-            { value: 'all', label: 'All Years' },
-            ...(data?.available_cities?.[0]?.available_years?.map((year: number) => ({
-              value: year.toString(),
-              label: year.toString()
-            })) || [])
-          ]}
-          allYears={data?.available_cities?.[0]?.available_years || []}
+          yearOptionsObj={yearOptions.map((y: number) => ({
+            value: y.toString(),
+            label: y.toString()
+          }))}
+          allYears={yearOptions}
           mode="student"
         />
 
