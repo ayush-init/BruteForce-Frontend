@@ -17,6 +17,8 @@ interface EditProfileModalProps {
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDeleteImage: () => void;
   handleSaveProfile: () => void;
+  imagePreview: string | null;
+  imageRemoved: boolean;
 }
 
 export function EditProfileModal({
@@ -31,6 +33,8 @@ export function EditProfileModal({
   handleImageUpload,
   handleDeleteImage,
   handleSaveProfile,
+  imagePreview,
+  imageRemoved,
 }: EditProfileModalProps) {
   if (!isOpen) return null;
 
@@ -55,7 +59,13 @@ export function EditProfileModal({
           <div className="flex flex-col items-center gap-2">
             <div className="relative group">
               <div className="w-20 h-20 rounded-full border-2 border-border bg-muted overflow-hidden shadow-md">
-                {student.profileImageUrl ? (
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Profile Preview" className="w-full h-full object-cover" />
+                ) : imageRemoved ? (
+                  <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-white text-2xl font-bold">
+                    {student.name?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+                ) : student.profileImageUrl ? (
                   <img src={student.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-white text-2xl font-bold">
@@ -65,7 +75,7 @@ export function EditProfileModal({
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
+                disabled={uploading || savingProfile}
                 className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
               >
                 <Camera className="w-6 h-6 text-white" />
@@ -77,17 +87,17 @@ export function EditProfileModal({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
+                disabled={uploading || savingProfile}
                 className="text-sm font-medium text-primary hover:underline underline-offset-4 transition-colors disabled:opacity-50"
               >
-                {uploading ? 'Uploading…' : student.profileImageUrl ? 'Change photo' : 'Upload photo'}
+                {uploading || savingProfile ? 'Processing…' : imagePreview || imageRemoved ? 'Change photo' : student.profileImageUrl ? 'Change photo' : 'Upload photo'}
               </button>
-              {student.profileImageUrl && (
+              {(student.profileImageUrl || imagePreview || imageRemoved) && (
                 <>
                   <span className="text-muted-foreground/40 text-xs">·</span>
                   <button
                     onClick={handleDeleteImage}
-                    disabled={uploading}
+                    disabled={uploading || savingProfile}
                     className="text-sm font-medium text-destructive hover:underline underline-offset-4 transition-colors disabled:opacity-50 flex items-center gap-1"
                   >
                     <Trash2 className="w-3 h-3" /> Remove

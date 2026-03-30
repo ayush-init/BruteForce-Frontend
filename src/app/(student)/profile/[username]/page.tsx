@@ -7,7 +7,7 @@ import { studentProfileService } from '@/services/student/profile.service';
 import { studentAuthService } from '@/services/student/auth.service';
 import { ErrorHandler } from '@/lib/error-handler';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import {
   ProfileDataState,
   CurrentUserState,
@@ -25,7 +25,7 @@ import { ProblemSolvingStats } from '@/components/student/profile/ProblemSolving
 import { ActivityHeatmap } from '@/components/student/profile/ActivityHeatmap';
 import { RecentActivity } from '@/components/student/profile/RecentActivity';
 import TopicProgressModal from '@/components/student/topics/TopicProgressModal';
-import { handleToastError } from '@/utils/toast-system';
+import { handleToastError, showSuccess, showDeleteSuccess } from '@/utils/toast-system';
 
 export default function PublicProfilePage() {
   const params = useParams();
@@ -46,6 +46,13 @@ export default function PublicProfilePage() {
     leetcode: '',
     gfg: ''
   });
+  const [originalEditForm, setOriginalEditForm] = useState({
+    name: '',
+    github: '',
+    linkedin: '',
+    leetcode: '',
+    gfg: ''
+  });
   const [usernameForm, setUsernameForm] = useState({
     username: ''
   });
@@ -53,6 +60,11 @@ export default function PublicProfilePage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [showTopicProgressModal, setShowTopicProgressModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Image management states
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageRemoved, setImageRemoved] = useState(false);
 
   useEffect(() => {
     const initializeAuthAndProfile = async () => {
@@ -64,12 +76,11 @@ export default function PublicProfilePage() {
 
   const fetchCurrentUser = async () => {
     try {
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Auth check timeout')), 5000);
+      const user = await studentAuthService.getCurrentStudent().catch((e: any) => {
+        console.error("Failed to fetch current user", e);
+        console.error("Error details:", e.response?.data, e.response?.status);
+        return null;
       });
-
-      const currentUserPromise = studentAuthService.getCurrentStudent();
-      const user = await Promise.race([currentUserPromise, timeoutPromise]) as any;
 
       setCurrentUser(user);
 
@@ -99,16 +110,22 @@ export default function PublicProfilePage() {
     try {
       const data = await studentProfileService.getProfileByUsername(username);
       setProfileData(data);
-      setEditForm({
+      const formValues = {
         name: data?.student?.name || '',
         github: data?.student?.github || '',
         linkedin: data?.student?.linkedin || '',
         leetcode: data?.student?.leetcode || '',
         gfg: data?.student?.gfg || ''
-      });
+      };
+      setEditForm(formValues);
+      setOriginalEditForm(formValues);
       setUsernameForm({
         username: data?.student?.username || ''
       });
+      // Reset image states when profile loads
+      setSelectedImage(null);
+      setImagePreview(null);
+      setImageRemoved(false);
     } catch (err: unknown) {
       handleToastError(err);
       const apiError = err as ApiError;
@@ -119,29 +136,37 @@ export default function PublicProfilePage() {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
 
-    setUploading(true);
-    try {
-      await studentProfileService.updateProfileImage(file);
-
-      const refreshTimeout = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Profile refresh timeout')), 3000);
-      });
-
-      await Promise.race([fetchProfileByUsername(), refreshTimeout]);
-    } catch (err: unknown) {
-      handleToastError(err);
-      const apiError = err as ApiError;
-      if (apiError.message === 'Profile refresh timeout') {
-        alert('Profile image uploaded successfully!');
-      }
-    } finally {
-      setUploading(false);
+    // Check if user can edit before proceeding
+    if (!canEdit()) {
+      handleToastError({ message: 'You do not have permission to edit this profile.' });
       if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
     }
+
+    // Validate file type (no videos)
+    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validImageTypes.includes(file.type)) {
+      handleToastError({ message: 'Please select a valid image file (JPG, PNG, GIF, WebP). Videos are not allowed.' });
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    // Create preview and set state (no API call yet)
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const previewUrl = event.target?.result as string;
+      setImagePreview(previewUrl);
+      setSelectedImage(file);
+      setImageRemoved(false); // Reset removed state if user selects new image
+    };
+    reader.readAsDataURL(file);
+    
+    // Clear file input
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const canEdit = () => {
@@ -181,12 +206,46 @@ export default function PublicProfilePage() {
   const handleSaveProfile = async () => {
     try {
       setSavingProfile(true);
-      await studentProfileService.updateProfileDetails({
-        github: editForm.github,
-        linkedin: editForm.linkedin
-      });
+      
+      // Check what needs to be updated
+      const needsImageUpload = selectedImage !== null;
+      const needsImageDelete = imageRemoved;
+      const needsProfileUpdate = 
+        editForm.github !== originalEditForm.github || 
+        editForm.linkedin !== originalEditForm.linkedin;
+
+      // Make API calls only for what changed
+      if (needsImageUpload) {
+        await studentProfileService.updateProfileImage(selectedImage);
+      }
+      
+      if (needsImageDelete) {
+        await studentProfileService.deleteProfileImage();
+      }
+      
+      if (needsProfileUpdate) {
+        await studentProfileService.updateProfileDetails({
+          github: editForm.github,
+          linkedin: editForm.linkedin
+        });
+      }
+
+      // Refresh profile data and close modal
       await fetchProfileByUsername();
       setShowEditModal(false);
+      
+      // Trigger StudentHeader refresh
+      window.dispatchEvent(new CustomEvent('profileUpdated'));
+      
+      // Show success message based on what was updated
+      const updates = [];
+      if (needsImageUpload) updates.push('Profile image');
+      if (needsImageDelete) updates.push('Profile image removed');
+      if (needsProfileUpdate) updates.push('Profile details');
+      
+      if (updates.length > 0) {
+        showSuccess(`${updates.join(', ')} updated successfully!`);
+      }
       
     } catch (error) {
       handleToastError(error);
@@ -199,7 +258,7 @@ export default function PublicProfilePage() {
   const handleSaveUsername = async () => {
     try {
       if (!usernameForm.username.trim()) {
-        alert('Username cannot be empty');
+        handleToastError({ message: 'Username cannot be empty' });
         return;
       }
 
@@ -208,7 +267,7 @@ export default function PublicProfilePage() {
       const token = localStorageToken || cookieToken;
       
       if (!token) {
-        alert('Please log in to update your username.');
+        handleToastError({ message: 'Please log in to update your username.' });
         setTimeout(() => {
           window.location.href = '/login';
         }, 1000);
@@ -222,18 +281,21 @@ export default function PublicProfilePage() {
       await fetchProfileByUsername();
       setShowUsernameEditModal(false);
 
+      // Trigger StudentHeader refresh
+      window.dispatchEvent(new CustomEvent('profileUpdated'));
+
       const newUsername = usernameForm.username.trim();
       if (newUsername !== username) {
         window.location.href = `/profile/${newUsername}`;
       }
-      alert('Username updated successfully!');
+      showSuccess('Username updated successfully!');
     } catch (error: unknown) {
       handleToastError(error);
       if (error instanceof Error) {
         if (error.message === 'Token refresh failed' ||
           error.message.includes('401') ||
           error.message.includes('Unauthorized')) {
-          alert('Your session has expired. Please log in again to update your username.');
+          handleToastError({ message: 'Your session has expired. Please log in again to update your username.' });
           localStorage.removeItem('accessToken');
           document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
           setTimeout(() => {
@@ -248,41 +310,24 @@ export default function PublicProfilePage() {
     }
   };
 
-  const handleDeleteImage = async () => {
+  const handleDeleteImage = () => {
     setShowDeleteConfirm(true);
   };
 
-  const confirmDeleteImage = async () => {
-    try {
-      setUploading(true);
-      const token = localStorage.getItem('accessToken') ||
-        document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
-
-      const response = await fetch('/api/students/profile-image', {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        await fetchProfileByUsername();
-        setShowDeleteConfirm(false);
-        alert('Profile image removed successfully!');
-      } else {
-        throw new Error('Failed to remove profile image');
-      }
-    } catch (error) {
-      handleToastError(error);
-      alert('Failed to remove profile image. Please try again.');
-    } finally {
-      setUploading(false);
+  const confirmDeleteImage = () => {
+    // Check if user can edit before proceeding
+    if (!canEdit()) {
+      handleToastError({ message: 'You do not have permission to edit this profile.' });
+      setShowDeleteConfirm(false);
+      return;
     }
-  };
 
-  if (loading) {
-     return <ProfilePageShimmer />;
-  }
+    // Preview-only: update state to show removal, no API call yet
+    setImageRemoved(true);
+    setImagePreview(null);
+    setSelectedImage(null);
+    setShowDeleteConfirm(false);
+  };
 
   if (profileError) {
     return (
@@ -375,6 +420,8 @@ export default function PublicProfilePage() {
         handleImageUpload={handleImageUpload}
         handleDeleteImage={handleDeleteImage}
         handleSaveProfile={handleSaveProfile}
+        imagePreview={imagePreview}
+        imageRemoved={imageRemoved}
       />
 
       <EditUsernameModal
@@ -390,6 +437,41 @@ export default function PublicProfilePage() {
         onClose={() => setShowTopicProgressModal(false)}
         username={username}
       />
+
+      {/* Delete Image Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-2xl border border-border w-full max-w-sm shadow-2xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+                <Trash2 className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Remove Profile Photo</h3>
+                <p className="text-sm text-muted-foreground">You can cancel this change before saving.</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={confirmDeleteImage}
+                disabled={uploading}
+                variant="destructive"
+                className="flex-1"
+              >
+                {uploading ? 'Removing…' : 'Remove Photo'}
+              </Button>
+              <Button
+                onClick={() => setShowDeleteConfirm(false)}
+                variant="outline"
+                className="flex-1"
+                disabled={uploading}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

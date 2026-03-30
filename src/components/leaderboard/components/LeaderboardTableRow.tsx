@@ -15,7 +15,7 @@ export const LeaderboardTableRow: React.FC<LeaderboardTableRowProps> = ({ entry,
   // Determine rank value and label based on city selection
   const isGlobalView = selectedCity === 'all';
   const rankValue = isGlobalView ? (entry.global_rank || 0) : (entry.city_rank || 0);
-  const rankLabel = isGlobalView ? 'Global Rank' : 'City Rank';
+
 
   const router = useRouter();
 

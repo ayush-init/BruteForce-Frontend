@@ -77,25 +77,28 @@ export function ProfileHeader({ student, canEdit, onEditProfile, onShowTopicProg
 
                 {/* RIGHT: Actions */}
                 <div className="flex items-center gap-3">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={onEditProfile}
-                        className="hover-glow"
-                    >
-                        <Edit2 className="w-4 h-4" />
-                        Edit Profile
-                    </Button>
-
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={onShowTopicProgress}
-                        className="hover-glow flex items-center gap-2"
-                    >
-                        <BarChart3 className="w-4 h-4" />
-                        Topic Progress
-                    </Button>
+                    {canEdit && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={onEditProfile}
+                            className="hover-glow"
+                        >
+                            <Edit2 className="w-4 h-4" />
+                            Edit Profile
+                        </Button>
+                    )}
+                    {canEdit && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={onShowTopicProgress}
+                            className="hover-glow flex items-center gap-2"
+                        >
+                            <BarChart3 className="w-4 h-4" />
+                            Topic Progress
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>

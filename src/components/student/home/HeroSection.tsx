@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Compass, PenTool, Zap } from "lucide-react";
+import GraphBackground from "./GraphBackground";
+import BruteForceTree from "./GraphBackground";
 
 export function HeroSection() {
   return (
@@ -74,8 +76,8 @@ export function HeroSection() {
         </div>
 
         {/* 🎯 RIGHT SIDE */}
-        <div className="hidden lg:flex items-center justify-center">
-          <div className="w-[400px] h-[400px] rounded-full bg-[var(--accent-primary)]/10 blur-[120px]" />
+        <div className="hidden lg:flex items-center justify-center relative w-[400px] h-[400px]">
+          <BruteForceTree />
         </div>
 
       </div>

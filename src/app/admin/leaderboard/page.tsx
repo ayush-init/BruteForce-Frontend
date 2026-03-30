@@ -31,7 +31,7 @@ export default function AdminLeaderboardPage() {
   const [isInit, setIsInit] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const [allCities, setAllCities] = useState<Array<{city_name: string, available_years: number[]}>>([]);
+  const [allCities, setAllCities] = useState<Array<{ city_name: string, available_years: number[] }>>([]);
   const [allYears, setAllYears] = useState<number[]>([]);
   const [cityYearMap, setCityYearMap] = useState<Record<string, Set<number>>>({});
   // Query & Filters
@@ -44,7 +44,7 @@ export default function AdminLeaderboardPage() {
   const [lType, setLType] = useState('all');
   const [lCity, setLCity] = useState<string>('All Cities');
   const [lYear, setLYear] = useState<number>(new Date().getFullYear());
-  
+
   // Leaderboard data state (shared across components)
   const [leaderboardData, setLeaderboardData] = useState<any>(null);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
@@ -62,8 +62,8 @@ export default function AdminLeaderboardPage() {
     }
   }, [isLoadingContext, selectedCity, selectedBatch, isInit]);
 
-  
-  
+
+
   // Step 3: Implement Superadmin dropdown logic (IF CITY = "All Cities" vs SPECIFIC CITY)
   const yearOptions = useMemo(() => {
     if (lCity === "All Cities" || !lCity) {
@@ -78,24 +78,24 @@ export default function AdminLeaderboardPage() {
   // Manual refresh function
   const handleRefresh = async () => {
     if (!isInit) return;
-    
+
     setLeaderboardLoading(true);
     setLeaderboardError(null);
-    
+
     try {
-      const body = { 
-        city: lCity === "All Cities" ? "all" : lCity, 
-        type: lType, 
-        year: lYear === 0 ? undefined : Number(lYear) 
+      const body = {
+        city: lCity === "All Cities" ? "all" : lCity,
+        type: lType,
+        year: lYear === 0 ? undefined : Number(lYear)
       };
-      
+
       // Fetch all needed data in one call
-      const query = { 
-        page, 
-        limit, 
-        search: debouncedSearch || undefined 
+      const query = {
+        page,
+        limit,
+        search: debouncedSearch || undefined
       };
-      
+
       const response = await getAdminLeaderboard(query, body);
       console.log("AdminLeaderboardPage - API Response (Refresh):", response);
       setLeaderboardData(response);
@@ -113,34 +113,34 @@ export default function AdminLeaderboardPage() {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       if (!isInit) return;
-      
+
       setLeaderboardLoading(true);
       setLeaderboardError(null);
-      
+
       try {
-        const body = { 
-          city: lCity === "All Cities" ? "all" : lCity, 
-          type: lType, 
-          year: lYear === 0 ? undefined : Number(lYear) 
+        const body = {
+          city: lCity === "All Cities" ? "all" : lCity,
+          type: lType,
+          year: lYear === 0 ? undefined : Number(lYear)
         };
-        
+
         // Fetch all needed data in one call
-        const query = { 
-          page, 
-          limit, 
-          search: debouncedSearch || undefined 
+        const query = {
+          page,
+          limit,
+          search: debouncedSearch || undefined
         };
-        
+
         const response = await getAdminLeaderboard(query, body);
-        
+
         // 🆕 Extract cities and years from the single API response
         if (response?.data) {
           setAllCities(response.data.available_cities || []);
-          
+
           // Extract years from "All Cities" entry
           const allCitiesEntry = response.data.available_cities?.find((city: any) => city.city_name === "All Cities");
           setAllYears(allCitiesEntry?.available_years || []);
-          
+
           // Build cityYearMap for compatibility with existing logic
           const map: Record<string, Set<number>> = {};
           response.data.available_cities?.forEach((city: any) => {
@@ -150,7 +150,7 @@ export default function AdminLeaderboardPage() {
           });
           setCityYearMap(map);
         }
-        
+
         setLeaderboardData(response);
       } catch (err: any) {
         handleToastError(err);
@@ -233,7 +233,7 @@ export default function AdminLeaderboardPage() {
             Analytics driven precisely by backend mapping constraints.
           </p>
         </div>
-        <TimerLeaderboard 
+        <TimerLeaderboard
           lastUpdated={leaderboardData?.data?.last_calculated}
           refreshInterval={4}
           onRefresh={handleRefresh}
@@ -270,7 +270,8 @@ export default function AdminLeaderboardPage() {
         limit={limit}
         setPage={setPage}
         setLimit={setLimit}
-        selectedCity={lCity}
+        // selectedCity={lCity}
+        selectedCity={lCity === 'All Cities' ? 'all' : lCity}
       />
     </div>
   );

@@ -152,6 +152,7 @@ export default function StudentHomePage() {
       <div className="flex flex-col w-full pb-12">
         {/* HERO SECTION */}
         <HeroSection />
+        
         {/* TOPICS SECTION */}
         <TopicsSection topics={topics} />
       </div>
