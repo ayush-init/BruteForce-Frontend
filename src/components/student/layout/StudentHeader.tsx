@@ -90,8 +90,6 @@ export default function StudentHeader() {
   const leetcode = profile?.data?.leetcode;
   const gfg = profile?.data?.gfg;
 
-  const isUserOnboarded = isProfileLoaded ? Boolean(username && leetcode && gfg) : true;
-
 
   return (
     <header className="sticky top-0 z-50 glass-borderless h-16 flex items-center px-6 lg:px-10" style={{ boxShadow: 'var(--shadow-sm)' }}>
@@ -125,27 +123,18 @@ export default function StudentHeader() {
               (link.path !== '/' && pathname.startsWith(link.path));
 
             const Icon = link.icon;
-            const isLocked = isProfileLoaded && !isUserOnboarded;
 
             return (
               <Link
                 key={link.name}
-                href={isLocked ? '#' : link.path}
-                onClick={(e) => {
-                  if (isLocked) {
-                    e.preventDefault();
-                    router.push('/login');
-                  }
-                }}
+                href={link.path}
                 className={`
           relative flex items-center gap-2
           px-3 py-1.5 rounded-full text-sm font-medium
 
           transition-all duration-200 ease-in-out
 
-          ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}
-
-          ${isActive && !isLocked
+          ${isActive
                     ? `
                 text-primary-foreground 
                 bg-primary
@@ -165,11 +154,6 @@ export default function StudentHeader() {
                   {link.name}
                 </span>
 
-                {isLocked && (
-                  <div className="absolute -top-1 -right-1">
-                    <Lock className="w-3 h-3 text-muted-foreground" />
-                  </div>
-                )}
               </Link>
             );
           })}
@@ -181,7 +165,7 @@ export default function StudentHeader() {
           <ThemeToggle />
 
           {/* Recent Questions Button */}
-          {isUserOnboarded && profile?.data && !profileLoading && (
+          {profile?.data && !profileLoading && (
             <Button
               variant="ghost"
               size="sm"
@@ -220,7 +204,7 @@ export default function StudentHeader() {
 
             // If authenticated and profile is loaded, show user dropdown
             if (isAuthenticated && profile?.data && !profileLoading) {
-              return isUserOnboarded ? (
+              return (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -266,15 +250,6 @@ export default function StudentHeader() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : (
-                <button
-                  onClick={handleLogout}
-                  className="glass hover-glow rounded-full px-4 py-1.5 text-sm font-medium text-destructive transition-all duration-200"
-                  style={{ borderRadius: 'var(--radius-full)', padding: 'var(--spacing-sm) var(--spacing-xs)' }}
-                  title="Log out"
-                >
-                  <LogOut className="w-4 h-4" style={{ fontSize: 'var(--text-sm)' }} />
-                </button>
               );
             }
 

@@ -11,6 +11,7 @@ import { LeaderboardTable } from "@/components/leaderboard/components/Leaderboar
 import { TimerLeaderboard } from "@/components/leaderboard/components/TimerLeaderboard";
 import { YourRank } from "@/components/leaderboard/components/YourRank";
 import { isStudentToken, clearAuthTokens } from "@/lib/auth-utils";
+import { OnboardingGuard } from '@/components/auth/OnboardingGuard';
 import PodiumSection from "@/components/leaderboard/components/PodiumSection";
 
 export default function StudentLeaderboardPage() {
@@ -101,8 +102,7 @@ export default function StudentLeaderboardPage() {
   }, [refetch]);
 
   return (
-    <>
-
+    <OnboardingGuard>
       <YourRank yourRank={data?.yourRank} />
       <div className="max-w-6xl mx-auto px-8 py-2">
 
@@ -130,70 +130,30 @@ export default function StudentLeaderboardPage() {
             </div>
 
             {/* Right */}
-            <div className="flex items-center">
-              <TimerLeaderboard lastUpdated={data?.last_calculated} />
-            </div>
-
+            <FilterBar
+              lCity={lCity}
+              setLCity={setLCity}
+              lYear={lYear}
+              setLYear={setLYear}
+              lSearch={lSearch}
+              setLSearch={setLSearch}
+              studentData={studentData?.data}
+            />
           </div>
         </div>
 
+        <PodiumSection data={data?.data?.slice(0, 3)} />
 
-        <FilterBar
-          lSearch={lSearch}
-          setLSearch={setLSearch}
-          lType={lType}
-          setLType={setLType}
-          typeOptionsObj={[
-            { value: 'all', label: 'All Time' },
-            { value: 'weekly', label: 'Weekly' },
-            { value: 'monthly', label: 'Monthly' }
-          ]}
-          lCity={lCity}
-          setLCity={setLCity}
-          cityOptionsObj={[
-            { value: 'all', label: 'All Cities' },
-            ...(isLoading ? [
-              { value: 'loading', label: 'Loading...' }
-            ] : []),
-            ...(data?.available_cities?.map((city: any) => ({
-              value: city.city_name,
-              label: city.city_name
-            })) || [])
-          ]}
-          setLYear={setLYear}
-          lYear={lYear}
-          yearOptionsObj={[
-            { value: '2024', label: '2024' },
-            { value: '2023', label: '2023' },
-            ...(isLoading ? [] : yearOptions.filter((y: number) => y !== 2024 && y !== 2023).map((y: number) => ({
-              value: y.toString(),
-              label: y.toString()
-            })))
-          ]}
-          allYears={[2024, 2023, ...(isLoading ? [] : yearOptions.filter((y: number) => y !== 2024 && y !== 2023))] }
-          isLoading={isLoading}
+        <LeaderboardTable
+          data={data?.data?.slice(3)}
+          loading={isLoading}
+          page={1}
+          limit={10}
+          setPage={() => { }}
+          setLimit={() => { }}
           mode="student"
         />
-        <PodiumSection
-          top3={data?.top10?.slice(0, 3) || []}
-          loading={isLoading}
-          error={error?.message}
-        />
-        <div className="flex flex-col space-y-6">
-
-          <LeaderboardTable
-            data={{ leaderboard: data?.top10 || [], total: data?.top10?.length || 0 }}
-            loading={isLoading}
-            error={error?.message}
-            selectedCity={lCity === 'All Cities' ? 'all' : lCity}
-            page={1}
-            limit={10}
-            setPage={() => { }}
-            setLimit={() => { }}
-            mode="student"
-          />
-        </div>
       </div>
-    </>
+    </OnboardingGuard>
   );
 }

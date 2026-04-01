@@ -92,11 +92,25 @@ export function useOtpVerification() {
     
     try {
       // Call backend to validate OTP
-      await studentAuthService.verifyOtp(emailParam || '', otpJoined);
-      glassToast.success("OTP verified successfully ✅");
-      
-      // Redirect to reset password page only after successful OTP validation
-      router.push(`/reset-password?email=${encodeURIComponent(emailParam || '')}&otp=${otpJoined}`);
+      const response = await studentAuthService.verifyOtp(emailParam || '', otpJoined);
+      console.log('Full API response:', response);
+console.log('Response valid:', response?.valid);
+console.log('Response data:', response?.data);
+      // Only redirect if OTP is actually valid
+      if (response && (response.valid || response.data?.valid)) {
+        glassToast.success("OTP verified successfully ✅");
+        // Redirect to reset password page only after successful OTP validation
+        router.push(`/reset-password?email=${encodeURIComponent(emailParam || '')}&otp=${otpJoined}`);
+      } else {
+        // Handle case where backend returns success: false
+        const errorMessage = response?.message || 'Invalid OTP. Please try again.';
+        setError(errorMessage);
+        glassToast.error(errorMessage);
+        setFpOtpArray(Array(6).fill(''));
+        setTimeout(() => {
+          firstOtpInputRef.current?.focus();
+        }, 100);
+      }
     } catch (err: any) {
       console.error('OTP validation error:', err);
       const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Invalid OTP. Please try again.';

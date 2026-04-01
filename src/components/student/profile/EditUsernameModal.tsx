@@ -13,16 +13,18 @@ interface EditUsernameModalProps {
   usernameForm: UsernameForm;
   setUsernameForm: (form: UsernameForm) => void;
   handleSaveUsername: () => void;
+  currentUsername?: string;
 }
 
-type UsernameStatus = "idle" | "typing" | "available" | "taken" | "invalid";
+type UsernameStatus = "idle" | "typing" | "available" | "taken" | "invalid" | "same";
 
 export function EditUsernameModal({
   isOpen,
   onClose,
   usernameForm,
   setUsernameForm,
-  handleSaveUsername
+  handleSaveUsername,
+  currentUsername
 }: EditUsernameModalProps) {
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const [debouncedUsername, setDebouncedUsername] = useState("");
@@ -31,35 +33,47 @@ export function EditUsernameModal({
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastCheckedUsernameRef = useRef<string>("");
 
-  // API CALL (after debounce) - Same logic as OnboardingStep1
+  // API CALL (after debounce) - Updated with same logic as OnboardingStep1
   useEffect(() => {
-    if (
-      debouncedUsername.length >= 3 &&
-      debouncedUsername !== lastCheckedUsernameRef.current
-    ) {
-      lastCheckedUsernameRef.current = debouncedUsername;
+    const username = debouncedUsername.trim();
+    const original = currentUsername?.trim();
 
-      checkUsername(debouncedUsername.trim(), {
+    // 1️⃣ Empty
+    if (username.length === 0) {
+      setUsernameStatus("idle");
+      return;
+    }
+
+    // 2️⃣ Same as existing username ✅
+    if (username === original) {
+      setUsernameStatus("same");
+      return; 
+    }
+
+    // 3️⃣ Length validation
+    if (username.length < 3) {
+      setUsernameStatus("invalid");
+      return;
+    }
+
+    // 4️⃣ Prevent duplicate calls
+    if (username === lastCheckedUsernameRef.current) return;
+
+    lastCheckedUsernameRef.current = username;
+
+    // 5️⃣ API CALL
+    checkUsername(
+      { username },
+      {
         onSuccess: (res) => {
           setUsernameStatus(res.available ? "available" : "taken");
         },
         onError: () => {
           setUsernameStatus("invalid");
         },
-      });
-    } else if (debouncedUsername.length < 3 && debouncedUsername.length > 0) {
-      setUsernameStatus("invalid");
-    } else if (debouncedUsername.length === 0) {
-      setUsernameStatus("idle");
-    }
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-        debounceTimerRef.current = null;
       }
-    };
-  }, [debouncedUsername, checkUsername]);
+    );
+  }, [debouncedUsername, checkUsername, currentUsername]);
 
   // CONDITIONAL RENDER - Don't render if not open
   if (!isOpen) {
@@ -87,7 +101,7 @@ export function EditUsernameModal({
     }, 500);
   };
 
-  const canSave = usernameStatus === "available" && usernameForm.username?.trim().length >= 3;
+  const canSave = (usernameStatus === "available" || usernameStatus === "same") && usernameForm.username?.trim().length >= 3;
 
   // STATUS MESSAGE - Same logic as OnboardingStep1
   const getStatusMessage = () => {
@@ -123,6 +137,14 @@ export function EditUsernameModal({
           <div className={`${base} text-red-500`}>
             <XCircle size={14} />
             <span>Minimum 3 characters required</span>
+          </div>
+        );
+
+      case "same":
+        return (
+          <div className={`${base} text-green-500`}>
+            <CheckCircle size={14} />
+            <span>Already yours</span>
           </div>
         );
 
@@ -229,7 +251,7 @@ export function EditUsernameModal({
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               
               {/* RIGHT ICON - Same logic as OnboardingStep1 */}
-              {usernameStatus === "available" && (
+              {(usernameStatus === "available" || usernameStatus === "same") && (
                 <CheckCircle
                   size={18}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500"

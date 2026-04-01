@@ -1,4 +1,3 @@
-// src/app/(student)/profile/[username]/page.tsx
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
@@ -459,6 +458,7 @@ export default function PublicProfilePage() {
         usernameForm={usernameForm}
         setUsernameForm={setUsernameForm}
         handleSaveUsername={handleSaveUsername}
+        currentUsername={currentUser?.data?.username}
       />
 
       <TopicProgressModal

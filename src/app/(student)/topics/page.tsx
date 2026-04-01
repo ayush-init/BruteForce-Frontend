@@ -7,6 +7,7 @@ import { TopicsLoading } from '@/components/student/topics/TopicLoading';
 import { TopicsHeader } from '@/components/student/topics/TopicsHeader';
 import { TopicsGrid } from '@/components/student/topics/TopicsGrid';
 import { handleToastError } from "@/utils/toast-system";
+import { OnboardingGuard } from '@/components/auth/OnboardingGuard';
 
 export default function TopicsPage() {
   const [topics, setTopics] = useState<any[]>([]);
@@ -56,36 +57,38 @@ export default function TopicsPage() {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
-    <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
-      <TopicsHeader
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      
-      {loading ? (
-        <TopicsLoading />
-      ) : (
-        <>
-          <TopicsGrid
-            topics={paginatedTopics}
-            searchQuery={searchQuery}
-            pagination={
-              (totalItems > 0 || loading) && (
-                <Pagination 
-                  currentPage={page}
-                  totalItems={totalItems}
-                  limit={itemsPerPage || 10}
-                  onPageChange={setPage}
-                  onLimitChange={setItemsPerPage}
-                  showLimitSelector={true}
-                  loading={loading}
-                />
-              )
-            }
-          />
-        </>
-      )}
-      
-    </div>
+    <OnboardingGuard>
+      <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+        <TopicsHeader
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+        
+        {loading ? (
+          <TopicsLoading />
+        ) : (
+          <>
+            <TopicsGrid
+              topics={paginatedTopics}
+              searchQuery={searchQuery}
+              pagination={
+                (totalItems > 0 || loading) && (
+                  <Pagination 
+                    currentPage={page}
+                    totalItems={totalItems}
+                    limit={itemsPerPage || 10}
+                    onPageChange={setPage}
+                    onLimitChange={setItemsPerPage}
+                    showLimitSelector={true}
+                    loading={loading}
+                  />
+                )
+              }
+            />
+          </>
+        )}
+        
+      </div>
+    </OnboardingGuard>
   );
 }

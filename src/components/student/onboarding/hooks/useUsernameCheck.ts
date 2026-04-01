@@ -5,11 +5,21 @@ interface UsernameCheckResponse {
   available: boolean;
 }
 
+interface UsernameCheckParams {
+  username: string;
+  userId?: string;
+}
+
 export function useUsernameCheck() {
   return useMutation({
-    mutationFn: async (username: string): Promise<UsernameCheckResponse> => {
+    mutationFn: async ({ username, userId }: UsernameCheckParams): Promise<UsernameCheckResponse> => {
+      const params = new URLSearchParams({
+        username: encodeURIComponent(username.trim()),
+        ...(userId && { userId }) // Only include userId if provided
+      });
+      
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/user/check-username?username=${encodeURIComponent(username.trim())}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/check-username?${params}`
       );
       
       if (!response.ok) {

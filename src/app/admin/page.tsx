@@ -1,7 +1,5 @@
 "use client";
 
-// 🌟 Code by Ayush Chaurasiya — Eat 💻 Sleep 😴 Code ⚡ Repeat 💪
-
 import React, { useEffect, useState } from "react";
 import { useAdminStore } from "@/store/adminStore";
 import { getAdminStats } from "@/services/admin.service";

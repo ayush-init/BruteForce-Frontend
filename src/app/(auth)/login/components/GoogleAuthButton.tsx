@@ -12,12 +12,14 @@ export function GoogleAuthButton() {
   const [error, setError] = useState('');
   const [, setOnboardingUser] = useLocalStorage('onboardingUser', null);
 
-  const processPostLogin = (u: any) => {
-    if (!u.leetcode_id || !u.gfg_id || !u.username) {
-      setOnboardingUser(u);
-    }
-    router.push('/');
-  };
+const processPostLogin = (u: any) => {
+  if (!u.leetcode_id || !u.gfg_id || !u.username) {
+    localStorage.setItem('onboardingUser', JSON.stringify(u));
+    router.push('/onboarding');
+    return;
+  }
+  router.push('/');
+};
 
   const handleGoogleCallback = async (idToken: string) => {
     setLoading(true);

@@ -21,11 +21,15 @@ export function LoginForm() {
   const [, setOnboardingUser] = useLocalStorage('onboardingUser', null);
 
   const processPostLogin = (u: any) => {
-    if (!u.id || !u.leetcode_id || !u.gfg_id || !u.username) {
-      setOnboardingUser(u);
-    }
-    router.push('/');
-  };
+  if (!u.leetcode_id || !u.gfg_id || !u.username) {
+    // Store user data for onboarding page
+    localStorage.setItem('onboardingUser', JSON.stringify(u));
+    // Redirect immediately to onboarding
+    router.push('/onboarding');
+    return; // Don't go to home page
+  }
+  router.push('/'); // Only go to home if no onboarding needed
+};
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

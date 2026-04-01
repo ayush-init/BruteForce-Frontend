@@ -2,9 +2,9 @@ import React from 'react';
 
 export function ProgressBar({ step }: { step: number }) {
 return (
-  <div className="flex items-center justify-center mb-8 mt-2">
+  <div className="flex glass rounded-2xl justify-center mb-8 mt-2">
 
-    <div className="flex items-center gap-3 px-4 py-3 rounded-2xl glass border border-border/50">
+    <div className="flex items-center gap-5 px-4 py-3 ">
 
       {/* STEP 1 */}
       <div className="flex items-center gap-2">

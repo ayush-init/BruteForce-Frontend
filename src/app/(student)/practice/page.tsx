@@ -17,6 +17,7 @@ import { PracticeResults } from '@/components/student/practice/PracticeResults';
 import { PracticeFilters as PracticeFiltersComponent } from '@/components/student/practice/PracticeFilters';
 import { PracticeHeader } from '@/components/student/practice/PracticeHeader';
 import { handleToastError } from "@/utils/toast-system";
+import { OnboardingGuard } from '@/components/auth/OnboardingGuard';
 
 export default function PracticePage() {
   const router = useRouter();
@@ -120,36 +121,38 @@ export default function PracticePage() {
   // But for MVP, we just use static options or let them search.
 
   return (
-    <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
-      <PracticeHeader />
+    <OnboardingGuard>
+      <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+        <PracticeHeader />
 
-      <PracticeFiltersComponent
-        filters={filters}
-        filterOptions={filterOptions}
-        hasActiveFilters={hasActiveFilters}
-        handleFilterChange={handleFilterChange}
-        clearFilters={clearFilters}
-      />
+        <PracticeFiltersComponent
+          filters={filters}
+          filterOptions={filterOptions}
+          hasActiveFilters={hasActiveFilters}
+          handleFilterChange={handleFilterChange}
+          clearFilters={clearFilters}
+        />
 
-      <PracticeResults
-        loading={loading}
-        questions={questions}
-      />
+        <PracticeResults
+          loading={loading}
+          questions={questions}
+        />
 
-      {/* Pagination */}
-      {(questions.length > 0 || loading) && (
-        <div className="mt-8">
-          <Pagination
-            currentPage={filters.page || 1}
-            totalItems={totalItems}
-            limit={filters.limit || 10}
-            onPageChange={(page) => handleFilterChange('page', page)}
-            onLimitChange={(limit) => handleFilterChange('limit', limit)}
-            showLimitSelector={true}
-            loading={loading}
-          />
-        </div>
-      )}
-    </div>
+        {/* Pagination */}
+        {(questions.length > 0 || loading) && (
+          <div className="mt-8">
+            <Pagination
+              currentPage={filters.page || 1}
+              totalItems={totalItems}
+              limit={filters.limit || 10}
+              onPageChange={(page) => handleFilterChange('page', page)}
+              onLimitChange={(limit) => handleFilterChange('limit', limit)}
+              showLimitSelector={true}
+              loading={loading}
+            />
+          </div>
+        )}
+      </div>
+    </OnboardingGuard>
   );
 }
