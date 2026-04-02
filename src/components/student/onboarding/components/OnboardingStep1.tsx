@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Input } from "../../../../app/(auth)/shared/components/Input";
 import { Button } from "../../../../app/(auth)/shared/components/Button";
 import { useUsernameCheck } from "../hooks/useUsernameCheck";
-import { Loader, CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 
 type UsernameStatus =
   | "idle"
@@ -119,7 +120,7 @@ export function OnboardingStep1({
       case "typing":
         return (
           <div className={`${base} text-muted-foreground`}>
-            <Loader size={14} className="animate-spin" />
+            <BruteForceLoader size="sm" />
             <span>Checking...</span>
           </div>
         );
@@ -198,7 +199,7 @@ export function OnboardingStep1({
             )}
 
             {usernameStatus === "typing" && (
-              <Loader className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-primary" />
+              <BruteForceLoader className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-primary" />
             )}
           </div>
 

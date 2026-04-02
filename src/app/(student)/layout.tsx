@@ -7,8 +7,8 @@ import { studentAuthService } from '@/services/student/auth.service';
 import { isStudentToken, clearAuthTokens } from '@/lib/auth-utils';
 import { RecentQuestionsSidebar } from '@/components/student/RecentQuestionsSidebar';
 import { RecentQuestionsProvider } from '@/contexts/RecentQuestionsContext';
+import { ProfileProvider } from '@/contexts/ProfileContext';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
-import { handleToastError } from "@/utils/toast-system";
 
 export default function StudentLayout({
   children,
@@ -19,13 +19,8 @@ export default function StudentLayout({
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
-  const [leetcodeId, setLeetcodeId] = useState('');
-  const [gfgId, setGfgId] = useState('');
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    
     // Allow public access to profile routes
     if (pathname.startsWith('/profile/')) {
       setLoading(false);
@@ -46,30 +41,7 @@ export default function StudentLayout({
       return;
     }
 
-
-    const checkProfile = async () => {
-      try {
-        const profileData = await studentAuthService.getCurrentStudent();
-        setProfile(profileData);
-        // Only require complete profile if we actually loaded a profile and it is concretely missing IDs
-        const leetcode = profileData?.leetcode || profileData?.leetcode_id;
-        const gfg = profileData?.gfg || profileData?.gfg_id;
-        const requireCompleteProfile = profileData !== null && (!leetcode || !gfg);
-
-        if (requireCompleteProfile) {
-          setShowProfileModal(true);
-        }
-      } catch (err: any) {
-        handleToastError(err);
-        if (err.response?.status === 401 || err.response?.status === 403) {
-          router.push('/login');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkProfile();
+    setLoading(false);
   }, [router, pathname]);
 
 
@@ -83,15 +55,17 @@ export default function StudentLayout({
 
   return (
     <div className="min-h-screen  bg-background text-foreground flex flex-col font-sans selection:bg-primary/20">
-      <RecentQuestionsProvider>
-        <StudentHeader />
-        
-        <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {children}
-        </main>
-        
-        <RecentQuestionsSidebar />
-      </RecentQuestionsProvider>
+      <ProfileProvider>
+        <RecentQuestionsProvider>
+          <StudentHeader />
+          
+          <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {children}
+          </main>
+          
+          <RecentQuestionsSidebar />
+        </RecentQuestionsProvider>
+      </ProfileProvider>
     </div>
   );
 }

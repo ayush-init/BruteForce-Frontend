@@ -151,7 +151,6 @@ export default function StudentLeaderboardPage() {
           lCity={lCity}
           setLCity={setLCity}
           cityOptionsObj={[
-            { value: 'all', label: 'All Cities' },
             ...(isLoading ? [
               { value: 'loading', label: 'Loading...' }
             ] : []),
@@ -170,7 +169,7 @@ export default function StudentLeaderboardPage() {
               label: y.toString()
             })))
           ]}
-          allYears={[2024, 2023, ...(isLoading ? [] : yearOptions.filter((y: number) => y !== 2024 && y !== 2023))] }
+          allYears={[2024, 2023, ...(isLoading ? [] : yearOptions.filter((y: number) => y !== 2024 && y !== 2023))]}
           isLoading={isLoading}
           mode="student"
         />

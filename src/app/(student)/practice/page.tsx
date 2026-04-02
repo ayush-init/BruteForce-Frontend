@@ -12,12 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+
+
 import { Pagination } from '@/components/Pagination';
 import { PracticeResults } from '@/components/student/practice/PracticeResults';
 import { PracticeFilters as PracticeFiltersComponent } from '@/components/student/practice/PracticeFilters';
 import { PracticeHeader } from '@/components/student/practice/PracticeHeader';
 import { handleToastError } from "@/utils/toast-system";
-import { OnboardingGuard } from '@/components/auth/OnboardingGuard';
+
 
 export default function PracticePage() {
   const router = useRouter();

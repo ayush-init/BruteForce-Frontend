@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, LogIn, ShieldCheck, Lock, Mail, Loader2, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, LogIn, ShieldCheck, Lock, Mail, Sparkles } from 'lucide-react';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { loginAdmin } from '@/services/auth.service';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
@@ -125,7 +126,7 @@ export default function AdminLoginPage() {
                 <div className="relative z-10 flex font-extrabold items-center justify-center gap-2">
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <BruteForceLoader size="sm" />
                       Authenticating...
                     </>
                   ) : (

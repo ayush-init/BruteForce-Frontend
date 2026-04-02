@@ -10,7 +10,6 @@ import {
   BookOpen,
   Filter,
   X,
-  Loader2,
   GitBranch,
   Database,
   Network,
@@ -26,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { handleToastError as handleError } from "@/utils/toast-system";
+import { BruteForceLoader } from "@/components/ui/BruteForceLoader";
 
 interface Topic {
   id: number;
@@ -162,8 +162,8 @@ export default function TopicProgressModal({
                 value={
                   data.totalAssigned > 0
                     ? `${Math.round(
-                        (data.totalSolved / data.totalAssigned) * 100
-                      )}%`
+                      (data.totalSolved / data.totalAssigned) * 100
+                    )}%`
                     : "0%"
                 }
               />
@@ -191,15 +191,15 @@ export default function TopicProgressModal({
 
             {loading ? (
               <div className="flex justify-center items-center col-span-2">
-                <Loader2 className="animate-spin" />
+                <BruteForceLoader size="md" />
               </div>
             ) : (
               getSortedTopics().map((topic) => {
                 const progress =
                   topic.totalAssigned > 0
                     ? Math.round(
-                        (topic.totalSolved / topic.totalAssigned) * 100
-                      )
+                      (topic.totalSolved / topic.totalAssigned) * 100
+                    )
                     : 0;
 
                 return (

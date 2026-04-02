@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { studentAuthService } from '@/services/student/auth.service';
 import { isStudentToken } from '@/lib/auth-utils';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useTheme } from 'next-themes';
@@ -17,62 +16,23 @@ import {
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Home, BookOpen, PenTool, Trophy, Lock, Activity, ChevronRight, Menu } from 'lucide-react';
 import { useRecentQuestions } from '@/contexts/RecentQuestionsContext';
+import { useProfile } from '@/contexts/ProfileContext';
+import { studentAuthService } from '@/services/student/auth.service';
 import { handleToastError } from "@/utils/toast-system";
 
 export default function StudentHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const [profile, setProfile] = useState<any>(null);
-  const [profileLoading, setProfileLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toggleSidebar } = useRecentQuestions();
   const { theme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { profile, profileLoading } = useProfile();
 
   // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    // Check if we have a student token before making API calls
-    if (!isStudentToken()) {
-      setProfileLoading(false);
-      return; // Don't make API calls if not a student token
-    }
-
-    const fetchProfile = async () => {
-      setProfileLoading(true);
-      try {
-        const data = await studentAuthService.getCurrentStudent();
-        setProfile(data);
-      } catch (e: any) {
-        handleToastError(e);
-        // Handle different error types gracefully
-        if (e?.response?.status === 401) {
-          // Token expired - will be handled by interceptors
-          return;
-        } else if (e?.response?.status === 403) {
-          // Admin token on student route
-          setProfile(null);
-        } else if (e?.code === 'NETWORK_ERROR') {
-          // Network connectivity issues
-          setProfile(null);
-        } else {
-          // Other errors
-          setProfile(null);
-        }
-      } finally {
-        setProfileLoading(false);
-      }
-    };
-
-    fetchProfile();
-
-    // Listen for custom event to refetch when onboarding completes
-    window.addEventListener('profileUpdated', fetchProfile);
-    return () => window.removeEventListener('profileUpdated', fetchProfile);
-  }, [pathname]);
 
   const navLinks = [
     { name: 'Home', path: '/', icon: Home },
@@ -233,9 +193,11 @@ export default function StudentHeader() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl glass" style={{ borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)' }}>
-                    <div className="px-3 py-2.5 mb-1 bg-muted/30 rounded-lg border border-border/50" style={{ borderRadius: 'var(--radius-md)', padding: 'var(--spacing-sm)' }}>
-                      <p className="text-sm font-semibold text-foreground truncate" style={{ fontSize: 'var(--text-sm)' }}>{profile.data.name}</p>
-                      <p className="text-xs text-text-secondary font-mono truncate" style={{ fontSize: 'var(--text-xs)' }}>@{profile.data.username}</p>
+                    <div className="px-3 py-1 mb-1 bg-muted/30 rounded-lg border border-border/50" style={{ borderRadius: 'var(--radius-md)', padding: 'var(--spacing-xs) var(--spacing-sm)' }}>
+                      <div className="flex items-center gap-2 truncate">
+                        <p className="text-sm font-semibold text-foreground truncate" style={{ fontSize: 'var(--text-sm)' }}>{profile.data.name}</p>
+                        <p className="text-xs text-text-secondary font-mono truncate" style={{ fontSize: 'var(--text-xs)' }}>@{profile.data.username}</p>
+                      </div>
                     </div>
 
                     <DropdownMenuSeparator className="bg-border/30 my-1" />

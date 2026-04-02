@@ -13,7 +13,7 @@ import { HeroSection } from '@/components/student/home/HeroSection';
 import { TopicsSection } from '@/components/student/home/TopicsSection';
 import { TopicsSectionShimmer } from '@/components/student/home/TopicsSectionShimmer';
 import { handleToastError } from "@/utils/toast-system";
-import { OnboardingGuard } from '@/components/auth/OnboardingGuard';
+
 
 interface User {
   username?: string;
@@ -123,7 +123,7 @@ export default function StudentHomePage() {
   const displayTopics = topics.slice(0, 8);
 
   return (
-    
+   
       <div className="flex flex-col w-full pb-12">
         {/* HERO SECTION - Always render immediately */}
         <HeroSection />

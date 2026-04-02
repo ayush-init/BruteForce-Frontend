@@ -12,6 +12,7 @@ import {
   AlertCircle,
   X,
 } from "lucide-react";
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { Button } from "../../app/(auth)/shared/components/Button";
 import { Input } from "../../app/(auth)/shared/components/Input";
 import { PasswordInputWithValidation } from "../../components/ui/PasswordStrengthIndicator";
@@ -219,7 +220,7 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
               >
                 {loading ? (
                    <span className="flex items-center gap-2">
-                     <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                     <BruteForceLoader size="sm" />
                      Processing
                    </span>
                 ) : "Reset Password"}
@@ -237,7 +238,7 @@ export function ResetPasswordModal(props: ResetPasswordModalProps) {
   return (
     <Suspense fallback={
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#090A0F]">
-        <div className="w-10 h-10 border-2 border-[#CCFF00]/20 border-t-[#CCFF00] rounded-full animate-spin" />
+        <BruteForceLoader size="md" />
       </div>
     }>
       <ResetPasswordModalContent {...props} />

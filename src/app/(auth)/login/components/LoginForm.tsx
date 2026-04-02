@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import { studentAuthService } from '@/services/student/auth.service';
-import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
 import { handleToastError } from "@/utils/toast-system";
-import { usePasswordValidation } from '@/hooks/usePasswordValidation';
+
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 
 export function LoginForm() {
   const router = useRouter();
@@ -16,7 +16,6 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { validationResult } = usePasswordValidation(password);
 
 
   const processPostLogin = (u: any) => {
@@ -125,7 +124,10 @@ export function LoginForm() {
         className="w-full h-14 bg-[#CCFF00] hover:bg-[#D9FF33] text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl transition-all shadow-[0_10px_20px_rgba(204,255,0,0.1)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
-          <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+          <div className="flex items-center gap-2">
+            <BruteForceLoader size="sm" />
+            <span className="text-sm text-muted-foreground">Logging in...</span>
+          </div>
         ) : (
           <>
             <LogIn size={16} />

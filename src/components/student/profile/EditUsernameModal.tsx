@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, Loader, CheckCircle, XCircle, User, AlertCircle, Shield } from 'lucide-react';
+import { X, CheckCircle, XCircle, User, AlertCircle, Shield } from 'lucide-react';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { UsernameForm } from '@/types/student';
 import { useUsernameCheck } from '@/components/student/onboarding/hooks/useUsernameCheck';
 import { toast } from '@/utils/toast';
@@ -111,7 +112,7 @@ export function EditUsernameModal({
       case "typing":
         return (
           <div className={`${base} text-muted-foreground`}>
-            <Loader size={14} className="animate-spin" />
+            <BruteForceLoader size="sm" />
             <span>Typing...</span>
           </div>
         );
@@ -267,8 +268,8 @@ export function EditUsernameModal({
               )}
 
               {usernameStatus === "typing" && (
-                <Loader
-                  size={18}
+                <BruteForceLoader
+                  size="sm"
                   className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-blue-400"
                 />
               )}
@@ -295,7 +296,7 @@ export function EditUsernameModal({
             >
               {isPending ? (
                 <>
-                  <Loader size={16} className="animate-spin mr-2" />
+                  <BruteForceLoader size="sm" className="mr-2" />
                   Saving...
                 </>
               ) : (

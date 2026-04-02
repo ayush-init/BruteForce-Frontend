@@ -7,7 +7,6 @@ import { TopicsLoading } from '@/components/student/topics/TopicLoading';
 import { TopicsHeader } from '@/components/student/topics/TopicsHeader';
 import { TopicsGrid } from '@/components/student/topics/TopicsGrid';
 import { handleToastError } from "@/utils/toast-system";
-import { OnboardingGuard } from '@/components/auth/OnboardingGuard';
 
 export default function TopicsPage() {
   const [topics, setTopics] = useState<any[]>([]);
