@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Download, FileText, AlertCircle, CheckCircle2, Database } from 'lucide-react';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { Button } from '@/components/ui/button';
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/Select";
@@ -264,7 +265,7 @@ export default function DownloadReportModal({
         >
           {loading ? (
             <>
-              <div className="animate-spin mr-2 h-4 w-4 border-2 border-black border-t-transparent rounded-full"></div>
+              <BruteForceLoader size="sm" className="mr-2" />
               Generating...
             </>
           ) : (

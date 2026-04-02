@@ -4,8 +4,9 @@ import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
 import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
-import { AlertCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertCircle, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 
 export function GoogleAuthButton() {
   const router = useRouter();
@@ -120,7 +121,7 @@ export function GoogleAuthButton() {
         {/* LOADING STATE */}
         {loading && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <BruteForceLoader size="sm" />
             Authenticating...
           </div>
         )}

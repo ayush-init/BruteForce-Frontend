@@ -3,6 +3,7 @@
 import React, { Suspense, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ShieldCheck, AlertCircle, X, Sparkles } from "lucide-react";
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { Button } from "../../app/(auth)/shared/components/Button";
 import { useOtpVerification } from "../../app/(auth)/verify-otp/hooks/useOtpVerification";
 
@@ -169,7 +170,7 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
               >
                 {loading ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                    <BruteForceLoader size="sm" />
                     Authenticating
                   </div>
                 ) : (
@@ -226,7 +227,7 @@ export function VerifyOtpModal(props: VerifyOtpModalProps) {
     <Suspense 
       fallback={
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#090A0F]">
-          <div className="w-12 h-12 border-2 border-[#CCFF00]/10 border-t-[#CCFF00] rounded-full animate-spin" />
+          <BruteForceLoader size="md" />
         </div>
       }
     >

@@ -1,13 +1,13 @@
 "use client";
 
 import Link from 'next/link';
-import { Github, Twitter, Youtube, Instagram, MapPin, Heart } from 'lucide-react';
+import { MapPin, Heart } from 'lucide-react';
 
 export function Footer() {
   return (
     <footer className="border-t border-border/40 bg-background/95 backdrop-blur-sm">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="mx-auto max-w-7xl px-6 lg:px-12 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           
           {/* Brand Section */}
           <div className="space-y-4">
@@ -91,44 +91,6 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Social Links */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-4">Follow Us</h4>
-            <div className="flex gap-3">
-              <a 
-                href="https://youtube.com/@bruteforce" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-background border border-border/40 flex items-center justify-center hover:bg-primary/10 hover:border-primary/50 transition-all group"
-              >
-                <Youtube className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-              </a>
-              <a 
-                href="https://instagram.com/bruteforce" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-background border border-border/40 flex items-center justify-center hover:bg-primary/10 hover:border-primary/50 transition-all group"
-              >
-                <Instagram className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-              </a>
-              <a 
-                href="https://twitter.com/bruteforce" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-background border border-border/40 flex items-center justify-center hover:bg-primary/10 hover:border-primary/50 transition-all group"
-              >
-                <Twitter className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-              </a>
-              <a 
-                href="https://github.com/bruteforce" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-background border border-border/40 flex items-center justify-center hover:bg-primary/10 hover:border-primary/50 transition-all group"
-              >
-                <Github className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
-              </a>
-            </div>
-          </div>
         </div>
 
         {/* Bottom Bar */}
