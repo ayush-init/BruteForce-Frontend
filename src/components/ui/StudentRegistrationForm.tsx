@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, GraduationCap, Hash, Code, UserPlus } from 'lucide-react';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { PasswordInputWithValidation } from './PasswordStrengthIndicator';
 import { usePasswordValidation } from '@/hooks/usePasswordValidation';
 
@@ -267,7 +268,7 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
         className="w-full h-14 bg-primary hover:bg-primary/90 text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl transition-all shadow-[0_10px_20px_rgba(204,255,0,0.1)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
-          <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+          <BruteForceLoader size="sm" />
         ) : (
           <>
             <UserPlus size={16} />

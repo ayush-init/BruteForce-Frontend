@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, ArrowRight, X, Sparkles, AlertCircle } from "lucide-react";
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { Button } from "../../app/(auth)/shared/components/Button";
 import { Input } from "../../app/(auth)/shared/components/Input";
 import { useForgotPassword } from "../../app/(auth)/forgot-password/hooks/useForgotPassword";
@@ -153,7 +154,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
                   <div className="relative z-10 flex items-center justify-center gap-2">
                     {loading ? (
                        <>
-                        <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                        <BruteForceLoader size="sm" />
                         Sending Code...
                        </>
                     ) : (
