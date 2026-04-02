@@ -57,7 +57,7 @@ export default function TopicsPage() {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
-    <OnboardingGuard>
+   
       <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
         <TopicsHeader
           searchQuery={searchQuery}
@@ -89,6 +89,6 @@ export default function TopicsPage() {
         )}
         
       </div>
-    </OnboardingGuard>
+    
   );
 }

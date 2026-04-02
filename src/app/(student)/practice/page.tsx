@@ -121,7 +121,7 @@ export default function PracticePage() {
   // But for MVP, we just use static options or let them search.
 
   return (
-    <OnboardingGuard>
+    
       <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
         <PracticeHeader />
 
@@ -153,6 +153,6 @@ export default function PracticePage() {
           </div>
         )}
       </div>
-    </OnboardingGuard>
+    
   );
 }

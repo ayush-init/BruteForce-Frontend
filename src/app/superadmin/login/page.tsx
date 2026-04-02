@@ -76,7 +76,7 @@ export default function SuperAdminLoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             {/* EMAIL FIELD */}
-            <div className="space-y-2 group">
+            <div className="space-y-2 ">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
                Email Id
               </label>
@@ -94,7 +94,7 @@ export default function SuperAdminLoginPage() {
               </div>
             </div>
             
-              <div className="space-y-2 group">
+              <div className="space-y-2 ">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
                Password
               </label>
@@ -117,7 +117,7 @@ export default function SuperAdminLoginPage() {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-            </div>
+              </div> 
 
             {/* SUBMIT BUTTON */}
             <motion.button 
@@ -125,7 +125,7 @@ export default function SuperAdminLoginPage() {
               whileTap={{ scale: 0.99 }}
               type="submit" 
               disabled={loading}
-              className="w-full h-14 mt-4 bg-primary text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl transition-all shadow-[0_0_20px_rgba(204,255,0,0.15)] hover:shadow-[0_0_30px_rgba(204,255,0,0.3)] disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group relative"
+              className="w-full h-14 mt-4 !bg-primary text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl transition-all shadow-[0_0_20px_rgba(204,255,0,0.1)] hover:shadow-[0_0_30px_rgba(204,255,0,0.25)] hover:bg-[#d9ff33] disabled:opacity-50 group relative overflow-hidden"
             >
               <span className="relative z-10 flex items-center justify-center gap-3">
                 {loading ? (

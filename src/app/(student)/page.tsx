@@ -123,7 +123,7 @@ export default function StudentHomePage() {
   const displayTopics = topics.slice(0, 8);
 
   return (
-    <OnboardingGuard>
+    
       <div className="flex flex-col w-full pb-12">
         {/* HERO SECTION - Always render immediately */}
         <HeroSection />
@@ -131,6 +131,6 @@ export default function StudentHomePage() {
         {/* TOPICS SECTION - Always render header, show shimmer only for topic cards */}
         <TopicsSection topics={topics} loading={loading} />
       </div>
-    </OnboardingGuard>
+    
   );
 }

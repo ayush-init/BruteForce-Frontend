@@ -72,7 +72,7 @@ export default function AdminLoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             {/* EMAIL FIELD */}
-            <div className="space-y-2 group">
+            <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
                 Email Id
               </label>
@@ -90,7 +90,7 @@ export default function AdminLoginPage() {
               </div>
             </div>
             {/* Password? */}
-            <div className="space-y-2 group">
+            <div className="space-y-2 ">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
                 Password
               </label>
