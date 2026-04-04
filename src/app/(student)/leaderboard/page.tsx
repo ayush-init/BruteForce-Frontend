@@ -14,9 +14,8 @@ import { isStudentToken, clearAuthTokens } from "@/lib/auth-utils";
 import PodiumSection from "@/components/leaderboard/components/PodiumSection";
 
 export default function StudentLeaderboardPage() {
-  const [lType, setLType] = useState('all');
-  const [lCity, setLCity] = useState('all');
-  const [lYear, setLYear] = useState<number | null>(2024);
+  const [lCity, setLCity] = useState('All Cities');
+  const [lYear, setLYear] = useState<number | null>(null);
   const [lSearch, setLSearch] = useState('');
 
   // Get current student data to set default city and year
@@ -32,7 +31,7 @@ export default function StudentLeaderboardPage() {
 
   // Extract available years from API response
   const { data: leaderboardData, isLoading, error, refetch } = useQuery({
-    queryKey: ['studentLeaderboard', lCity === 'all' ? 'all' : lCity, lYear, lType, lSearch],
+    queryKey: ['studentLeaderboard', lCity === 'all' ? 'all' : lCity, lYear, lSearch],
     queryFn: async () => {
       // Check if we have a student token before making the request
       if (!isStudentToken()) {
@@ -50,7 +49,6 @@ export default function StudentLeaderboardPage() {
       const filters = {
         city: lCity === 'All Cities' ? 'all' : lCity,
         year: lYear,
-        type: lType,
       };
 
       return await studentLeaderboardService.getLeaderboard(filters, lSearch);
@@ -141,13 +139,6 @@ export default function StudentLeaderboardPage() {
         <FilterBar
           lSearch={lSearch}
           setLSearch={setLSearch}
-          lType={lType}
-          setLType={setLType}
-          typeOptionsObj={[
-            { value: 'all', label: 'All Time' },
-            { value: 'weekly', label: 'Weekly' },
-            { value: 'monthly', label: 'Monthly' }
-          ]}
           lCity={lCity}
           setLCity={setLCity}
           cityOptionsObj={[
