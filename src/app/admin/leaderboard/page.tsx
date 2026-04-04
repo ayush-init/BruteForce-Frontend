@@ -40,9 +40,8 @@ export default function AdminLeaderboardPage() {
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
   const [limit, setLimit] = useState(Number(searchParams.get('limit')) || 5);
 
-  const [lType, setLType] = useState('all');
-  const [lCity, setLCity] = useState<string>('All Cities');
-  const [lYear, setLYear] = useState<number>(new Date().getFullYear());
+  const [lCity, setLCity] = useState('All Cities');
+  const [lYear, setLYear] = useState<number | null>(null);
 
   // Leaderboard data state (shared across components)
   const [leaderboardData, setLeaderboardData] = useState<any>(null);
@@ -58,7 +57,6 @@ export default function AdminLeaderboardPage() {
       const defaultYear = batchYearRaw ? Number(batchYearRaw) : Number(selectedBatch.name?.match(/\d{4}/)?.[0] || 2024);
       setLCity(defaultCity);
       setLYear(defaultYear);
-      setLType('all');
       setIsInit(true);
     }
   }, [isLoadingContext, selectedCity, selectedBatch, isInit]);
@@ -84,7 +82,6 @@ export default function AdminLeaderboardPage() {
     try {
       const body = {
         city: lCity === "All Cities" ? "all" : lCity,
-        type: lType,
         year: lYear === 0 ? undefined : Number(lYear)
       };
 
@@ -119,7 +116,6 @@ export default function AdminLeaderboardPage() {
       try {
         const body = {
           city: lCity === "All Cities" ? "all" : lCity,
-          type: lType,
           year: lYear === 0 ? undefined : Number(lYear)
         };
 
@@ -162,7 +158,7 @@ export default function AdminLeaderboardPage() {
     };
 
     fetchLeaderboardData();
-  }, [page, limit, lCity, lType, lYear, debouncedSearch, isInit]);
+  }, [page, limit, lCity, lYear, debouncedSearch, isInit]);
 
 
  
@@ -181,7 +177,7 @@ export default function AdminLeaderboardPage() {
 
   useEffect(() => {
     if (!isInit) return;
-  }, [lCity, lYear, lType, page, limit, debouncedSearch, isInit]);
+  }, [lCity, lYear, page, limit, debouncedSearch, isInit]);
 
   // Global loading overlay if everything is refreshing Context
   if (isLoadingContext || !isInit) {
@@ -195,11 +191,6 @@ export default function AdminLeaderboardPage() {
 
   const cityOptionsObj = allCities.map(c => ({ label: c.city_name, value: c.city_name }));
   const yearOptionsObj = yearOptions.map((y: number) => ({ label: y.toString(), value: y.toString() }));
-  const typeOptionsObj = [
-    { label: 'All-Time', value: 'all' },
-    { label: 'Monthly', value: 'monthly' },
-    { label: 'Weekly', value: 'weekly' },
-  ];
 
   // TimerLeaderboard will handle the countdown display
 
@@ -228,9 +219,6 @@ export default function AdminLeaderboardPage() {
       <FilterBar
         lSearch={lSearch}
         setLSearch={setLSearch}
-        lType={lType}
-        setLType={setLType}
-        typeOptionsObj={typeOptionsObj}
         lCity={lCity}
         setLCity={setLCity}
         cityOptionsObj={cityOptionsObj}
