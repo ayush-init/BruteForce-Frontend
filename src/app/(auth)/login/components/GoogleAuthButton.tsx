@@ -78,7 +78,6 @@ export function GoogleAuthButton() {
       const btnContainer = document.getElementById("googleSignInDiv");
 
       if (btnContainer) {
-        // Check if dark mode is enabled
 
         (window as any).google.accounts.id.renderButton(
           btnContainer,
@@ -110,18 +109,18 @@ export function GoogleAuthButton() {
       
 
       {/* BUTTON CONTAINER */}
-      <div className="w-full  flex flex-col items-center gap-3 mb-3 ">
+      <div className="w-full flex flex-col items-center gap-3 mb-3 ">
 
         {/* GOOGLE BUTTON */}
         <div
           id="googleSignInDiv"
-          className="w-full flex justify-center [&>div]:w-full transition-all"
+          className="w-full  flex justify-center [&>div]:w-full transition-all"
         />
-
+       
         {/* LOADING STATE */}
         {loading && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
-            <BruteForceLoader size="sm" />
+            
             Authenticating...
           </div>
         )}
@@ -139,6 +138,7 @@ export function GoogleAuthButton() {
           </motion.div>
         )}
       </AnimatePresence> 
+
     </div>
   );
 }

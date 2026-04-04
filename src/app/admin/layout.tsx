@@ -12,12 +12,8 @@ import { useAdminStore } from '@/store/adminStore';
 import { isAdminToken, clearAuthTokens } from '@/lib/auth-utils';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { handleToastError } from "@/utils/toast-system";
-<<<<<<< Updated upstream
-import { cn } from '@/lib/utils';
-=======
 import { getAllCities } from '@/services/city.service';
 import { getAllBatches } from '@/services/batch.service';
->>>>>>> Stashed changes
 
 function decodeJwt(token: string) {
   try {
