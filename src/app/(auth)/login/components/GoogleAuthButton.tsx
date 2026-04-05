@@ -112,12 +112,12 @@ export function GoogleAuthButton() {
 
 
       {/* BUTTON CONTAINER */}
-      <div className=" flex flex-col items-center gap-3 mb-3 ">
+      <div className=" flex flex-col items-center gap-3 mb-3  ">
 
         {/* GOOGLE BUTTON */}
         <div
           id="googleSignInDiv"
-          className="  flex justify-center [&>div]:w-full transition-all"
+          className="  flex justify-center [&>div]:w-full transition-all "
         />
 
         {/* LOADING STATE */}

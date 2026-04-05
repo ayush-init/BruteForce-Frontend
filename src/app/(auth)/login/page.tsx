@@ -4,7 +4,7 @@ import { GoogleAuthButton } from './components/GoogleAuthButton';
 
 export default function LoginPage() {
   return (
-    <div className=' px-10 py-3 w-full'>
+    <div className='px-6 b'>
       <div className="text-center  mb-8">
        <h1 className="font-serif italic text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-foreground tracking-tighter">
               Brute<span className="text-primary">Force</span>

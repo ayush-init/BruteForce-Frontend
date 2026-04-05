@@ -385,18 +385,18 @@ export default function SuperAdminDashboard() {
                   router.push('/superadmin/admins');
                 }
               }}
-              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-5/10 to-transparent border border-chart-5/20 hover:border-chart-5/40 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-5/50"
+              className="w-full mb-4  relative overflow-hidden rounded-xl  border border-border hover:border-foreground/50 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-5/50"
             >
-              <div className="relative z-10 flex items-center justify-between">
+              <div className="relative z-10 flex items-center justify-between  ">
                 <div className="flex items-center gap-3">
-                  <div className="p-1.5 rounded-lg bg-chart-5/10 group-hover:scale-110 transition-transform">
-                    <Users2 className="h-4 w-4 text-chart-5" />
+                  <div className="p-1.5 rounded-lg hover:scale-110 transition-transform">
+                    <Users2 className="h-4 w-4 " />
                   </div>
                   <span className="font-medium text-foreground group-hover:text-chart-5 transition-colors">
                     Add Admin
                   </span>
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-chart-5 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                <ArrowUpRight className="h-4 w-4  opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-r from-chart-5/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
@@ -408,18 +408,18 @@ export default function SuperAdminDashboard() {
                   router.push('/superadmin/cities');
                 }
               }}
-              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-2/10 to-transparent border border-chart-2/20 hover:border-chart-2/40 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-2/50"
+              className="w-full mb-4  relative overflow-hidden rounded-xl  to-transparent border border-border hover:border-foreground/50 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-2/50"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-1.5 rounded-lg bg-chart-2/10 group-hover:scale-110 transition-transform">
-                    <Globe className="h-4 w-4 text-chart-2" />
+                  <div className="p-1.5 rounded-lg  group-hover:scale-110 transition-transform">
+                    <Globe className="h-4 w-4" />
                   </div>
                   <span className="font-medium text-foreground group-hover:text-chart-2 transition-colors">
                     Add City
                   </span>
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-chart-2 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                <ArrowUpRight className="h-4 w-4  opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-r from-chart-2/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
@@ -431,18 +431,18 @@ export default function SuperAdminDashboard() {
                   router.push('/superadmin/batches');
                 }
               }}
-              className="w-full  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-3/10 to-transparent border border-chart-3/20 hover:border-chart-3/40 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-3/50"
+              className="w-full  relative overflow-hidden rounded-xl  to-transparent border border-border hover:border-foreground/50 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-3/50"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-1.5 rounded-lg bg-chart-3/10 group-hover:scale-110 transition-transform">
-                    <Layers className="h-4 w-4 text-chart-3" />
+                  <div className="p-1.5 rounded-lg  group-hover:scale-110 transition-transform">
+                    <Layers className="h-4 w-4 " />
                   </div>
                   <span className="font-medium text-foreground group-hover:text-chart-3 transition-colors">
-                    Add Batch
+                    Add Batch 
                   </span>
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-chart-3 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                <ArrowUpRight className="h-4 w-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-r from-chart-3/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>

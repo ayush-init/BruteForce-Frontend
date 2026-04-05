@@ -22,7 +22,7 @@ import { OverviewStats } from '@/components/student/profile/OverviewStats';
 import { ProfileInfo } from '@/components/student/profile/ProfileInfo';
 import { SocialLinks } from '@/components/student/profile/SocialLinks';
 import { ProblemSolvingStats } from '@/components/student/profile/ProblemSolvingStats';
-import { ActivityHeatmap } from '@/components/student/profile/ActivityHeatmap';
+import ActivityHeatmap from '@/components/student/profile/ActivityHeatmap';
 import { RecentActivity } from '@/components/student/profile/RecentActivity';
 import TopicProgressModal from '@/components/student/topics/TopicProgressModal';
 import { handleToastError, showSuccess, showDeleteSuccess, glassToast } from '@/utils/toast-system';
@@ -381,13 +381,14 @@ export default function PublicProfilePage() {
     return <ProfileNotFound username={username || undefined} error={profileError || undefined} />;
   }
 
-  const { student, codingStats, streak, leaderboard, recentActivity, heatmap } = profileData || {
+  const { student, codingStats, streak, leaderboard, recentActivity, heatmap, heatmapStartMonth } = profileData || {
     student: {},
     codingStats: {},
     streak: {},
     leaderboard: {},
     recentActivity: [],
-    heatmap: []
+    heatmap: [],
+    heatmapStartMonth: undefined
   };
 
   return (
@@ -427,7 +428,11 @@ export default function PublicProfilePage() {
           <ProblemSolvingStats codingStats={codingStats} />
 
           {/* ACTIVITY HEATMAP */}
-          <ActivityHeatmap heatmap={heatmap} />
+          <ActivityHeatmap 
+            heatmap={heatmap || []} 
+            currentStreak={streak?.currentStreak}
+            maxStreak={streak?.maxStreak}
+          />
 
           {/* RECENT ACTIVITY */}
           <RecentActivity recentActivity={recentActivity} />

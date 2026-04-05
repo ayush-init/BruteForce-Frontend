@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAdminStore } from '@/store/adminStore';
 import api from '@/lib/api';
@@ -71,7 +71,7 @@ export default function AdminClassesPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
-
+  const router = useRouter();
   const fetchClasses = async () => {
     if (!selectedBatch) return;
     setLoading(true);
@@ -314,7 +314,7 @@ export default function AdminClassesPage() {
                         return;
                       }
                       // Navigate to view questions page (same as row click)
-                      window.location.href = `/admin/topics/${topicSlug}/classes/${cls.slug}`;
+                      router.push(`/admin/topics/${topicSlug}/classes/${cls.slug}`);
                     }}
                   >
                     <TableCell>
@@ -349,7 +349,7 @@ export default function AdminClassesPage() {
                           className="h-8 gap-1.5 font-medium bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/30 text-primary"
                           onClick={(e) => {
                             e.stopPropagation();
-                            window.location.href = `/admin/topics/${topicSlug}/classes/${cls.slug}`;
+                            router.push(`/admin/topics/${topicSlug}/classes/${cls.slug}`);
                           }}
                         >
                           View Questions

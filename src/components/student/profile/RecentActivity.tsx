@@ -48,7 +48,7 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
                     </div>
                     <div className="font-mono mt-2 flex items-center gap-6 text-[var(--text-sm)] text-[var(--text-secondary)]">
                       <Calendar className="w-4 h-4" />
-                      {new Date(activity.solvedAt).toLocaleDateString()}
+                      {new Date(activity.solvedAt).toLocaleDateString('en-US', { timeZone: 'UTC' })}
                     </div>
                   </div>
                 </div>

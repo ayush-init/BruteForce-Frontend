@@ -372,15 +372,7 @@ export default function AdminClassDetailsPage() {
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => handleRemoveQuestion(q.id)}
-                                    className="
-                h-8 w-8 rounded-full
-
-                text-muted-foreground
-                hover:text-destructive
-                hover:bg-destructive/10
-
-                transition-all
-              "
+                                    className="  h-8 w-8 rounded-full text-muted-foreground  hover:text-destructive hover:bg-destructive/10   transition-all        "
                                  >
                                     <Trash2 className="w-4 h-4" />
                                  </Button>
@@ -485,7 +477,7 @@ export default function AdminClassDetailsPage() {
 
                      {bankLoading ? (
                         <div className="flex items-center justify-center h-32">
-                           <BruteForceLoader size="sm" />
+                           {/* <BruteForceLoader size="sm" /> */}
                            <span className="ml-2 text-sm text-muted-foreground">
                               Loading questions...
                            </span>
@@ -573,32 +565,7 @@ export default function AdminClassDetailsPage() {
                   </div>
                </div>
 
-               {/* Pagination */}
-               <div className="p-4 border-t border-border flex items-center justify-between bg-muted/20">
-                  <span className="text-sm text-muted-foreground">
-                     {bankQuestions.length > 0 && `${bankQuestions.length} questions found`}
-                  </span>
-
-                  <div className="flex gap-2">
-                     <Button
-                        variant="outline"
-                        className="h-9 rounded-xl"
-                        onClick={() => setBankPage((p) => Math.max(1, p - 1))}
-                        disabled={bankPage === 1 || bankLoading}
-                     >
-                        Previous
-                     </Button>
-
-                     <Button
-                        variant="outline"
-                        className="h-9 rounded-xl"
-                        onClick={() => setBankPage((p) => Math.min(bankTotalPages, p + 1))}
-                        disabled={bankPage === bankTotalPages || bankLoading}
-                     >
-                        Next
-                     </Button>
-                  </div>
-               </div>
+           
 
                {/* Footer */}
                <div className="p-4 border-t border-border flex items-center justify-between">

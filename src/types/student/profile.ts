@@ -142,6 +142,7 @@ export interface ProfileResponse {
     stats?: StudentStats;
     codingStats?: CodingStats;
     heatmap?: HeatmapData[];
+    heatmapStartMonth?: string | Date; // New field for dynamic start date
     recentActivity?: RecentActivity[];
     leaderboard?: LeaderboardData;
     streak?: StreakData;

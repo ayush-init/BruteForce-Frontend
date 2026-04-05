@@ -267,18 +267,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <>{children}</>;
   }
 
-  // Show loading screen during authentication
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <BruteForceLoader size="md" />
-          <p className="text-muted-foreground">Authenticating...</p>
-        </div>
-      </div>
-    );
-  }
-
+ 
   // Show error state if authentication fails
   if (authError) {
     return (
