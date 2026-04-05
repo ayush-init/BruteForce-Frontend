@@ -98,9 +98,9 @@ export function PasswordInputWithValidation({
 
   const inputBorderClass = password 
     ? isComplete 
-      ? 'border-logo focus:border-logo' 
-      : currentColorClasses.border
-    : 'border-foreground/10 focus:border-logo/40';
+      ? 'focus:border-logo' 
+      : 'focus:border-logo'
+    : 'focus:border-logo/40';
 
   return (
     <div className={`space-y-3 ${className}`}>
@@ -111,7 +111,7 @@ export function PasswordInputWithValidation({
           onChange={(e) => onPasswordChange(e.target.value)}
           disabled={disabled}
           placeholder={placeholder}
-          className={`w-full h-12 pl-11 pr-12  border ${inputBorderClass} rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all`}
+          className={`w-full h-12 pl-11 pr-12 border border-foreground/10 ${inputBorderClass} rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all`}
         />
         
         <button

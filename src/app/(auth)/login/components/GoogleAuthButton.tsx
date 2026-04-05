@@ -7,6 +7,7 @@ import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
 import { AlertCircle, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
+import { toast } from 'sonner';
 
 export function GoogleAuthButton() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export function GoogleAuthButton() {
 
       if (!payload.email?.endsWith('@pwioi.com')) {
         setError('Please use your PW student email to log in.');
+        toast.error('Only PW student emails are allowed');
         setLoading(false);
         return;
       }
@@ -47,7 +49,7 @@ export function GoogleAuthButton() {
       }
     } catch (err: any) {
 
-      setError(
+      toast.error(
         err.response?.data?.error ||
         err.response?.data?.message ||
         'Google login failed.'
@@ -84,6 +86,7 @@ export function GoogleAuthButton() {
           {
             theme: "outline",
             size: "large",
+            // shape:"pill",
             text: "continue_with",
             width: 350,
           }
@@ -106,26 +109,26 @@ export function GoogleAuthButton() {
         onLoad={initGoogleLogin}
       />
 
-      
+
 
       {/* BUTTON CONTAINER */}
-      <div className="w-full flex flex-col items-center gap-3 mb-3 ">
+      <div className=" flex flex-col items-center gap-3 mb-3 ">
 
         {/* GOOGLE BUTTON */}
         <div
           id="googleSignInDiv"
-          className="w-full  flex justify-center [&>div]:w-full transition-all"
+          className="  flex justify-center [&>div]:w-full transition-all"
         />
-       
+
         {/* LOADING STATE */}
         {loading && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
-            
+
             Authenticating...
           </div>
         )}
       </div>
-       <AnimatePresence mode="wait">
+      {/* <AnimatePresence mode="wait">
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -137,7 +140,7 @@ export function GoogleAuthButton() {
             <p className="text-xs text-red-400 font-medium leading-tight">{error}</p>
           </motion.div>
         )}
-      </AnimatePresence> 
+      </AnimatePresence> */}
 
     </div>
   );

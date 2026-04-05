@@ -8,6 +8,8 @@ import { Modal } from '@/components/Modal';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PasswordInputWithValidation } from "@/components/ui/PasswordStrengthIndicator";
+import { usePasswordValidation } from '@/hooks/usePasswordValidation';
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -41,6 +43,7 @@ export function AdminModal({
   });
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+  const passwordValidation = usePasswordValidation(formData.password);
 
   // Reset form when modal opens/closes or mode changes
   useEffect(() => {
@@ -112,7 +115,10 @@ export function AdminModal({
   };
 
   const isFormValid = mode === 'create'
-    ? formData.name && formData.email && formData.password && formData.role
+    ? formData.name && 
+      formData.email && 
+      passwordValidation.meetsMinimumRequirements(formData.password) &&
+      formData.role
     : formData.role;
 
  return (
@@ -138,13 +144,13 @@ export function AdminModal({
           </label>
 
           <Input
-            placeholder="e.g. Satya Sai"
+            placeholder="Satya Sai"
             value={formData.name}
             onChange={(e) =>
               setFormData({ ...formData, name: e.target.value })
             }
             disabled={submitting || mode === "edit"}
-            className="w-full bg-accent/40 border border-border/30 focus:ring-2 focus:ring-primary/30"
+            className="w-full h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
           />
         </div>
 
@@ -162,27 +168,28 @@ export function AdminModal({
               setFormData({ ...formData, email: e.target.value })
             }
             disabled={submitting || mode === "edit"}
-            className="w-full bg-accent/40 border border-border/30 focus:ring-2 focus:ring-primary/30"
+            className="w-full h-11! pl-11 pr-4 border border-border  focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
           />
         </div>
 
         {/* Password */}
         {mode === "create" && (
-          <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-            <label className="text-sm text-muted-foreground">
+          <div className="grid grid-cols-[140px_1fr] items-start gap-4">
+            <label className="text-sm text-muted-foreground mt-3">
               Password *
             </label>
 
-            <Input
-              type="password"
-              placeholder="Min. 8 characters"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              disabled={submitting}
-              className="w-full bg-accent/40 border border-border/30 focus:ring-2 focus:ring-primary/30"
-            />
+            <div className="w-full">
+              <PasswordInputWithValidation
+                password={formData.password}
+                onPasswordChange={(password) =>
+                  setFormData({ ...formData, password })
+                }
+                placeholder="Create a strong password"
+                disabled={submitting}
+                className="w-full"
+              />
+            </div>
           </div>
         )}
 
@@ -215,7 +222,7 @@ export function AdminModal({
       </div>
 
       {/* 🔸 ASSIGNMENT */}
-      <div className="glass rounded-xl p-5 border border-border/30 space-y-5">
+      <div className="glass rounded-2xl p-5 border border-border/30 space-y-5">
 
         <h3 className="text-sm font-semibold text-foreground">
           Assignment

@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInputWithValidation } from '@/components/ui/PasswordStrengthIndicator';
+import { usePasswordValidation } from '@/hooks/usePasswordValidation';
 import { AlertTriangle, Plus, FolderEdit, Trash2 } from 'lucide-react';
 import { AdminStudent } from '@/types/student';
 import BulkUploadModal from '@/app/admin/students/components/BulkUploadModal';
@@ -93,6 +94,9 @@ export default function StudentsModals({
   handleBulkUploadSuccess,
   selectedBatch,
 }: StudentsModalsProps) {
+  const passwordValidation = usePasswordValidation(formPassword);
+  
+  const isPasswordValid = formPassword ? passwordValidation.meetsMinimumRequirements(formPassword) : true;
   return (
     <>
       {/* CREATE MODAL */}
@@ -132,7 +136,7 @@ export default function StudentsModals({
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="Enter student name"
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -147,7 +151,7 @@ export default function StudentsModals({
                   onChange={(e) => setFormEmail(e.target.value)}
                   placeholder="student@example.com"
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -160,8 +164,9 @@ export default function StudentsModals({
                   value={formEnrollmentId}
                   onChange={(e) => setFormEnrollmentId(e.target.value)}
                   placeholder="ENR123456"
+                  required
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -175,7 +180,7 @@ export default function StudentsModals({
                   onChange={(e) => setFormUsername(e.target.value)}
                   placeholder="username"
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-transparent border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -197,7 +202,7 @@ export default function StudentsModals({
               </div>
 
               {/* PLATFORM IDs */}
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-2 ">
                 <div className="space-y-2">
                   <label className="text-s text-muted-foreground font-medium">
                     LeetCode ID
@@ -207,7 +212,7 @@ export default function StudentsModals({
                     onChange={(e) => setFormLeetcodeId(e.target.value)}
                     placeholder="leetcode_id"
                     disabled={submitting}
-                    className="h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-[90%]"
                   />
                 </div>
                 <div className="space-y-2">
@@ -219,7 +224,7 @@ export default function StudentsModals({
                     onChange={(e) => setFormGfgId(e.target.value)}
                     placeholder="gfg_id"
                     disabled={submitting}
-                    className="h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-full"
                   />
                 </div>
               </div>
@@ -237,7 +242,7 @@ export default function StudentsModals({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={submitting || !formName || !formEmail}
+                  disabled={submitting || !formName || !formEmail || !formEnrollmentId || !isPasswordValid}
                   className="h-11 w-full font-semibold bg-primary text-black hover:opacity-90 transition-all"
                 >
                   {submitting ? "Adding..." : "Add Student"}
@@ -285,7 +290,7 @@ export default function StudentsModals({
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="Enter student name"
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -300,7 +305,7 @@ export default function StudentsModals({
                   onChange={(e) => setFormEmail(e.target.value)}
                   placeholder="student@example.com"
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -314,7 +319,7 @@ export default function StudentsModals({
                   onChange={(e) => setFormUsername(e.target.value)}
                   placeholder="username"
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -328,7 +333,7 @@ export default function StudentsModals({
                   onChange={(e) => setFormEnrollmentId(e.target.value)}
                   placeholder="ENR123456"
                   disabled={submitting}
-                  className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
                 />
               </div>
 
@@ -343,7 +348,7 @@ export default function StudentsModals({
                     onChange={(e) => setFormLeetcodeId(e.target.value)}
                     placeholder="leetcode_id"
                     disabled={submitting}
-                    className="h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-[90%]"
                   />
                 </div>
                 <div className="space-y-2">
@@ -355,7 +360,7 @@ export default function StudentsModals({
                     onChange={(e) => setFormGfgId(e.target.value)}
                     placeholder="gfg_id"
                     disabled={submitting}
-                    className="h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-full"
                   />
                 </div>
               </div>

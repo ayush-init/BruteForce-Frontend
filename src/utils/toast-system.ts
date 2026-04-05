@@ -229,6 +229,7 @@ export const userFriendlyMessages = {
   STUDENT_NOT_REGISTERED: 'Student not registered by admin.',
   INVALID_STATE: 'Invalid operation state.',
   UNPROCESSABLE_ENTITY: 'Request could not be processed.',
+  BATCH_DUPLICATE: 'A batch with this name and year already exists in this city.',
 
   // External service errors
   EXTERNAL_SERVICE_ERROR: 'External service error. Please try again.',

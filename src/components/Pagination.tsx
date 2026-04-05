@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,51 +16,37 @@ interface PaginationProps {
 
 export function Pagination({ currentPage, totalItems, limit, onPageChange, onLimitChange, showLimitSelector = false, loading = false }: PaginationProps) {
   const totalPages = Math.ceil(totalItems / limit) || 1;
+  const [inputValue, setInputValue] = useState(String(limit));
 
-  // Shimmer loading state
-  if (loading) {
-    return (
-      <div className="flex items-center justify-between px-6 py-2 bg-[var(--glass-bg)] backdrop-blur-md border-t border-[var(--glass-border)] rounded-2xl">
-        {/* LEFT INFO SHIMMER */}
-        <div className="flex items-center gap-6">
-          <div className="space-y-1">
-            <div className="h-2 w-16 bg-muted/30 rounded animate-pulse"></div>
-            <div className="h-2 w-8 bg-muted/20 rounded animate-pulse"></div>
-            <div className="h-2 w-16 bg-muted/30 rounded animate-pulse"></div>
-            <div className="h-2 w-8 bg-muted/20 rounded animate-pulse"></div>
-            <div className="h-2 w-12 bg-muted/30 rounded animate-pulse"></div>
-          </div>
+  // Sync input value with external limit prop
+  useEffect(() => {
+    setInputValue(String(limit));
+  }, [limit]);
 
-          {showLimitSelector && (
-            <div className="flex items-center gap-3">
-              <div className="h-2 w-4 bg-muted/20 rounded animate-pulse"></div>
-              <div className="h-6 w-[90px] bg-muted/30 rounded-full animate-pulse"></div>
-              <div className="h-2 w-12 bg-muted/20 rounded animate-pulse"></div>
-            </div>
-          )}
-        </div>
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Allow empty input or numeric input only
+    if (value === '' || /^\d+$/.test(value)) {
+      setInputValue(value);
+      
+      // If valid number in range, update external state
+      const numValue = parseInt(value);
+      if (numValue >= 1 && numValue <= 100 && onLimitChange) {
+        onLimitChange(numValue);
+        onPageChange(1);
+      }
+    }
+  };
 
-        {/* RIGHT CONTROLS SHIMMER */}
-        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-accent/20 border border-border">
-          {/* PREV BUTTON SHIMMER */}
-          <div className="h-5 w-5 rounded-full bg-muted/20 animate-pulse"></div>
-          
-          {/* PAGE NUMBERS SHIMMER */}
-          <div className="flex items-center space-x-1">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-5 min-w-[24px] px-1 rounded-full bg-muted/30 animate-pulse"></div>
-            ))}
-          </div>
-          
-          {/* NEXT BUTTON SHIMMER */}
-          <div className="h-5 w-5 rounded-full bg-muted/20 animate-pulse"></div>
-        </div>
-      </div>
-    );
-  }
-
-  // Always show pagination when there's data
-  // if (totalPages <= 1) return null;
+  const handleBlur = () => {
+    // If input is empty when it loses focus, reset to default
+    if (inputValue === '' && onLimitChange) {
+      setInputValue('5');
+      onLimitChange(5);
+      onPageChange(1);
+    }
+  };
 
   return (
   <div className="
@@ -94,17 +80,12 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
           <span className="text-muted-foreground font-medium">Show</span>
 
           <Input
-            type="number"
-            min="1"
-            max="100"
-            value={String(limit)}
-            onChange={(e) => {
-              const value = parseInt(e.target.value);
-              if (value >= 1 && value <= 100) {
-                onLimitChange(value);
-                onPageChange(1);
-              }
-            }}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleBlur}
             className="
               w-[90px] h-9 rounded-full
               bg-accent/40 border border-border
@@ -113,7 +94,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
               text-center
               focus:ring-2 focus:ring-primary/20
             "
-            placeholder="6"
+            placeholder="5"
           />
 
           <span className="text-muted-foreground font-medium">
