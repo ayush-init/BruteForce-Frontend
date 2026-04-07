@@ -90,6 +90,11 @@
   --glass-bg: rgba(22, 24, 33, 0.522);
   --glass-border: rgba(255, 255, 255, 0.06);
   --hover-glow: rgba(204, 255, 0, 0.15);
+  
+  /* Solid card backgrounds for content blocking */
+  --card-solid: rgba(22, 24, 33, 0.95);
+  --card-solid-border: rgba(255, 255, 255, 0.08);
+  --glass-solid: rgba(22, 24, 33, 0.95);
 
   /* ===== TEXT VARIABLES ===== */
   --text-primary: var(--foreground);
@@ -159,9 +164,14 @@
   --border: #E2E8F0;
   --input: #F1F5F9;
   --ring: #CCFF00;
-  --glass-bg: rgba(255, 255, 255, 0.4);  
+  --glass-bg: rgba(255, 255, 255, 0.7);  
    --glass-border: rgba(0, 0, 0, 0.08);
   --hover-glow: rgba(204, 255, 0, 0.15);
+  
+  /* Solid card backgrounds for content blocking */
+  --card-solid: rgba(255, 255, 255, 0.95);
+  --card-solid-border: rgba(0, 0, 0, 0.12);
+  --glass-solid: rgba(255, 255, 255, 0.95);
   --text-primary: var(--foreground);
   --text-secondary: var(--muted-foreground);
   --accent-primary: var(--primary);
@@ -180,6 +190,16 @@
 
   transition: all 0.2s ease;
 }
+
+/* Solid glass for content blocking */
+.glass-solid {
+  background: var(--glass-solid);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-solid-border);
+  transition: all 0.2s ease;
+}
+
 .group {
   background: var(--card);
   backdrop-filter: blur(16px);

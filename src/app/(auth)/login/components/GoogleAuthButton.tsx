@@ -1,12 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
 import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
-import { AlertCircle, AlertTriangle } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { toast } from 'sonner';
 
 export function GoogleAuthButton() {
@@ -24,124 +20,62 @@ export function GoogleAuthButton() {
     router.push('/');
   };
 
-  const handleGoogleCallback = async (idToken: string) => {
+  
+  const handleGoogleSignIn = () => {
+    if (loading) return;
+    
     setLoading(true);
     setError('');
 
-    try {
-      const payload = JSON.parse(atob(idToken.split('.')[1]));
-
-      if (!payload.email?.endsWith('@pwioi.com')) {
-        setError('Please use your PW student email to log in.');
-        toast.error('Only PW student emails are allowed');
-        setLoading(false);
-        return;
-      }
-
-      const data = await studentAuthService.googleLogin(idToken);
-
-      if (data.accessToken) {
-        localStorage.setItem('accessToken', data.accessToken);
-        document.cookie = `accessToken=${data.accessToken}; path=/`;
-        processPostLogin(data.user);
-      } else {
-        setError('Login failed: No token received.');
-      }
-    } catch (err: any) {
-
-      toast.error(
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        'Google login failed.'
-      );
-    } finally {
-      setLoading(false);
-    }
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    const redirectUri = encodeURIComponent('http://localhost:3000/auth/callback');
+    const scope = encodeURIComponent('openid email profile');
+    
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${clientId}&` +
+      `redirect_uri=${redirectUri}&` +
+      `response_type=id_token&` +
+      `scope=${scope}&` +
+      `nonce=${Date.now()}`;
+    
+    window.location.href = googleAuthUrl;
   };
-
-  const initGoogleLogin = () => {
-    setError('');
-
-    if (typeof window !== 'undefined' && (window as any).google) {
-      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-
-      if (!clientId) {
-        setError('Google Client ID missing.');
-        return;
-      }
-
-      (window as any).google.accounts.id.initialize({
-        client_id: clientId,
-        callback: (res: any) => {
-          if (res.credential) handleGoogleCallback(res.credential);
-        },
-      });
-
-      const btnContainer = document.getElementById("googleSignInDiv");
-
-      if (btnContainer) {
-
-        (window as any).google.accounts.id.renderButton(
-          btnContainer,
-          {
-            theme: "outline",
-            size: "large",
-            // shape:"pill",
-            text: "continue_with",
-            width: 350,
-          }
-        );
-      }
-    }
-  };
-
-  React.useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).google) {
-      initGoogleLogin();
-    }
-  }, []);
 
   return (
-    <div >
-      <Script
-        src="https://accounts.google.com/gsi/client"
-        strategy="afterInteractive"
-        onLoad={initGoogleLogin}
-      />
-
-
-
-      {/* BUTTON CONTAINER */}
-      <div className=" flex flex-col items-center gap-3 mb-3  ">
-
-        {/* GOOGLE BUTTON */}
-        <div
-          id="googleSignInDiv"
-          className="  flex justify-center [&>div]:w-full transition-all "
-        />
-
-        {/* LOADING STATE */}
-        {loading && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
-
-            Authenticating...
-          </div>
-        )}
-      </div>
-      {/* <AnimatePresence mode="wait">
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="flex items-center  mb-3  gap-3 px-4 py-3 rounded-2xl bg-red-500/5 border border-red-500/20 shadow-sm"
-          >
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-            <p className="text-xs text-red-400 font-medium leading-tight">{error}</p>
-          </motion.div>
-        )}
-      </AnimatePresence> */}
-
+<div className="flex flex-col items-center w-full  mx-auto ">
+  <button
+    onClick={handleGoogleSignIn}
+    disabled={loading}
+    className="glass relative flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-white px-4 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-all hover:bg-zinc-50 hover:border-zinc-300 hover:shadow-md active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+  >
+    {/* Google Icon Wrapper */}
+    <div className="flex h-5 w-5 items-center justify-center">
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" className="w-full">
+        <path d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" fill="#FFC107" />
+        <path d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" fill="#FF3D00" />
+        <path d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" fill="#4CAF50" />
+        <path d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" fill="#1976D2" />
+      </svg>
     </div>
+    
+    <span className='text-white'>Continue with Google</span>
+  </button>
+
+  {/* Error Message */}
+  {error && (
+    <div className="mt-4 flex items-center gap-2 rounded-lg bg-red-50 px-4 py-2 text-xs font-medium text-red-600 border border-red-100 animate-in fade-in slide-in-from-top-1">
+      <span className="h-1 w-1 rounded-full bg-red-600" />
+      {error}
+    </div>
+  )}
+
+  {/* Loading State */}
+  {loading && !error && (
+    <div className="mt-4 flex items-center gap-2 text-xs font-medium text-zinc-500 animate-pulse">
+      <div className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600" />
+      Redirecting to Google...
+    </div>
+  )}
+</div>
   );
 }

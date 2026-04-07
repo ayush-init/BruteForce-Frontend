@@ -20,7 +20,7 @@ interface TopicsHeaderProps {
 
 export function TopicsHeader({ searchQuery, setSearchQuery, sortBy, setSortBy }: TopicsHeaderProps) {
   return (
-    <div className="mb-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className=" mb-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="font-serif italic text-3xl font-bold text-foreground mb-3">
@@ -34,7 +34,7 @@ export function TopicsHeader({ searchQuery, setSearchQuery, sortBy, setSortBy }:
         <div className="flex items-center gap-3">
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="h-10 rounded-2xl bg-background/60 border-border px-4">
+            <SelectTrigger className="h-10 rounded-2xl bg-background/60 border border-border px-4">
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
             <SelectContent>
@@ -47,12 +47,12 @@ export function TopicsHeader({ searchQuery, setSearchQuery, sortBy, setSortBy }:
           
           {/* Search */}
           <div className="relative w-full sm:max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Search className=" absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="Search topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9! bg-background/60 border-border/60 w-full  focus:ring-2 focus:ring-primary/30 h-10"
+              className="pl-9! bg-transparent! border-border/60 rounded-2xl! w-full  focus:ring-2 focus:ring-primary/30 h-10!  placeholder:text-white! "
             />
           </div>
         </div>

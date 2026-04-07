@@ -96,7 +96,7 @@ function SegmentedGauge({
 
 export function ProblemSolvingStats({ codingStats }: ProblemSolvingStatsProps) {
   return (
-    <div className="glass p-8 rounded-[var(--radius-lg)]">
+    <div className="glass backdrop-blur-sm p-8 rounded-[var(--radius-lg)]">
       {/* Header */}
       <div className="flex items-end justify-between mb-10">
         <div>
