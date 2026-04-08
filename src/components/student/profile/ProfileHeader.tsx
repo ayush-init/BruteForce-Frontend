@@ -25,7 +25,7 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
 
     return (
-        <div className="glass backdrop-blur-sm borderless p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 rounded-[var(--radius-xl)]">
+        <div className=" backdrop-blur-sm border border-border/40 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 rounded-2xl ">
 
             {/* MAIN CONTAINER */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">

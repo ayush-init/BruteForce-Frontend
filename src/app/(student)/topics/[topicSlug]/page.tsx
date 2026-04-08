@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { studentTopicService } from '@/services/student/topic.service';
 import { ClassCard } from '@/components/student/classes/ClassCard';
@@ -22,9 +22,26 @@ export default function TopicDetailsPage() {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const isFetching = useRef(false);
+  const lastFetchParams = useRef({ currentPage: 1, limit: 10 });
 
-  // Function to fetch topic with pagination
-  const fetchTopicWithPagination = async (page: number, pageSize: number) => {
+  const fetchTopicWithPagination = useCallback(async (page: number, pageSize: number) => {
+    const currentParams = { currentPage: page, limit: pageSize };
+    
+    // Skip if already fetching with same params
+    if (isFetching.current) {
+      const sameParams = 
+        lastFetchParams.current.currentPage === page &&
+        lastFetchParams.current.limit === pageSize;
+      
+      if (sameParams) {
+        return;
+      }
+    }
+
+    isFetching.current = true;
+    lastFetchParams.current = currentParams;
+    
     setLoading(true);
     try {
       // Create query params string
@@ -41,12 +58,13 @@ export default function TopicDetailsPage() {
       router.push('/topics');
     } finally {
       setLoading(false);
+      isFetching.current = false;
     }
-  };
+  }, [topicSlug, router]);
 
   useEffect(() => {
     fetchTopicWithPagination(currentPage, limit);
-  }, [topicSlug]);
+  }, [topicSlug, currentPage, limit, fetchTopicWithPagination]);
 
   if (loading) {
     return <TopicDetailsShimmer />;
@@ -77,23 +95,35 @@ export default function TopicDetailsPage() {
   };
 
 return (
-  <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+  <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+
     <SubtopicBackNav />
     <SubtopicHeader topic={topic} progress={progress} />
-    
-    {/* Classes Section with Pagination */}
-    <div>
-      <h2 className="text-[14px] font-mono font-medium text-muted-foreground tracking-widest uppercase mb-5">
-        Classes
-      </h2>
-      
+
+    {/* 🔥 CLASSES SECTION */}
+    <div className="mt-6 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-5 sm:p-6">
+
+      {/* HEADER */}
+      <div className="flex items-center gap-3 mb-6">
+        <h2 className="text-sm font-mono font-medium text-muted-foreground tracking-widest uppercase">
+          Classes
+        </h2>
+
+        
+      </div>
+
+      {/* LIST */}
       <div className="flex flex-col gap-3 mb-6">
+
         {classes.length > 0 ? (
           classes.map((cls: any, idx: number) => (
             <div
               key={cls.slug}
               className="animate-in fade-in slide-in-from-bottom-2"
-              style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}
+              style={{
+                animationDelay: `${idx * 40}ms`,
+                animationFillMode: 'both'
+              }}
             >
               <ClassCard
                 topicSlug={topic.slug}
@@ -108,24 +138,33 @@ return (
             </div>
           ))
         ) : (
-          <div className="py-12 text-center text-muted-foreground bg-card rounded-2xl border border-border border-dashed">
-            No classes assigned to this topic yet.
+          <div className="flex flex-col items-center justify-center py-14 text-center rounded-xl border border-dashed border-border/50 bg-background/30">
+            <div className="text-sm text-muted-foreground mb-1">
+              No classes available
+            </div>
+            <div className="text-xs text-muted-foreground/70">
+              Classes will appear here once assigned.
+            </div>
           </div>
         )}
+
       </div>
 
-      {/* Pagination Component */}
+      {/* PAGINATION */}
       {totalItems > 0 && (
-        <Pagination
-          currentPage={pagination?.page || 1}
-          totalItems={totalItems}
-          limit={pagination?.limit || 10}
-          onPageChange={handlePageChange}
-          onLimitChange={handleLimitChange}
-          showLimitSelector={true}
-          loading={loading}
-        />
+        <div className="pt-4 border-t border-border/40">
+          <Pagination
+            currentPage={pagination?.page || 1}
+            totalItems={totalItems}
+            limit={pagination?.limit || 10}
+            onPageChange={handlePageChange}
+            onLimitChange={handleLimitChange}
+            showLimitSelector={true}
+            loading={loading}
+          />
+        </div>
       )}
+
     </div>
   </div>
 );

@@ -74,22 +74,34 @@ export function ClassQuestions({ questions, onRefresh }: ClassQuestionsProps) {
     }
   };
 
-  return (
-    <>
-      <div>
-        <h2 className="text-[14px] font-mono font-medium text-muted-foreground tracking-widest uppercase mb-6 flex items-center gap-3 after:flex-1 after:h-[1px] after:bg-border">
+ return (
+  <>
+    <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl p-5 sm:p-6 shadow-sm">
+
+      {/* HEADER */}
+      <div className="flex items-center gap-3 mb-6">
+        <h2 className="text-sm font-mono font-medium text-muted-foreground tracking-widest uppercase">
           Assigned Questions
         </h2>
+
         
-        <div className="flex flex-col gap-3">
-          {questions.length > 0 ? (
-            questions.map((q: Question, idx: number) => (
-              <div 
-                key={q.id}
-                className="animate-in fade-in slide-in-from-bottom-2"
-                style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}
-              >
-                <QuestionRow 
+      </div>
+
+      {/* LIST */}
+      <div className="flex flex-col gap-3">
+
+        {questions.length > 0 ? (
+          questions.map((q: Question, idx: number) => (
+            <div
+              key={q.id}
+              className=" transition-all duration-200 animate-in fade-in slide-in-from-bottom-2"
+              style={{
+                animationDelay: `${idx * 40}ms`,
+                animationFillMode: 'both',
+              }}
+            >
+              <div className="p-3 sm:p-4">
+                <QuestionRow
                   questionName={q.questionName || 'Unknown Question'}
                   platform={q.platform || 'Unknown'}
                   level={q.level || 'EASY'}
@@ -101,26 +113,38 @@ export function ClassQuestions({ questions, onRefresh }: ClassQuestionsProps) {
                   onBookmarkClick={handleBookmarkClick}
                 />
               </div>
-            ))
-          ) : (
-            <div className="py-12 text-center text-muted-foreground bg-card rounded-2xl border border-border border-dashed">
-              No questions assigned to this class yet.
             </div>
-          )}
-        </div>
-      </div>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center py-14 text-center rounded-xl border border-dashed border-border/50 bg-background/30">
+            
+            <div className="text-sm text-muted-foreground mb-1">
+              No questions assigned
+            </div>
 
-      {/* Bookmark Modal */}
-      {bookmarkModal.question && (
-        <BookmarkModal
-          isOpen={bookmarkModal.isOpen}
-          onClose={() => setBookmarkModal({ isOpen: false, question: null })}
-          question={bookmarkModal.question}
-          onSubmit={handleBookmarkSubmit}
-          loading={loading}
-        />
-      )}
-    </>
-  );
+            <div className="text-xs text-muted-foreground/70">
+              Once questions are added, they’ll appear here.
+            </div>
+
+          </div>
+        )}
+
+      </div>
+    </div>
+
+    {/* Bookmark Modal */}
+    {bookmarkModal.question && (
+      <BookmarkModal
+        isOpen={bookmarkModal.isOpen}
+        onClose={() =>
+          setBookmarkModal({ isOpen: false, question: null })
+        }
+        question={bookmarkModal.question}
+        onSubmit={handleBookmarkSubmit}
+        loading={loading}
+      />
+    )}
+  </>
+);
 }
 

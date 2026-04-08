@@ -100,7 +100,7 @@ export default function ActivityHeatmap({
   });
 
   return (
-    <div className="glass backdrop-blur-sm p-6 rounded-[var(--radius-lg)] border border-[var(--border)] w-full">
+    <div className="border border-border/40 backdrop-blur-sm p-6 rounded-[var(--radius-lg)] border border-[var(--border)] w-full">
 
       {/* Header */}
       <div className="flex justify-between items-center ">

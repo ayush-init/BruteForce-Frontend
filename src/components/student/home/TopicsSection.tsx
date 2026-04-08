@@ -15,9 +15,9 @@ export function TopicsSection({ topics, loading = false }: TopicsSectionProps) {
   const displayTopics = topics.slice(0, 8);
 
   return (
-    <section className="mx-auto max-w-[1200px] w-full px-6 lg:px-10 py-16">
+    <section className="mx-auto max-w-[1400px] w-full px-6 lg:px-10 py-16">
       {/* Section with subtle gradient background */}
-      <div className="glass rounded-2xl border-0 p-5 mb-8">
+      <div className="backdrop-blur-sm rounded-2xl border border-border/40 p-8 mb-8">
        <div className="flex justify-between items-center">
           <div>
             <h2 className="text-[18px] sm:text-2xl font-bold text-foreground mb-1.5 font-serif italic">

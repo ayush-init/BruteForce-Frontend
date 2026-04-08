@@ -10,76 +10,92 @@ interface SubtopicHeaderProps {
 
 export function SubtopicHeader({ topic, progress }: SubtopicHeaderProps) {
   const hasImage = !!topic.photo_url;
+return (
+  <div className="mb-10 rounded-2xl border border-border/40 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl overflow-hidden">
 
-  return (
-    <div className="bg-card border border-border/70 rounded-2xl overflow-hidden mb-8 flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row">
 
       {/* LEFT VISUAL */}
-      <div className="md:w-1/3 h-[160px] md:h-auto">
+      <div className="relative md:w-[32%] h-[180px] md:h-auto overflow-hidden">
         {hasImage ? (
-          <img
-            src={topic.photo_url}
-            alt={topic.topic_name}
-            className="w-full h-full object-cover"
-          />
+          <>
+            <img
+              src={topic.photo_url}
+              alt={topic.topic_name}
+              className="w-full h-full object-cover"
+            />
+
+            {/* 🔥 overlay for better blending */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+          </>
         ) : (
-          <div className="w-full h-full bg-muted" /> // 👈 CLEAN fallback (no circle, no gradient)
+          <div className="w-full h-full bg-muted" />
         )}
       </div>
 
       {/* RIGHT CONTENT */}
-      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+      <div className="flex-1 p-6 sm:p-7 flex flex-col justify-between">
 
-        {/* TITLE */}
+        {/* TOP */}
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl sm:text-4xl font-bold text-foreground mb-2 leading-tight">
             {topic.topic_name}
           </h1>
 
           {topic.description && (
-            <p className="text-sm text-muted-foreground mb-4 max-w-2xl">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mb-5 leading-relaxed">
               {topic.description}
             </p>
           )}
         </div>
 
-        {/* STATS + PROGRESS */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4 border-t border-border">
+        {/* BOTTOM */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-6 pt-5 border-t border-border/40">
 
-          {/* STATS */}
-          <div className="flex items-center gap-5">
-            <div>
-              <p className="text-[11px] text-muted-foreground uppercase">Classes</p>
+          {/* 🔥 STATS CARDS */}
+          <div className="flex items-center gap-4">
+
+            {/* Classes */}
+            <div className="px-4 py-3 rounded-2xl bg-background/40 border border-border/40">
+              <p className="text-[10px] uppercase text-muted-foreground mb-1 tracking-wide">
+                Classes
+              </p>
               <p className="text-lg font-semibold">
                 {topic.classes?.length || 0}
               </p>
             </div>
 
-            <div className="w-[1px] h-6 bg-border" />
-
-            <div>
-              <p className="text-[11px] text-muted-foreground uppercase">Questions</p>
+            {/* Questions */}
+            <div className="px-4 py-3 rounded-2xl bg-background/40 border border-border/40">
+              <p className="text-[10px] uppercase text-muted-foreground mb-1 tracking-wide">
+                Questions
+              </p>
               <p className="text-lg font-semibold">
                 {topic.overallProgress?.totalQuestions || 0}
               </p>
             </div>
+
           </div>
 
-          {/* PROGRESS */}
-          <div className="flex-1 sm:ml-auto w-full sm:max-w-[240px]">
+          {/* 🔥 PROGRESS BLOCK */}
+          <div className="flex-1 sm:ml-auto w-full sm:max-w-[260px]">
+
             <div className="flex justify-between text-[11px] text-muted-foreground mb-1">
-              <span>Progress</span>
-              <span>
+              <span className="uppercase tracking-wide">Progress</span>
+              <span className="text-primary font-medium">
                 {topic.overallProgress?.solvedQuestions || 0} /{" "}
                 {topic.overallProgress?.totalQuestions || 0}
               </span>
             </div>
 
-            <ProgressBar progress={progress} className="h-2" />
-          </div>
-        </div>
+            <ProgressBar progress={progress} className="h-2 rounded-full" />
 
+          </div>
+
+        </div>
       </div>
+
     </div>
-  );
+  </div>
+);
 }

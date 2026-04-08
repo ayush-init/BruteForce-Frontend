@@ -4,7 +4,7 @@ import React from 'react';
 
 export function TopicsSectionShimmer() {
   return (
-    <section className="mx-auto max-w-[1200px] w-full px-6 lg:px-10 py-16">
+    <section className="mx-auto max-w-[1400px] w-full px-6 lg:px-10 py-16">
       {/* Topics Grid Shimmer Only - Header is handled by TopicsSection */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {Array.from({ length: 8 }).map((_, idx) => (
@@ -13,7 +13,7 @@ export function TopicsSectionShimmer() {
             className="animate-in fade-in slide-in-from-bottom-4" 
             style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
           >
-            <div className="group relative glass hover-glow overflow-hidden cursor-pointer rounded-2xl transition-all duration-300">
+            <div className=" relative backdrop-blur-sm border border-border/40  hover-glow overflow-hidden cursor-pointer rounded-2xl transition-all duration-300">
               
               {/* Image Section Shimmer */}
               <div className="h-[140px] relative bg-muted/30 animate-pulse"></div>

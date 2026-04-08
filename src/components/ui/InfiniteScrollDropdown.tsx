@@ -210,7 +210,7 @@ export function InfiniteScrollDropdown({
         className={`
         flex items-center justify-between gap-2
         h-10 px-4 rounded-full
-        bg-accent/40
+        backdrop-blur-2xl 
         border-border border-border
         text-m font-medium
         transition-all duration-200
@@ -252,8 +252,9 @@ export function InfiniteScrollDropdown({
           max-h-64
           overflow-y-auto overflow-x-hidden
           rounded-2xl
-          bg-[var(--glass-bg)]
-          backdrop-blur-md
+          
+          glass group
+
           border-border border-[var(--glass-border)]
           p-1.5
           shadow-lg
@@ -307,7 +308,6 @@ export function InfiniteScrollDropdown({
               >
                 <div>
                   <div className="font-medium">{topic.topic_name}</div>
-                  <div className="text-xs text-muted-foreground">{topic.slug}</div>
                 </div>
                 {selectedTopic?.slug === topic.slug && (
                   <Check className="w-4 h-4 ml-auto" />

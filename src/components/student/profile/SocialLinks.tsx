@@ -12,7 +12,7 @@ interface SocialLinksProps {
 
 export function SocialLinks({ student, canEdit, onEditSocialLinks }: SocialLinksProps) {
   return (
-    <div className="glass backdrop-blur-sm p-6 rounded-[var(--radius-lg)]">
+    <div className="border border-border/40 backdrop-blur-sm p-6 rounded-[var(--radius-lg)]">
       <h3 className="font-bold mb-6 flex items-center gap-2 text-[var(--text-base)] text-[var(--foreground)]">
         <LinkIcon className="w-5 h-5 text-[var(--accent-primary)]" />
         Social Links

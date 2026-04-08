@@ -27,63 +27,66 @@ export function TopicCard({
     ? progressPercentage 
     : (totalQuestions === 0 ? 0 : (solvedQuestions / totalQuestions) * 100);
 
-  return (
-    <Link href={`/topics/${topicSlug}`}>
-      <div className="relative glass backdrop-blur-md overflow-hidden cursor-pointer rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border border-border/50 hover-glow" >
-        
-        {/* Image Section */}
-        <div className="h-[140px] relative">
-          {photoUrl ? (
-            <img
-              src={photoUrl}
-              alt={topicName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-muted" />
-          )}
+return (
+  <Link href={`/topics/${topicSlug}`} className="glass rounded-2xl block">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl transition-all duration-300  hover:shadow-primary/10">
 
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-background to-transparent" />
-        </div>
+      {/* IMAGE */}
+      <div className="relative h-[150px] overflow-hidden border-b border-border/50">
+        {photoUrl ? (
+          <img
+            src={photoUrl}
+            alt={topicName}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-muted" />
+        )}
 
-        {/* Content */}
-        <div className="p-4">
-          <h3 className="font-semibold text-foreground mb-2 line-clamp-1 text-lg group-hover:text-accent-primary transition-colors">
-            {topicName}
-          </h3>
-
-          {/* Stats */}
-          <div className="flex items-center justify-between mb-3 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" />
-              <span>{totalClasses} classes</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>
-                {solvedQuestions}/{totalQuestions}
-              </span>
-            </div>
-          </div>
-
-          {/* Progress */}
-          <div>
-            <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500 ease-out 
-                           bg-gradient-to-r from-primary via-primary to-primary 
-                           shadow-[0_0_8px_rgba(204,255,0,0.6)]"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-
-            <div className="mt-1 text-right text-xs text-muted-foreground">
-              {Math.round(progress)}%
-            </div>
-          </div>
-        </div>
+      
       </div>
-    </Link>
-  );
+
+      {/* CONTENT */}
+      <div className="p-4 flex flex-col gap-3">
+
+        {/* TITLE */}
+        <h3 className="text-base font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+          {topicName}
+        </h3>
+
+        {/* STATS */}
+        <div className="flex items-center justify-between text-[12px] text-muted-foreground">
+
+          {/* CLASSES */}
+          <div className="flex items-center gap-1.5">
+            <Calendar className="w-3.5 h-3.5" />
+            <span>{totalClasses} classes</span>
+          </div>
+
+          {/* QUESTIONS */}
+          <div className="px-2 py-0.5 rounded-2xl bg-muted/40 border border-border/50">
+            {solvedQuestions}/{totalQuestions}
+          </div>
+        </div>
+
+        {/* PROGRESS */}
+        <div>
+          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500 ease-out 
+                         bg-primary 
+                         shadow-[0_0_6px_rgba(34,197,94,0.4)]"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <div className="mt-1 text-right text-[11px] text-muted-foreground">
+            {Math.round(progress)}%
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </Link>
+);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { studentClassService } from '@/services/student/class.service';
 import { QuestionRow } from '@/components/student/questions/QuestionRow';
@@ -26,8 +26,27 @@ export default function ClassDetailsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [filter, setFilter] = useState('all');
+  const isFetching = useRef(false);
+  const lastFetchParams = useRef({ currentPage: 1, limit: 10, filter: 'all' });
 
-  const fetchClassDetails = async () => {
+  const fetchClassDetails = useCallback(async () => {
+    const currentParams = { currentPage, limit, filter };
+    
+    // Skip if already fetching with same params
+    if (isFetching.current) {
+      const sameParams = 
+        lastFetchParams.current.currentPage === currentPage &&
+        lastFetchParams.current.limit === limit &&
+        lastFetchParams.current.filter === filter;
+      
+      if (sameParams) {
+        return;
+      }
+    }
+
+    isFetching.current = true;
+    lastFetchParams.current = currentParams;
+    
     try {
       const queryParams = new URLSearchParams({
         page: currentPage.toString(),
@@ -43,12 +62,13 @@ export default function ClassDetailsPage() {
       router.push(`/topics/${topicSlug}`);
     } finally {
       setLoading(false);
+      isFetching.current = false;
     }
-  };
+  }, [topicSlug, classSlug, currentPage, limit, filter, router]);
 
   useEffect(() => {
     fetchClassDetails();
-  }, [topicSlug, classSlug, currentPage, limit, filter, router]);
+  }, [fetchClassDetails]);
 
   if (loading) {
     return <ClassDetailsShimmer />;
@@ -80,46 +100,69 @@ export default function ClassDetailsPage() {
     setCurrentPage(1);
   };
 
-  return (
-    <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
-      <ClassBackNav
-        topicSlug={topicSlug}
-        topicName={classData.topic?.topic_name}
-      />
+return (
+  <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
 
-      <ClassHeader
-        classData={classData}
-        progress={progress}
-        solvedQuestions={solvedQuestions}
-        totalQuestions={totalQuestions}
-        formattedDate={formattedDate}
-      />
+    <ClassBackNav
+      topicSlug={topicSlug}
+      topicName={classData.topic?.topic_name}
+    />
 
-      {/* Filter and Controls */}
-      <div className="flex flex-col -mt-3 sm:flex-row items-start sm:items-center justify-between gap-5 mb-6">
-        <div className="flex items-center gap-5">
-          <span className="text-sm font-medium text-muted-foreground">Filter:</span>
-          <Select value={filter} onValueChange={handleFilterChange}>
-            <SelectTrigger className=" h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Questions</SelectItem>
-              <SelectItem value="solved">Solved</SelectItem>
-              <SelectItem value="unsolved">Unsolved</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+    <ClassHeader
+      classData={classData}
+      progress={progress}
+      solvedQuestions={solvedQuestions}
+      totalQuestions={totalQuestions}
+      formattedDate={formattedDate}
+    />
 
-        <div className="text-sm text-muted-foreground">
-          Showing {pagination?.total || 0} questions
-        </div>
+    {/* 🔥 FILTER BAR */}
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 p-4 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl">
+
+      {/* LEFT */}
+      <div className="flex items-center gap-4">
+
+
+        <Select value={filter} onValueChange={handleFilterChange}>
+          <SelectTrigger className="h-9 rounded-2xl bg-muted border border-border px-3">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Questions</SelectItem>
+            <SelectItem value="solved">Solved</SelectItem>
+            <SelectItem value="unsolved">Unsolved</SelectItem>
+          </SelectContent>
+        </Select>
+
       </div>
 
-      <ClassQuestions questions={questions} onRefresh={fetchClassDetails} />
+      {/* RIGHT */}
+      <div className=" text-primary flex items-center gap-2">
 
-      {/* Pagination */}
-      {pagination && pagination.total > limit && (
+        <span className="text-s ">
+          Showing
+        </span>
+
+        <span className="text-s font-medium   ">
+          {pagination?.total || 0}
+        </span>
+
+        <span className="text-s ">
+          questions
+        </span>
+
+      </div>
+    </div>
+
+    {/* QUESTIONS */}
+    <ClassQuestions
+      questions={questions}
+      onRefresh={fetchClassDetails}
+    />
+
+    {/* PAGINATION */}
+    {pagination && pagination.total > limit && (
+      <div className="mt-10">
         <Pagination
           currentPage={pagination.page || 1}
           totalItems={pagination.total}
@@ -129,7 +172,9 @@ export default function ClassDetailsPage() {
           showLimitSelector={true}
           loading={loading}
         />
-      )}
-    </div>
-  );
+      </div>
+    )}
+
+  </div>
+);
 }

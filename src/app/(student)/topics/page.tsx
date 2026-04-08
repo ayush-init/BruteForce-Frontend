@@ -15,7 +15,7 @@ export default function TopicsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(16);
   const isFetching = useRef(false);
   const lastFetchParams = useRef({ page: 1, itemsPerPage: 8, searchQuery: '', sortBy: 'recent' });
 
@@ -64,7 +64,7 @@ export default function TopicsPage() {
 
   return (
    
-      <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+      <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
         <TopicsHeader
           searchQuery={searchQuery}
           setSearchQuery={(query) => {

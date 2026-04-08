@@ -89,19 +89,14 @@ export function SelectContent({
         className={cn(
           `
           z-50
-
           min-w-[180px]
 
           max-h-64
           overflow-y-auto overflow-x-hidden
 
-          rounded-2xl
-
-          bg-[var(--glass-bg)]
-
-          
-
-          backdrop-blur-md
+          rounded-2xl  
+          glass       
+          backdrop-blur-sm
 
           border-border border-[var(--glass-border)]
 

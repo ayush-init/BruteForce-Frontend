@@ -29,9 +29,6 @@ import {
 import { EditProfileModal } from '@/components/student/profile/EditProfileModal';
 
 import { EditUsernameModal } from '@/components/student/profile/EditUsernameModal';
-
-
-
 import { ProfilePageShimmer } from '@/components/student/profile/shimmers';
 
 import { ProfileHeader } from '@/components/student/profile/ProfileHeader';
@@ -859,9 +856,9 @@ export default function PublicProfilePage() {
 
           {/* ACTIVITY HEATMAP */}
 
-          <ActivityHeatmap 
+          <ActivityHeatmap
 
-            heatmap={heatmap || []} 
+            heatmap={heatmap || []}
 
             currentStreak={streak?.currentStreak}
 

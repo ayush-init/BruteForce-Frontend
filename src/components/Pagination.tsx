@@ -50,26 +50,23 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
 
   return (
   <div className="
-    flex items-center justify-between px-6 py-4
-
-    bg-[var(--glass-bg)] backdrop-blur-md
-    border-t border-[var(--glass-border)]
-    rounded-2xl
+    flex items-center justify-between px-6 py-4 backdrop-blur-md
+    rounded-2xl border border-border/40 
   ">
     
     {/* LEFT INFO */}
     <div className="flex items-center gap-6">
       <div className="text-sm text-muted-foreground font-medium">
         Showing{" "}
-        <span className="text-foreground font-semibold">
+        <span className="px-1 text-foreground font-semibold">
           {(currentPage - 1) * limit + 1}
         </span>{" "}
-        to{" "}
-        <span className="text-foreground font-semibold">
+        to {" "}
+        <span className="px-1 text-foreground font-semibold">
           {Math.min(currentPage * limit, totalItems)}
         </span>{" "}
         of{" "}
-        <span className="text-foreground font-semibold">
+        <span className="px-1 text-foreground font-semibold">
           {totalItems}
         </span>{" "}
         results
@@ -87,8 +84,8 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
             onChange={handleInputChange}
             onBlur={handleBlur}
             className="
-              w-[90px] h-9 rounded-full
-              bg-accent/40 border border-border
+              w-[90px] h-9! rounded-2xl bg-transparent!
+              border border-border/40!
               hover:bg-accent/60
               transition
               text-center
@@ -106,8 +103,8 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
 
     {/* RIGHT CONTROLS */}
     <div className="
-      flex items-center gap-1 px-2 py-1 rounded-full
-      bg-accent/40 border border-border
+      flex items-center gap-1 px-2 py-1 rounded-2xl
+       border border-border/40
     ">
 
       {/* PREV */}
@@ -117,7 +114,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className="
-          h-8 w-8 rounded-full p-0
+          h-8 w-8 rounded-2xl p-0
           text-muted-foreground
 
           hover:bg-accent

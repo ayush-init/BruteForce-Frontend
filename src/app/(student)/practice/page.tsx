@@ -110,7 +110,7 @@ export default function PracticePage() {
 
   return (
     
-      <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+      <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
         <PracticeHeader />
 
         <PracticeFiltersComponent

@@ -35,19 +35,20 @@ export function PracticeFilters({
   clearFilters,
 }: PracticeFiltersProps) {
   return (
-    <div className="glass bg-card border border-border/60 p-5 rounded-2xl mb-6">
+   <div className="relative z-10 border border-border/60 p-5 rounded-2xl mb-6 
+bg-background/60 backdrop-blur-md">
 
       {/* 🔍 SEARCH */}
-      <div className="relative mb-5 border border-border rounded-2xl">
-        <Search className=" absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
+      <div className="relative mb-5 border border-border/40 rounded-2xl">
+        <Search className=" absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white " />
 
         <input
           type="text"
           placeholder="Search questions..."
           value={filters.search}
           onChange={(e) => handleFilterChange("search", e.target.value)}
-          className="w-full pl-10 pr-4 py-3 rounded-xl bg-muted/40 border border-border/50 
-          text-sm outline-none 
+          className="w-full pl-10! pr-4! py-3! rounded-xl bg-transparent! border border-border/40 
+          text-sm outline-none placeholder:text-white
           focus:border-primary/40 focus:ring-2 focus:ring-primary/20 
           transition-all"
         />
@@ -62,7 +63,7 @@ export function PracticeFilters({
           onValueChange={(val) => handleFilterChange("topic", val)}
           placeholder="Topics"
           searchPlaceholder="Search topics..."
-          className="min-w-[200px]"
+          className="min-w-[200px] bg-transparent rounded-2xl border border-border/30"
         />
 
         {/* Level */}
@@ -72,7 +73,7 @@ export function PracticeFilters({
             handleFilterChange("level", val === "ALL" ? "" : val)
           }
         >
-          <SelectTrigger className="h-11 px-4 text-xs rounded-lg bg-muted/40 border-border/50">
+          <SelectTrigger className="h-11 px-4 bg-transparent  text-xs rounded-2xl border border-border/40">
             <SelectValue placeholder="Level" />
           </SelectTrigger>
           <SelectContent>
@@ -92,7 +93,7 @@ export function PracticeFilters({
             handleFilterChange("platform", val === "ALL" ? "" : val)
           }
         >
-          <SelectTrigger className="h-11 px-4 text-xs rounded-xl bg-muted/40 border-border/50">
+          <SelectTrigger className="h-11 px-4 bg-transparent text-xs rounded-2xl border  border-border/50">
             <SelectValue placeholder="Platform" />
           </SelectTrigger>
           <SelectContent>
@@ -112,7 +113,7 @@ export function PracticeFilters({
             handleFilterChange("type", val === "ALL" ? "" : val)
           }
         >
-          <SelectTrigger className="h-11 px-4 text-xs rounded-xl bg-muted/40 border-border/50">
+          <SelectTrigger className="h-11 px-4 bg-transparent text-xs rounded-2xl border border-border/50">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -132,7 +133,7 @@ export function PracticeFilters({
             handleFilterChange("solved", val === "ALL" ? "" : val)
           }
         >
-          <SelectTrigger className="h-11 px-4 text-sm rounded-xl bg-muted/40 border-border/50">
+          <SelectTrigger className="h-11 bg-transparent px-4 text-sm rounded-2xl border  border-border/50">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -147,7 +148,7 @@ export function PracticeFilters({
           <button
             onClick={clearFilters}
             className="ml-auto flex items-center gap-1 text-xs px-3 py-2 rounded-lg 
-            bg-muted/40 border border-border/50 
+             border border-border/50 
             hover:bg-muted transition-all"
           >
             <X className="w-3.5 h-3.5" />

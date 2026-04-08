@@ -19,44 +19,55 @@ interface TopicsHeaderProps {
 }
 
 export function TopicsHeader({ searchQuery, setSearchQuery, sortBy, setSortBy }: TopicsHeaderProps) {
-  return (
-    <div className=" mb-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="font-serif italic text-3xl font-bold text-foreground mb-3">
-            Learning <span className="text-primary font-bold">Modules</span>
-          </h1>
-          <p className="text-[14px] text-muted-foreground max-w-2xl">
-            Track your progress across different data structure and algorithm topics. Complete classes and solve questions to master each module.
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          {/* Sort */}
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="h-10 rounded-2xl bg-background/60 border border-border px-4">
-              <SelectValue placeholder="Sort" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="recent">Recent</SelectItem>
-              <SelectItem value="oldest">Oldest</SelectItem>
-              <SelectItem value="strongest">Strongest</SelectItem>
-              <SelectItem value="weakest">Weakest</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          {/* Search */}
-          <div className="relative w-full sm:max-w-md">
-            <Search className=" absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Search topics..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9! bg-transparent! border-border/60 rounded-2xl! w-full  focus:ring-2 focus:ring-primary/30 h-10!  placeholder:text-white! "
-            />
-          </div>
-        </div>
-      </div>
+return (
+  <div className="mb-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+
+    {/* 🔥 HEADER */}
+    <div className="mb-6 p-5 rounded-2xl backdrop-blur-sm border border-border/40">
+      <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+        Learning <span className="text-primary">Modules</span>
+      </h1>
+
+      <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
+        Track your progress across different data structure and algorithm topics.
+        Complete classes and solve questions to master each module.
+      </p>
     </div>
-  );
+
+    {/* 🔥 FILTER BAR */}
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl">
+
+      {/* LEFT → LABEL */}
+      <div className="flex items-center gap-3">
+        
+
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="h-9 rounded-2xl  bg-background/50 border border-border/40 px-3 min-w-[140px]">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recent">Recent</SelectItem>
+            <SelectItem value="oldest">Oldest</SelectItem>
+            <SelectItem value="strongest">Strongest</SelectItem>
+            <SelectItem value="weakest">Weakest</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* RIGHT → SEARCH */}
+      <div className="relative w-full sm:w-[300px]">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white w-4 h-4" />
+
+        <Input
+          placeholder="Search topics..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9! pr-3! h-9! rounded-2xl w-full bg-transparent!  border-border/40! focus:ring-2 focus:ring-primary/30 placeholder:text-white"
+        />
+      </div>
+
+    </div>
+
+  </div>
+);
 }

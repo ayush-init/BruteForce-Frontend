@@ -136,7 +136,7 @@ export default function StudentHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 glass-borderless h-16 flex items-center  lg:px-10" style={{ boxShadow: 'var(--shadow-sm)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-sm h-16 flex items-center  lg:px-10" style={{ boxShadow: 'var(--shadow-sm)' }}>
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
 
           {/* Left Side - Hamburger Menu + Logo */}
@@ -168,8 +168,8 @@ export default function StudentHeader() {
           <nav
             className="
     hidden md:flex items-center gap-1 px-3 py-2 rounded-2xl 
-    glass  backdrop-blur-md
-    border border-border
+      backdrop-blur-md
+    border border-border/40
     transition-all duration-200
   "
           >

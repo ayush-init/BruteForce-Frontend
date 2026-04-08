@@ -38,7 +38,7 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
   };
 
   return (
-    <div className="glass backdrop-blur-sm p-10 rounded-[var(--radius-lg)]">
+    <div className="border border-border/40 backdrop-blur-sm p-10 rounded-[var(--radius-lg)]">
       <h3 className="font-bold mb-8 flex items-center gap-3 text-[var(--text-lg)] text-[var(--foreground)]">
         <Clock className="w-6 h-6 text-[var(--accent-primary)]" />
         Recent Activity

@@ -11,7 +11,7 @@ export function TopicsLoading() {
           className="animate-in fade-in slide-in-from-bottom-2" 
           style={{ animationDelay: `${idx * 100}ms`, animationFillMode: 'both' }}
         >
-          <div className="group relative glass hover-glow overflow-hidden cursor-pointer rounded-2xl transition-all duration-300">
+          <div className="glass  backdrop-blur-sm relative glass hover-glow overflow-hidden cursor-pointer rounded-2xl transition-all duration-300">
             
             {/* Image Section Shimmer */}
             <div className="h-[140px] relative bg-muted/30 animate-pulse"></div>
