@@ -36,6 +36,7 @@ interface InfiniteScrollDropdownProps {
   loading?: boolean;
   disabled?: boolean;
   className?: string;
+  returnId?: boolean; // If true, returns topic.id instead of topic.slug
 }
 
 export function InfiniteScrollDropdown({
@@ -46,6 +47,7 @@ export function InfiniteScrollDropdown({
   loading = false,
   disabled = false,
   className = "",
+  returnId = false,
 }: InfiniteScrollDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -112,7 +114,7 @@ export function InfiniteScrollDropdown({
   // Handle topic selection
   const handleTopicSelect = (topic: Topic) => {
     setSelectedTopic(topic);
-    onValueChange(topic.slug);
+    onValueChange(returnId ? topic.id.toString() : topic.slug);
     setIsOpen(false);
     setSearchQuery("");
   };
