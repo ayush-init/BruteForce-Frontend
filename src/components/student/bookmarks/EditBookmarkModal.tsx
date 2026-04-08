@@ -58,9 +58,9 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
 
   const getLevelColor = (level: string) => {
     switch (level.toUpperCase()) {
-      case 'EASY': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-      case 'MEDIUM': return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
-      case 'HARD': return 'text-red-400 bg-red-500/10 border-red-500/20';
+      case 'EASY': return 'text-[var(--easy)] bg-[var(--easy)]/10 border-[var(--easy)]/20';
+      case 'MEDIUM': return 'text-[var(--medium)] bg-[var(--medium)]/10 border-[var(--medium)]/20';
+      case 'HARD': return 'text-[var(--hard)] bg-[var(--hard)]/10 border-[var(--hard)]/20';
       default: return 'text-muted-foreground bg-muted border-border/40';
     }
   };

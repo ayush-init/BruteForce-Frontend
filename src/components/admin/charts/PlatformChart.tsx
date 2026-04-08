@@ -19,8 +19,8 @@ export default function PlatformChart({ data }: Props) {
     (data?.other || 0);
 
   const items = [
-    { name: "LeetCode", value: data?.leetcode || 0, color: "#CCFF00" },
-    { name: "GFG", value: data?.gfg || 0, color: "#00F0FF" },
+    { name: "LeetCode", value: data?.leetcode || 0, color: "var(--leetcode)" },
+    { name: "GFG", value: data?.gfg || 0, color: "var(--gfg)" },
     { name: "Interview", value: data?.interviewbit || 0, color: "#4999e9" },
     { name: "Other", value: data?.other || 0, color: "#EF4444" },
   ];

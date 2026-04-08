@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { Button } from '../../../../app/(auth)/shared/components/Button';
 import { AlertTriangle, ExternalLink } from 'lucide-react';
 
@@ -40,7 +41,8 @@ export function OnboardingStep3({ data, setStep, confirmChecked, setConfirmCheck
         border border-border/60
       ">
           <div className="space-y-[2px]">
-            <p className="text-[9px] font-semibold uppercase text-muted-foreground">
+            <p className="text-[9px] font-semibold uppercase text-muted-foreground flex items-center gap-2">
+              <LeetCodeIcon className="w-3 h-3 text-leetcode" />
               LeetCode
             </p>
 
@@ -71,7 +73,8 @@ export function OnboardingStep3({ data, setStep, confirmChecked, setConfirmCheck
         border border-border/60
       ">
           <div className="space-y-[2px]">
-            <p className="text-[9px] font-semibold uppercase text-muted-foreground">
+            <p className="text-[9px] font-semibold uppercase text-muted-foreground flex items-center gap-2">
+              <GeeksforGeeksIcon className="w-3 h-3 text-gfg" />
               GFG
             </p>
 

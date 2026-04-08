@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Camera, Trash2, Github, Linkedin, Lock } from 'lucide-react';
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { ProfileEditForm, StudentProfile } from '@/types/student';
 import { toast } from '@/utils/toast';
 
@@ -165,13 +166,19 @@ export function EditProfileModal({
               <span className="text-xs text-muted-foreground">Fields locked · contact admin to update</span>
             </div>
             <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">LeetCode ID</label>
+              <label className="text-xs text-muted-foreground flex items-center gap-2">
+                <LeetCodeIcon className="w-3 h-3 text-leetcode" />
+                LeetCode ID
+              </label>
               <div className="border border-border px-3 py-2 rounded-2xl bg-muted/20 text-sm text-muted-foreground">
                 {student.leetcode || '—'}
               </div>
             </div>
             <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">GFG ID</label>
+              <label className="text-xs text-muted-foreground flex items-center gap-2">
+                <GeeksforGeeksIcon className="w-3 h-3 text-gfg" />
+                GFG ID
+              </label>
               <div className="border border-border px-3 py-2 rounded-2xl bg-muted/20 text-sm text-muted-foreground">
                 {student.gfg || '—'}
               </div>

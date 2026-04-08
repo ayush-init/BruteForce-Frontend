@@ -35,11 +35,11 @@ export const QuestionRow = ({
   const getLevelColor = (l: string) => {
     switch (l.toUpperCase()) {
       case 'EASY':
-        return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        return 'text-[var(--easy)] bg-[var(--easy)]/10 border-[var(--easy)]/20';
       case 'MEDIUM':
-        return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+        return 'text-[var(--medium)] bg-[var(--medium)]/10 border-[var(--medium)]/20';
       case 'HARD':
-        return 'text-red-400 bg-red-500/10 border-red-500/20';
+        return 'text-[var(--hard)] bg-[var(--hard)]/10 border-[var(--hard)]/20';
       default:
         return 'text-muted-foreground bg-muted border-border';
     }
@@ -51,14 +51,14 @@ export const QuestionRow = ({
     if (p.toLowerCase().includes('leetcode')) {
       return {
         name: 'LeetCode',
-        icon: <LeetCodeIcon className="w-3.5 h-3.5 text-orange-500" />
+        icon: <LeetCodeIcon className="w-3.5 h-3.5 text-leetcode" />
       };
     }
 
     if (p.toLowerCase().includes('gfg')) {
       return {
         name: 'GeeksForGeeks',
-        icon: <GeeksforGeeksIcon className="w-3.5 h-3.5 text-green-500" />
+        icon: <GeeksforGeeksIcon className="w-3.5 h-3.5 text-gfg" />
       };
     }
 

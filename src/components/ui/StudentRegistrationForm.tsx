@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, GraduationCap, Hash, Code, UserPlus } from 'lucide-react';
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { PasswordInputWithValidation } from './PasswordStrengthIndicator';
 import { usePasswordValidation } from '@/hooks/usePasswordValidation';
@@ -225,7 +226,8 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
       {/* OPTIONAL PLATFORM IDs */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-2">
+            <LeetCodeIcon className="w-3 h-3 text-leetcode" />
             LeetCode ID (Optional)
           </label>
           <div className="relative group">
@@ -242,7 +244,8 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1 flex items-center gap-2">
+            <GeeksforGeeksIcon className="w-3 h-3 text-gfg" />
             GFG ID (Optional)
           </label>
           <div className="relative group">

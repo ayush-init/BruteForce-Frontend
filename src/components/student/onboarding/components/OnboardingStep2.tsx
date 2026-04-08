@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { Input } from '../../../../app/(auth)/shared/components/Input';
 import { Button } from '../../../../app/(auth)/shared/components/Button';
 
@@ -20,7 +21,8 @@ export function OnboardingStep2({ data, setData, setStep }: { data: any, setData
       <div className="space-y-3 p-4 rounded-2xl glass   border border-border/60  ">
 
         <div className="flex justify-between items-center">
-          <label className="text-s font-semibold text-muted-foreground tracking-wide">
+          <label className="text-s font-semibold text-muted-foreground tracking-wide flex items-center gap-2">
+            <LeetCodeIcon className="w-4 h-4 text-leetcode" />
             LeetCode Username
           </label>
 
@@ -59,7 +61,8 @@ export function OnboardingStep2({ data, setData, setStep }: { data: any, setData
       <div className="space-y-3 p-4 rounded-2xl glass  border border-border/60 ">
 
         <div className="flex justify-between items-center">
-          <label className="text-s font-semibold text-muted-foreground tracking-wide">
+          <label className="text-s font-semibold text-muted-foreground tracking-wide flex items-center gap-2">
+            <GeeksforGeeksIcon className="w-4 h-4 text-gfg" />
             GFG Username
           </label>
 

@@ -10,10 +10,10 @@ interface BadgeProps {
 
 export const Badge = ({ children, variant = 'default', className = '' }: BadgeProps) => {
   const variants = {
-    easy: 'bg-[#d1fae5] text-[#065f46] border-[#a7f3d0] dark:bg-[#064e3b] dark:text-[#34d399] dark:border-[#065f46]',
-    medium: 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] dark:bg-[#78350f] dark:text-[#fbbf24] dark:border-[#92400e]',
-    hard: 'bg-[#fee2e2] text-[#991b1b] border-[#fecaca] dark:bg-[#7f1d1d] dark:text-[#f87171] dark:border-[#991b1b]',
-    solved: 'bg-[#d1fae5] text-[#065f46] border-[#a7f3d0] dark:bg-[#064e3b] dark:text-[#34d399] dark:border-[#065f46]',
+    easy: 'bg-[var(--easy)]/10 text-[var(--easy)] border-[var(--easy)]/20',
+    medium: 'bg-[var(--medium)]/10 text-[var(--medium)] border-[var(--medium)]/20',
+    hard: 'bg-[var(--hard)]/10 text-[var(--hard)] border-[var(--hard)]/20',
+    solved: 'bg-[var(--easy)]/10 text-[var(--easy)] border-[var(--easy)]/20',
     unsolved: 'bg-secondary text-muted-foreground border-border',
     default: 'bg-primary/10 text-primary border-primary/20',
   };

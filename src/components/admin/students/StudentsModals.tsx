@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { PasswordInputWithValidation } from '@/components/ui/PasswordStrengthIndicator';
 import { usePasswordValidation } from '@/hooks/usePasswordValidation';
 import { AlertTriangle, Plus, FolderEdit, Trash2 } from 'lucide-react';
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { AdminStudent } from '@/types/student';
 import BulkUploadModal from '@/app/admin/students/components/BulkUploadModal';
 import DownloadReportModal from '@/app/admin/students/components/DownloadReportModal';
@@ -204,7 +205,8 @@ export default function StudentsModals({
               {/* PLATFORM IDs */}
               <div className="grid grid-cols-2 ">
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium">
+                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                    <LeetCodeIcon className="w-4 h-4 text-leetcode" />
                     LeetCode ID
                   </label>
                   <Input
@@ -216,7 +218,8 @@ export default function StudentsModals({
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium">
+                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                    <GeeksforGeeksIcon className="w-4 h-4 text-gfg" />
                     GFG ID
                   </label>
                   <Input
@@ -340,7 +343,8 @@ export default function StudentsModals({
               {/* PLATFORM IDs */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium">
+                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                    <LeetCodeIcon className="w-4 h-4 text-leetcode" />
                     LeetCode ID
                   </label>
                   <Input
@@ -352,7 +356,8 @@ export default function StudentsModals({
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium">
+                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                    <GeeksforGeeksIcon className="w-4 h-4 text-gfg" />
                     GFG ID
                   </label>
                   <Input

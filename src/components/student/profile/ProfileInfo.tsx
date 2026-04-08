@@ -32,7 +32,7 @@ export function ProfileInfo({ student }: ProfileInfoProps) {
             className="w-11 h-11 flex items-center justify-center rounded-2xl"
             
           >
-            <LeetCodeIcon className="w-8! h-8! text-primary" />
+            <LeetCodeIcon className="w-8! h-8! text-leetcode" />
           </div>
 
           <div className="flex-1">
@@ -67,7 +67,7 @@ export function ProfileInfo({ student }: ProfileInfoProps) {
             className="w-11 h-11 flex items-center justify-center "
             
           >
-            <GeeksforGeeksIcon className="w-8! h-8! text-primary" />
+            <GeeksforGeeksIcon className="w-8! h-8! text-gfg" />
           </div>
 
           <div className="flex-1">

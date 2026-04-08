@@ -13,19 +13,19 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
       case 'easy':
         return {
           bg: '#a3e63520',
-          color: '#a3e635',
+          color: 'var(--easy)',
           icon: <CheckCircle2 className="w-6 h-6" />,
         };
       case 'medium':
         return {
           bg: '#f59e0b20',
-          color: '#f59e0b',
+          color: 'var(--medium)',
           icon: <Zap className="w-6 h-6" />,
         };
       case 'hard':
         return {
           bg: '#ef444420',
-          color: '#ef4444',
+          color: 'var(--hard)',
           icon: <Flame className="w-6 h-6" />,
         };
       default:

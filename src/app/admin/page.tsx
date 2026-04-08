@@ -3,15 +3,19 @@
 import React, { useEffect, useState } from "react";
 import { useAdminStore } from "@/store/adminStore";
 import { getAdminStats } from "@/services/admin.service";
-import {
-  Users,
-  BookOpen,
-  HelpCircle,
-  Layers,
-  BarChart3,
-  Target,
-  Globe,
+import { 
+  Users, 
+  BookOpen, 
+  HelpCircle, 
+  Layers, 
+  BarChart3, 
+  Target, 
+  Globe, 
+  TrendingUp, 
+  Calendar, 
+  Clock 
 } from "lucide-react";
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import DifficultyChart from "@/components/admin/charts/DifficultyChart";
 import PlatformChart from "@/components/admin/charts/PlatformChart";
 import TypeChart from "@/components/admin/charts/Type";
@@ -218,10 +222,10 @@ function PlatformGrid({ data }: any) {
   if (!data) return null;
 
   const items = [
-    { label: "LeetCode", value: data.leetcode },
-    { label: "GFG", value: data.gfg },
-    { label: "Interview", value: data.interviewbit },
-    { label: "Other", value: data.other },
+    { label: "LeetCode", value: data.leetcode, icon: <LeetCodeIcon className="w-4 h-4 text-leetcode" /> },
+    { label: "GFG", value: data.gfg, icon: <GeeksforGeeksIcon className="w-4 h-4 text-gfg" /> },
+    { label: "Interview", value: data.interviewbit, icon: <div className="w-4 h-4 bg-[#3B82F6] rounded" /> },
+    { label: "Other", value: data.other, icon: <div className="w-4 h-4 bg-muted rounded" /> },
   ];
 
   return (
@@ -231,8 +235,11 @@ function PlatformGrid({ data }: any) {
           key={i}
           className="glass rounded-xl p-4 text-center hover-glow"
         >
-          <div className="text-2xl font-bold">{item.value}</div>
-          <div className="text-xs text-muted-foreground mt-1 uppercase">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            {item.icon}
+            <div className="text-2xl font-bold">{item.value}</div>
+          </div>
+          <div className="text-xs text-muted-foreground uppercase">
             {item.label}
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Pencil, Trash2, ExternalLink, Code, BookOpen, Brain, HelpCircle } from 'lucide-react';
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -72,12 +73,12 @@ function DifficultyBadge({ level }: { level: string }) {
 function PlatformBadge({ platform }: { platform: string }) {
   const config: any = {
     LEETCODE: {
-      icon: Code,
-      color: " text-[#FFA116] border-0",
+      icon: LeetCodeIcon,
+      color: " text-leetcode border-0",
     },
     GFG: {
-      icon: BookOpen,
-      color: " text-[#2F8D46] border-0 ",
+      icon: GeeksforGeeksIcon,
+      color: " text-gfg border-0 ",
     },
     INTERVIEWBIT: {
       icon: Brain,

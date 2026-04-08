@@ -68,7 +68,7 @@ function SegmentedGauge({
               style={{
                 transition: "all 0.3s ease",
                 filter: isActive
-                  ? "drop-shadow(0 0 6px rgba(163,230,53,0.6))"
+                  ? "drop-shadow(0 0 6px var(--easy))"
                   : "none",
               }}
             />
@@ -124,21 +124,21 @@ export function ProblemSolvingStats({ codingStats }: ProblemSolvingStatsProps) {
         <SegmentedGauge
           value={codingStats?.easy?.solved}
           total={codingStats?.easy?.assigned}
-          color="#a3e635" // green
+          color="var(--easy)"
           label="Easy"
         />
 
         <SegmentedGauge
           value={codingStats?.medium?.solved}
           total={codingStats?.medium?.assigned}
-          color="#f59e0b" // orange
+          color="var(--medium)"
           label="Medium"
         />
 
         <SegmentedGauge
           value={codingStats?.hard?.solved}
           total={codingStats?.hard?.assigned}
-          color="#ef4444" // red
+          color="var(--hard)"
           label="Hard"
         />
       </div>
