@@ -284,10 +284,11 @@ export default function BulkUploadModal({
 
               <InfiniteScrollDropdown
                 value={selectedTopic}
-                onValueChange={(value) => setSelectedTopic(String(value))}
+                onValueChange={(value) => setSelectedTopic(value && value !== 'null' && value !== 'undefined' ? String(value) : '')}
                 placeholder="Select topic"
                 searchPlaceholder="Search topics..."
                 className="h-11"
+                returnId
               />
             </div>
 
