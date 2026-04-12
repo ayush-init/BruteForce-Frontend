@@ -211,150 +211,150 @@ export default function SuperAdminDashboard() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
         {/* City Breakdown Panel */}
-        
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.4 }}
-  className="md:col-span-2 glass rounded-2xl backdrop-blur-2xl p-3  border border-border/20"
->
-  {/* Header */}
-  <div className="flex items-center justify-between mb-6">
-    <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
-      <BarChart3 className="h-4 w-4 text-chart-1" />
-      City Overview
-    </h3>
 
-    <span className="text-xs text-muted-foreground">
-      All cities data
-    </span>
-  </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="md:col-span-2 glass rounded-2xl backdrop-blur-2xl p-3  border border-border/20"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-chart-1" />
+              City Overview
+            </h3>
 
-  {/* Chart */}
-  <div className="h-[220px]">
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart
-        data={cityBreakdown} // ✅ ALL cities
-        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-        barSize={28}
-      >
-        <CartesianGrid
-          stroke="var(--border)"
-          strokeDasharray="3 3"
-          vertical={false}
-          opacity={0.2}
-        />
+            <span className="text-xs text-muted-foreground">
+              All cities data
+            </span>
+          </div>
 
-        <XAxis
-          dataKey="name"
-          axisLine={false}
-          tickLine={false}
-          tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-        />
+          {/* Chart */}
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={cityBreakdown} // ✅ ALL cities
+                margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                barSize={50}
+              >
+                <CartesianGrid
+                  stroke="var(--border)"
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  opacity={1}
+                />
 
-        <YAxis
-          axisLine={false}
-          tickLine={false}
-          tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-          width={28}
-        />
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 13 }}
+                />
 
-        <Tooltip
-          content={<CustomTooltip />}
-          cursor={{ fill: "var(--chart-2)", fillOpacity: 0.08 }}
-        />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                  width={40}
+                />
 
-        {/* ✅ SINGLE COLOR BAR */}
-        <Bar
-          dataKey="count"
-          radius={[6, 6, 0, 0]}
-          fill="var(--chart-1)"
-          animationDuration={700}
-        />
-      </BarChart>
-    </ResponsiveContainer>
-  </div>
+                <Tooltip
+                  content={<CustomTooltip />}
+                  cursor={{ fill: "var(--chart-2)", fillOpacity: 0.08 }}
+                />
 
-  {/* Footer */}
-  <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border/10">
-    <div className="w-3 h-3 rounded-sm bg-chart-1"></div>
-    <span className="text-xs text-muted-foreground/50">
-      Batches per city
-    </span>
-  </div>
-</motion.div>
+                {/* ✅ SINGLE COLOR BAR */}
+                <Bar
+                  dataKey="count"
+                  radius={[6, 6, 0, 0]}
+                  fill="var(--chart-1)"
+                  animationDuration={700}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border/10">
+            <div className="w-3 h-3 rounded-sm bg-chart-1"></div>
+            <span className="text-xs text-muted-foreground/50">
+              Batches per city
+            </span>
+          </div>
+        </motion.div>
 
         {/* Quick Actions Panel */}
-        
-<div className="glass backdrop-blur-2xl h-full rounded-2xl p-5 border border-border/20">
 
-  <h3 className="text-base font-semibold text-foreground mb-7 flex items-center gap-2">
-    <div className="w-2 h-2 rounded-full bg-chart-1 animate-pulse"></div>
-    <Sparkles className="h-4 w-4 text-chart-1" />
-    Quick Actions
-  </h3>
+        <div className="glass backdrop-blur-2xl h-full rounded-2xl p-5 border border-border/20">
 
-  <div className="space-y-3">
+          <h3 className="text-base font-semibold text-foreground mb-7 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-chart-1 animate-pulse"></div>
+            <Sparkles className="h-4 w-4 text-chart-1" />
+            Quick Actions
+          </h3>
 
-    {/* Add Admin */}
-   <button
-  onClick={() => router.push('/superadmin/admins')}
-  className=" w-full flex items-center justify-between px-4 py-3 rounded-2xl 
+          <div className="space-y-3">
+
+            {/* Add Admin */}
+            <button
+              onClick={() => router.push('/superadmin/admins')}
+              className=" w-full flex items-center justify-between px-4 py-3 rounded-2xl 
   border border-border hover:border-chart-5/40 transition-all"
->
-  {/* Left */}
-  <div className="flex items-center gap-3">
-    
-    {/* Icon Box */}
-    <div className="flex items-center justify-center w-8 h-8 
+            >
+              {/* Left */}
+              <div className="flex items-center gap-3">
+
+                {/* Icon Box */}
+                <div className="flex items-center justify-center w-8 h-8 
     border border-primary/20 bg-primary/5 rounded">
-      <UserPlus className="h-4 w-4 text-primary" />
-    </div>
+                  <UserPlus className="h-4 w-4 text-primary" />
+                </div>
 
-    {/* Text */}
-    <span className="text-xl mt-2  font-medium text-muted-foreground">
-      Add Admin
-    </span>
-  </div>
+                {/* Text */}
+                <span className="text-xl mt-2  font-medium text-muted-foreground">
+                  Add Admin
+                </span>
+              </div>
 
-  {/* Arrow */}
-  <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-</button>
+              {/* Arrow */}
+              <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </button>
 
-    {/* Add City */}
-    <button
-      onClick={() => router.push('/superadmin/cities')}
-      className=" w-full flex items-center justify-between px-4 py-4 rounded-2xl 
+            {/* Add City */}
+            <button
+              onClick={() => router.push('/superadmin/cities')}
+              className=" w-full flex items-center justify-between px-4 py-4 rounded-2xl 
       border border-border hover:border-chart-2/40 transition-all"
-    >
-      <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-8 h-8 
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-8 h-8 
     border border-primary/20 bg-primary/5 rounded">
-          <MapPin className="h-4 w-4 text-primary " />
-        </div>
-        <span className="text-xl text-muted-foreground mt-2">Add City</span>
-      </div>
-      <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition" />
-    </button>
+                  <MapPin className="h-4 w-4 text-primary " />
+                </div>
+                <span className="text-xl text-muted-foreground mt-2">Add City</span>
+              </div>
+              <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition" />
+            </button>
 
-    {/* Add Batch */}
-    <button
-      onClick={() => router.push('/superadmin/batches')}
-      className=" w-full flex items-center justify-between px-4 py-4 rounded-2xl border border-border/60
+            {/* Add Batch */}
+            <button
+              onClick={() => router.push('/superadmin/batches')}
+              className=" w-full flex items-center justify-between px-4 py-4 rounded-2xl border border-border/60
        hover:border-chart-3/40 transition-all"
-    >
-      <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-8 h-8 
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-8 h-8 
     border border-primary/20 bg-primary/5 rounded">
-        <FolderPlus className="h-4 w-4 text-primary " />
-        </div>
-        <span className="text-xl text-muted-foreground mt-2 ">Add Batch</span>
-      </div>
-      <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition" />
-    </button>
+                  <FolderPlus className="h-4 w-4 text-primary " />
+                </div>
+                <span className="text-xl text-muted-foreground mt-2 ">Add Batch</span>
+              </div>
+              <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition" />
+            </button>
 
-  </div>
-</div>
+          </div>
+        </div>
       </div>
 
     </div>

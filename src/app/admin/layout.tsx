@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, LayoutDashboard, BookOpen, HelpCircle, Users, Trophy, AlertCircle, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { useTheme } from 'next-themes';
 import { Select } from '@/components/Select';
 import { Sidebar, SidebarNavItems } from '@/components/sidebar/Sidebar';
 import { logoutUser } from '@/services/auth.service';
@@ -65,6 +66,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, systemTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   const {
     selectedCity,
@@ -73,6 +76,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setSelectedBatch,
     setIsLoadingContext
   } = useAdminStore();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     clearStoredSelections();
@@ -440,6 +447,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
+            {mounted && (
+              <div className="ml-3 hidden sm:block">
+                <img
+                  src={
+                    theme === 'dark' || (theme === 'system' && systemTheme === 'dark')
+                      ? '/pwioi_dark.jpg'
+                      : '/pwioi_light.png'
+                  }
+                  alt="PWIO Logo"
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
+            )}
           </div>
         </header>
 

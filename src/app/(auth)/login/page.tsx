@@ -4,19 +4,29 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { studentAuthService } from '@/services/student/auth.service';
 import { StudentLoginResponse } from '@/types/student/auth.types';
 import { GoogleAuthButton } from './components/GoogleAuthButton';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { handleError } from '@/errors';
+import { loginStudentSchema, LoginStudentInput } from '@/schemas/auth.schema';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [emailOrUsername, setEmailOrUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const form = useForm<LoginStudentInput>({
+    resolver: zodResolver(loginStudentSchema),
+    defaultValues: {
+      email: '',
+      username: '',
+      password: '',
+    },
+  });
 
   const processPostLogin = (u: StudentLoginResponse['user']) => {
     if (!u.leetcode_id || !u.gfg_id || !u.username) {
@@ -27,10 +37,9 @@ export default function LoginPage() {
     router.push('/');
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!emailOrUsername || !password) return;
-
+  const handleLogin = async (values: LoginStudentInput) => {
+    // Custom email domain validation
+    const emailOrUsername = values.email || values.username || '';
     if (emailOrUsername.includes('@')) {
       if (!emailOrUsername.endsWith('@pwioi.com')) {
         setEmailError("Please sign in with your PW email.");
@@ -40,8 +49,11 @@ export default function LoginPage() {
 
     try {
       setLoading(true);
-      const isEmail = emailOrUsername.includes('@');
-      const payload = isEmail ? { email: emailOrUsername, password } : { username: emailOrUsername, password };
+      setEmailError('');
+      
+      const payload = values.email 
+        ? { email: values.email, password: values.password }
+        : { username: values.username, password: values.password };
 
       const data: StudentLoginResponse = await studentAuthService.login(payload);
       if (data?.accessToken) {
@@ -50,8 +62,7 @@ export default function LoginPage() {
         processPostLogin(data.user);
       }
     } catch (err) {
-      console.log(err)
-      // Use new error handling system - shows toast for INVALID_CREDENTIALS
+      console.log(err);
       handleError(err, { context: 'Login' });
     } finally {
       setLoading(false);
@@ -81,7 +92,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
           {/* IDENTITY INPUT */}
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">
@@ -92,14 +103,26 @@ export default function LoginPage() {
               <input
                 type="text"
                 placeholder="admin@bruteforce.com"
-                value={emailOrUsername}
-                onChange={(e) => { setEmailOrUsername(e.target.value); setEmailError(''); }}
-                disabled={loading}
+                {...form.register('email')}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Auto-detect if email or username
+                  if (value.includes('@')) {
+                    form.setValue('email', value);
+                    form.setValue('username', '');
+                  } else {
+                    form.setValue('username', value);
+                    form.setValue('email', '');
+                  }
+                  setEmailError('');
+                  form.clearErrors();
+                }}
+                disabled={loading || form.formState.isSubmitting}
                 className="w-full h-12 pl-11 pr-4 border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
               />
             </div>
             <AnimatePresence mode="wait">
-              {emailError && (
+              {(emailError || form.formState.errors.email || form.formState.errors.username) && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -107,7 +130,9 @@ export default function LoginPage() {
                   className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-red-500/5 border border-red-500/20 shadow-sm"
                 >
                   <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                  <p className="text-xs text-red-400 font-medium leading-tight">{emailError}</p>
+                  <p className="text-xs text-red-400 font-medium leading-tight">
+                    {emailError || form.formState.errors.email?.message || form.formState.errors.username?.message}
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -131,11 +156,9 @@ export default function LoginPage() {
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-logo transition-colors" />
               <input
                 type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
+                {...form.register('password')}
+                disabled={loading || form.formState.isSubmitting}
                 placeholder="Enter your password"
-                required
                 className="w-full h-12 pl-11 pr-4 border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
               />
               <button
@@ -146,15 +169,24 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            {form.formState.errors.password && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs text-red-400 font-medium"
+              >
+                {form.formState.errors.password.message}
+              </motion.p>
+            )}
           </div>
 
           {/* LOG IN BUTTON */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || form.formState.isSubmitting || !form.formState.isValid}
             className="w-full h-14 bg-[#CCFF00] hover:bg-[#D9FF33] text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl transition-all shadow-[0_10px_20px_rgba(204,255,0,0.1)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {loading ? (
+            {loading || form.formState.isSubmitting ? (
               <div className="flex items-center gap-2">
                 <BruteForceLoader size="sm" />
                 <span className="text-sm text-muted-foreground">Logging in...</span>

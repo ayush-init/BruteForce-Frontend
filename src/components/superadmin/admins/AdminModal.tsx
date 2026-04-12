@@ -4,7 +4,13 @@ import { useState, useMemo, useEffect } from 'react';
 import { Admin } from '@/types/common/api.types';
 import { City } from '@/types/superadmin/city.types';
 import { Batch } from '@/types/superadmin/batch.types';
-import { Modal } from '@/components/Modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -125,20 +131,27 @@ export function AdminModal({
     : formData.role;
 
  return (
-  <Modal
-    isOpen={isOpen}
-    onClose={onClose}
-    title={mode === "create" ? "Create New Admin" : "Edit Admin"}
-    subtitle={
-      mode === "create"
-        ? "Assign city and batch to determine data access permissions"
-        : "Name and email are read-only when editing."
-    }
-  >
+  <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <DialogContent className="sm:max-w-xl   shadow-2xl! rounded-3xl! ">
+      <div className="pt-6 pb-4 flex flex-col gap-5 text-center sm:text-left">
+        <DialogHeader className="flex flex-col gap-1.5 space-y-0  px-5">
+          <DialogTitle className="text-3xl p-0 m-0 font-bold tracking-tight">
+            <span className="text-white">
+              {mode === 'create' ? 'Create' : 'Edit'}
+            </span>{' '}
+            <span className="text-primary">Admin</span>
+          </DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
+            {mode === 'create'
+              ? 'Assign city and batch to determine data access permissions'
+              : 'Name and email are read-only when editing.'}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="w-full">
     <div className="space-y-6" onKeyDown={handleKeyDown}>
 
       {/* 🔹 FORM GRID */}
-      <div className="space-y-4">
+      <div className="space-y-4 px-5">
 
         {/* Name */}
         <div className="grid grid-cols-[140px_1fr] items-center gap-4">
@@ -196,151 +209,150 @@ export function AdminModal({
           </div>
         )}
 
-        {/* Role */}
-        <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-          <label className="text-sm text-muted-foreground">
-            Role *
-          </label>
-
-          <Select
-            value={formData.role || "TEACHER"}
-            onValueChange={(v) =>
-              setFormData({ ...formData, role: v })
-            }
-            disabled={submitting}
-          >
-            <SelectTrigger className="w-full bg-accent/40 border border-border/30">
-              <SelectValue placeholder="Select Role" />
-            </SelectTrigger>
-
-            <SelectContent className="glass">
-              {roles.filter(r => r !== "SUPERADMIN").map(r => (
-                <SelectItem key={r} value={r}>
-                  {r}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        
       </div>
 
       {/* 🔸 ASSIGNMENT */}
-      <div className="glass rounded-2xl p-5 border border-border/30 space-y-5">
+      <div className="glass rounded-2xl px-5 py-3 border border-border/30 space-y-5 mx-3 ">
+  {/* 🔥 PERFECT 2x2 GRID */}
+  <div className="grid grid-cols-2 gap-4">
 
-        <h3 className="text-sm font-semibold text-foreground">
-          Assignment
-        </h3>
+    {/* City */}
+    <div className="space-y-2">
+      <label className="text-xs text-muted-foreground">
+        City Filter
+      </label>
 
-        {/* City + Year aligned */}
-        <div className="grid grid-cols-2 gap-4">
+      <Select
+        value={selectedCity || "any"}
+        onValueChange={(v) => {
+          setSelectedCity(v === "any" ? "" : v);
+          setSelectedYear("");
+          setFormData({ ...formData, batch_id: "" });
+        }}
+        disabled={submitting || isLoading}
+      >
+        <SelectTrigger className="w-full bg-accent/40 border border-border/30">
+          <SelectValue placeholder={isLoading ? "Loading cities..." : "Any City"} />
+        </SelectTrigger>
 
-          <div className="space-y-2">
-            <label className="text-xs text-muted-foreground">
-              City Filter
-            </label>
+        <SelectContent className="glass">
+          <SelectItem value="any">Select City</SelectItem>
+          {cities.map(c => (
+            <SelectItem key={c.id} value={String(c.id)}>
+              {c.city_name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
 
-            <Select
-              value={selectedCity || "any"}
-              onValueChange={(v) => {
-                setSelectedCity(v === "any" ? "" : v);
-                setSelectedYear("");
-                setFormData({ ...formData, batch_id: "" });
-              }}
-              disabled={submitting || isLoading}
-            >
-              <SelectTrigger className="w-full bg-accent/40 border border-border/30">
-                <SelectValue placeholder={isLoading ? "Loading cities..." : "Any City"} />
-              </SelectTrigger>
+    {/* Role */}
+    <div className="space-y-2">
+      <label className="text-xs text-muted-foreground">
+        Role *
+      </label>
 
-              <SelectContent className="glass">
-                <SelectItem value="any">Any City</SelectItem>
-                {cities.map(c => (
-                  <SelectItem key={c.id} value={String(c.id)}>
-                    {c.city_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+      <Select
+        value={formData.role || "TEACHER"}
+        onValueChange={(v) =>
+          setFormData({ ...formData, role: v })
+        }
+        disabled={submitting}
+      >
+        <SelectTrigger className="w-full bg-accent/40 border border-border/30">
+          <SelectValue placeholder="Select Role" />
+        </SelectTrigger>
 
-          <div className="space-y-2">
-            <label className="text-xs text-muted-foreground">
-              Year Filter
-            </label>
+        <SelectContent className="glass">
+          {roles.filter(r => r !== "SUPERADMIN").map(r => (
+            <SelectItem key={r} value={r}>
+              {r}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
 
-            <Select
-              value={selectedYear || "any"}
-              onValueChange={(v) => {
-                setSelectedYear(v === "any" ? "" : v);
-                setFormData({ ...formData, batch_id: "" });
-              }}
-              disabled={submitting || isLoading || (!selectedCity && !selectedYear)}
-            >
-              <SelectTrigger className="w-full bg-accent/40 border border-border/30">
-                <SelectValue placeholder="Any Year" />
-              </SelectTrigger>
+    {/* Batch */}
+    <div className="space-y-2">
+      <label className="text-xs text-muted-foreground">
+        Batch
+      </label>
 
-              <SelectContent className="glass">
-                <SelectItem value="any">Any Year</SelectItem>
-                {availableYears.map(y => (
-                  <SelectItem key={y} value={String(y)}>
-                    {y}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Batch */}
-        <div className="grid grid-cols-[140px_1fr] items-center gap-4">
-          <label className="text-sm text-muted-foreground">
-            Batch
-          </label>
-
-          <Select
-            value={formData.batch_id || "none"}
-            onValueChange={(v) =>
-              setFormData({
-                ...formData,
-                batch_id: v === "none" ? "" : v,
-              })
+      <Select
+        value={formData.batch_id || "none"}
+        onValueChange={(v) =>
+          setFormData({
+            ...formData,
+            batch_id: v === "none" ? "" : v,
+          })
+        }
+        disabled={
+          submitting ||
+          isLoading ||
+          (!selectedCity && !selectedYear && !formData.batch_id)
+        }
+      >
+        <SelectTrigger className="w-full bg-accent/40 border border-border/30">
+          <SelectValue
+            placeholder={
+              availableBatches.length === 0
+                ? "No batches match filters"
+                : "Select Batch (Optional)"
             }
-            disabled={
-              submitting ||
-              isLoading ||
-              (!selectedCity && !selectedYear && !formData.batch_id)
-            }
-          >
-            <SelectTrigger className="w-full bg-accent/40 border border-border/30">
-              <SelectValue
-                placeholder={
-                  availableBatches.length === 0
-                    ? "No batches match filters"
-                    : "Select Batch (Optional)"
-                }
-              />
-            </SelectTrigger>
+          />
+        </SelectTrigger>
 
-            <SelectContent className="glass">
-              <SelectItem value="none">Select Batch</SelectItem>
-              {availableBatches.map(b => (
-                <SelectItem key={b.id} value={String(b.id)}>
-                  {b.batch_name} ({b.year})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+        <SelectContent className="glass">
+          <SelectItem value="none">Select Batch</SelectItem>
+          {availableBatches.map(b => (
+            <SelectItem key={b.id} value={String(b.id)}>
+              {b.batch_name} ({b.year})
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+
+    {/* Year */}
+    <div className="space-y-2">
+      <label className="text-xs text-muted-foreground">
+        Year Filter
+      </label>
+
+      <Select
+        value={selectedYear || "any"}
+        onValueChange={(v) => {
+          setSelectedYear(v === "any" ? "" : v);
+          setFormData({ ...formData, batch_id: "" });
+        }}
+        disabled={submitting || isLoading || (!selectedCity && !selectedYear)}
+      >
+        <SelectTrigger className="w-full bg-accent/40 border border-border/30">
+          <SelectValue placeholder="Any Year" />
+        </SelectTrigger>
+
+        <SelectContent className="glass">
+          <SelectItem value="any">Select Year</SelectItem>
+          {availableYears.map(y => (
+            <SelectItem key={y} value={String(y)}>
+              {y}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+
+  </div>
+</div>
 
       {/* 🔹 ACTIONS */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-border/30">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button
-          variant="outline"
           onClick={onClose}
           disabled={submitting}
-          className="rounded-full"
+          className="text-white! bg-muted-foreground/30!"
         >
           Cancel
         </Button>
@@ -348,12 +360,15 @@ export function AdminModal({
         <Button
           onClick={handleSubmit}
           disabled={submitting || !isFormValid}
-          className="rounded-full bg-primary text-primary-foreground"
+          className="bg-primary text-primary-foreground"
         >
           {mode === "create" ? "Create Admin" : "Update Admin"}
         </Button>
       </div>
     </div>
-  </Modal>
+        </div>
+      </div>
+    </DialogContent>
+  </Dialog>
 );
 }

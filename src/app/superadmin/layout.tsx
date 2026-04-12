@@ -9,6 +9,7 @@ import { Admin } from '@/types/common/api.types';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { isAdminToken, clearAuthTokens } from '@/lib/auth-utils';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { useTheme } from 'next-themes';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { showSuccess } from '@/ui/toast';
 import { SuperAdminUser } from '@/types/superadmin/index.types';
@@ -20,6 +21,12 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
   const [loading, setLoading] = React.useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+  const { theme, systemTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   React.useEffect(() => {
     const loadUser = async () => {
@@ -135,6 +142,19 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle/>
+            {mounted && (
+              <div className="ml-3 hidden sm:block">
+                <img
+                  src={
+                    theme === 'dark' || (theme === 'system' && systemTheme === 'dark')
+                      ? '/pwioi_dark.jpg'
+                      : '/pwioi_light.png'
+                  }
+                  alt="PWIO Logo"
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
+            )}
           </div>
         </header>
 

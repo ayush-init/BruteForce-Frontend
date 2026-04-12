@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAdminStore } from '@/store/adminStore';
 import {
   getAdminStudents,
@@ -16,6 +18,7 @@ import StudentsFilter from '@/components/admin/students/StudentsFilter';
 import StudentsTable from '@/components/admin/students/StudentsTable';
 import StudentsModals from '@/components/admin/students/StudentsModals';
 import StudentsSkeleton from '@/components/admin/students/StudentsSkeleton';
+import { createStudentSchema, updateStudentSchema, CreateStudentInput, UpdateStudentInput } from '@/schemas/student.schema';
 
 export default function AdminStudentsPage() {
   const router = useRouter();
@@ -39,17 +42,36 @@ export default function AdminStudentsPage() {
   const [isDownloadReportOpen, setIsDownloadReportOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<AdminStudent | null>(null);
 
-  // Form states
-  const [formName, setFormName] = useState('');
-  const [formEmail, setFormEmail] = useState('');
-  const [formUsername, setFormUsername] = useState('');
-  const [formPassword, setFormPassword] = useState('');
-  const [formEnrollmentId, setFormEnrollmentId] = useState('');
-  const [formLeetcodeId, setFormLeetcodeId] = useState('');
-  const [formGfgId, setFormGfgId] = useState('');
-
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
+
+  // React Hook Form for Create
+  const createForm = useForm<CreateStudentInput>({
+    resolver: zodResolver(createStudentSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      username: '',
+      password: '',
+      enrollment_id: '',
+      batch_id: selectedBatch?.id || 0,
+      leetcode_id: '',
+      gfg_id: '',
+    },
+  });
+
+  // React Hook Form for Edit
+  const editForm = useForm<UpdateStudentInput>({
+    resolver: zodResolver(updateStudentSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      username: '',
+      enrollment_id: '',
+      leetcode_id: '',
+      gfg_id: '',
+    },
+  });
 
   // Pagination
   const [limit, setLimit] = useState(10);
@@ -122,53 +144,47 @@ export default function AdminStudentsPage() {
     setPage(1);
   }, [selectedBatch?.id]);
 
-  // Form Handlers
-  const handleCreateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(''); setSubmitting(true);
+  // Form Handlers with Zod validation
+  const handleCreateSubmit = async (values: CreateStudentInput) => {
+    setFormError('');
+    setSubmitting(true);
     try {
-      await createAdminStudent({
-        name: formName,
-        email: formEmail,
-        username: formUsername,
-        password: formPassword || undefined,
-        enrollment_id: formEnrollmentId,
+      const payload = {
+        ...values,
         batch_id: selectedBatch?.id,
-        leetcode_id: formLeetcodeId || undefined,
-        gfg_id: formGfgId || undefined
-      });
+        password: values.password || undefined,
+        leetcode_id: values.leetcode_id || undefined,
+        gfg_id: values.gfg_id || undefined,
+      };
+      await createAdminStudent(payload);
       setIsCreateOpen(false);
       resetForms();
-      lastFetchStudentsParams.current = { page: 0, limit: 0, search: '' }; // Reset to force refetch
+      lastFetchStudentsParams.current = { page: 0, limit: 0, search: '' };
       fetchStudents();
     } catch (err: unknown) {
-      // Error is handled by API client interceptor
-      console.log(err)
+      console.log(err);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleEditSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleEditSubmit = async (values: UpdateStudentInput) => {
     if (!selectedStudent) return;
-    setFormError(''); setSubmitting(true);
+    setFormError('');
+    setSubmitting(true);
     try {
-      await updateAdminStudent(selectedStudent.id, {
-        name: formName,
-        email: formEmail,
-        username: formUsername,
-        enrollment_id: formEnrollmentId,
-        leetcode_id: formLeetcodeId || undefined,
-        gfg_id: formGfgId || undefined
-      });
+      const payload = {
+        ...values,
+        leetcode_id: values.leetcode_id || undefined,
+        gfg_id: values.gfg_id || undefined,
+      };
+      await updateAdminStudent(selectedStudent.id, payload);
       setIsEditOpen(false);
       resetForms();
-      lastFetchStudentsParams.current = { page: 0, limit: 0, search: '' }; // Reset to force refetch
+      lastFetchStudentsParams.current = { page: 0, limit: 0, search: '' };
       fetchStudents();
     } catch (err: unknown) {
-      // Error is handled by API client interceptor
-      console.log(err)
+      console.log(err);
     } finally {
       setSubmitting(false);
     }
@@ -192,13 +208,24 @@ export default function AdminStudentsPage() {
   };
 
   const resetForms = () => {
-    setFormName('');
-    setFormEmail('');
-    setFormUsername('');
-    setFormPassword('');
-    setFormEnrollmentId('');
-    setFormLeetcodeId('');
-    setFormGfgId('');
+    createForm.reset({
+      name: '',
+      email: '',
+      username: '',
+      password: '',
+      enrollment_id: '',
+      batch_id: selectedBatch?.id || 0,
+      leetcode_id: '',
+      gfg_id: '',
+    });
+    editForm.reset({
+      name: '',
+      email: '',
+      username: '',
+      enrollment_id: '',
+      leetcode_id: '',
+      gfg_id: '',
+    });
     setFormError('');
   };
 
@@ -210,12 +237,14 @@ export default function AdminStudentsPage() {
 
   const openEdit = (s: AdminStudent) => {
     setSelectedStudent(s);
-    setFormName(s.name);
-    setFormEmail(s.email);
-    setFormUsername(s.username);
-    setFormEnrollmentId(s.enrollment_id || '');
-    setFormLeetcodeId(s.leetcode_id || '');
-    setFormGfgId(s.gfg_id || '');
+    editForm.reset({
+      name: s.name,
+      email: s.email,
+      username: s.username,
+      enrollment_id: s.enrollment_id || '',
+      leetcode_id: s.leetcode_id || '',
+      gfg_id: s.gfg_id || '',
+    });
     setFormError('');
     setIsEditOpen(true);
   };
@@ -276,23 +305,11 @@ export default function AdminStudentsPage() {
         isDownloadReportOpen={isDownloadReportOpen}
         setIsDownloadReportOpen={setIsDownloadReportOpen}
         selectedStudent={selectedStudent}
-        formName={formName}
-        setFormName={setFormName}
-        formEmail={formEmail}
-        setFormEmail={setFormEmail}
-        formUsername={formUsername}
-        setFormUsername={setFormUsername}
-        formPassword={formPassword}
-        setFormPassword={setFormPassword}
-        formEnrollmentId={formEnrollmentId}
-        setFormEnrollmentId={setFormEnrollmentId}
-        formLeetcodeId={formLeetcodeId}
-        setFormLeetcodeId={setFormLeetcodeId}
-        formGfgId={formGfgId}
-        setFormGfgId={setFormGfgId}
         formError={formError}
         setFormError={setFormError}
         submitting={submitting}
+        createForm={createForm}
+        editForm={editForm}
         handleCreateSubmit={handleCreateSubmit}
         handleEditSubmit={handleEditSubmit}
         handleDeleteSubmit={handleDeleteSubmit}

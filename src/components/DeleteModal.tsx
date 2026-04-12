@@ -28,7 +28,7 @@ export function DeleteModal({ isOpen, onClose, onConfirm, submitting, title, ite
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="glass sm:max-w-[420px] p-0 overflow-hidden border-border/40 shadow-2xl rounded-2xl gap-0" onKeyDown={handleKeyDown}>
+      <DialogContent className=" sm:max-w-[420px] p-0 overflow-hidden border-border/40 shadow-2xl rounded-2xl gap-0" onKeyDown={handleKeyDown}>
         <div className="p-8 pb-6 flex flex-col items-center text-center">
           <div className="flex-shrink-0 w-14 h-14 mb-5 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center border border-red-100 dark:border-red-500/20 shadow-sm">
             <Trash2 className="w-6 h-6 text-red-600 dark:text-red-500" />
@@ -45,7 +45,7 @@ export function DeleteModal({ isOpen, onClose, onConfirm, submitting, title, ite
           <div className="mt-6 w-full text-left">
             <div className="bg-red-50/80 dark:bg-red-950/30 border border-red-200/60 dark:border-red-900/40 rounded-2xl p-4 flex gap-3 text-sm text-red-800 dark:text-red-400 shadow-sm">
               <AlertTriangle className="w-5 h-5 flex-shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
-              <p className="leading-snug font-medium">
+              <p className="leading-snug font-medium p-0 m-0">
                 {warningText}
               </p>
             </div>
@@ -54,17 +54,17 @@ export function DeleteModal({ isOpen, onClose, onConfirm, submitting, title, ite
 
         <div className="px-6 py-4 border-t border-border/60 flex flex-col-reverse sm:flex-row justify-center sm:justify-end items-center gap-3">
           <Button 
-            variant="outline" 
+             
             onClick={onClose} 
-            className="w-full sm:w-auto font-medium transition-colors rounded bg-background hover:bg-muted/80 shadow-sm"
+            className="w-full bg-muted-foreground/30! sm:w-auto font-medium transition-colors rounded text-white! hover:bg-muted/80 shadow-sm"
           >
             Cancel
           </Button>
           <Button 
-            variant="destructive" 
+            
             onClick={onConfirm} 
             disabled={submitting} 
-            className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white shadow-sm font-medium transition-colors rounded active:scale-[0.98]"
+            className="w-full sm:w-auto bg-red-900! hover:bg-red-700 text-white! shadow-sm font-medium transition-colors"
           >
             {submitting ? 'Deleting...' : 'Delete'}
           </Button>

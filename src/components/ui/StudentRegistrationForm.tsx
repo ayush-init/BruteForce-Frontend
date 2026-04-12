@@ -1,105 +1,60 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { User, Mail, Lock, GraduationCap, Hash, Code, UserPlus } from 'lucide-react';
 import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { PasswordInputWithValidation } from './PasswordStrengthIndicator';
 import { usePasswordValidation } from '@/hooks/usePasswordValidation';
+import { registerStudentSchema, RegisterStudentInput } from '@/schemas/auth.schema';
 
 interface StudentRegistrationFormProps {
-  onSubmit: (data: StudentRegistrationData) => void;
+  onSubmit: (data: RegisterStudentInput) => void;
   loading?: boolean;
 }
 
-export interface StudentRegistrationData {
-  name: string;
-  email: string;
-  username: string;
-  password: string;
-  enrollment_id: string;
-  batch_id: number;
-  leetcode_id?: string;
-  gfg_id?: string;
-}
-
 export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRegistrationFormProps) {
-  const [formData, setFormData] = useState<StudentRegistrationData>({
-    name: '',
-    email: '',
-    username: '',
-    password: '',
-    enrollment_id: '',
-    batch_id: 0,
-    leetcode_id: '',
-    gfg_id: ''
+  const form = useForm<RegisterStudentInput>({
+    resolver: zodResolver(registerStudentSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      username: '',
+      password: '',
+      enrollment_id: '',
+      batch_id: 0,
+      leetcode_id: '',
+      gfg_id: ''
+    }
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const { validationResult } = usePasswordValidation(formData.password);
+  const password = form.watch('password') || '';
+  const { validationResult } = usePasswordValidation(password);
 
-  const handleInputChange = (field: keyof StudentRegistrationData, value: string | number) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error for this field when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+  const handleFormSubmit = (values: RegisterStudentInput) => {
+    // Custom email domain validation
+    if (!values.email.endsWith('@pwioi.com')) {
+      form.setError('email', { message: 'Must use @pwioi.com email' });
+      return;
     }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!formData.email.endsWith('@pwioi.com')) {
-      newErrors.email = 'Must use @pwioi.com email';
-    }
-
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (!validationResult.isValid) {
-      newErrors.password = validationResult.message;
-    }
-
-    if (!formData.enrollment_id.trim()) {
-      newErrors.enrollment_id = 'Enrollment ID is required';
-    }
-
-    if (!formData.batch_id || formData.batch_id === 0) {
-      newErrors.batch_id = 'Batch selection is required';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
     
-    if (!validateForm()) {
+    if (!validationResult.isValid) {
+      form.setError('password', { message: validationResult.message });
       return;
     }
 
-    onSubmit(formData);
+    onSubmit(values);
   };
 
-  const isSubmitDisabled = loading || !validationResult.isValid || Object.keys(formData).some(key => 
-    key !== 'leetcode_id' && key !== 'gfg_id' && !formData[key as keyof StudentRegistrationData]
-  );
+  const isSubmitDisabled = loading || !validationResult.isValid || !form.formState.isValid;
+
+  const formErrors = form.formState.errors;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
       {/* NAME FIELD */}
       <div className="space-y-2">
         <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">
@@ -110,15 +65,14 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
           <input
             type="text"
             placeholder="John Doe"
-            value={formData.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
+            {...form.register('name')}
             disabled={loading}
             className={`w-full h-14 pl-12 pr-4 bg-input border rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all ${
-              errors.name ? 'border-red-500' : 'border-white/5'
+              formErrors.name ? 'border-red-500' : 'border-white/5'
             }`}
           />
         </div>
-        {errors.name && <p className="text-red-400 text-xs ml-1">{errors.name}</p>}
+        {formErrors.name && <p className="text-red-400 text-xs ml-1">{formErrors.name.message}</p>}
       </div>
 
       {/* EMAIL FIELD */}
@@ -131,15 +85,14 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
           <input
             type="email"
             placeholder="student@pwioi.com"
-            value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
+            {...form.register('email')}
             disabled={loading}
             className={`w-full h-14 pl-12 pr-4 bg-input border rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all ${
-              errors.email ? 'border-red-500' : 'border-white/5'
+              formErrors.email ? 'border-red-500' : 'border-white/5'
             }`}
           />
         </div>
-        {errors.email && <p className="text-red-400 text-xs ml-1">{errors.email}</p>}
+        {formErrors.email && <p className="text-red-400 text-xs ml-1">{formErrors.email.message}</p>}
       </div>
 
       {/* USERNAME FIELD */}
@@ -152,15 +105,14 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
           <input
             type="text"
             placeholder="johndoe123"
-            value={formData.username}
-            onChange={(e) => handleInputChange('username', e.target.value)}
+            {...form.register('username')}
             disabled={loading}
             className={`w-full h-14 pl-12 pr-4 bg-input border rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all ${
-              errors.username ? 'border-red-500' : 'border-white/5'
+              formErrors.username ? 'border-red-500' : 'border-white/5'
             }`}
           />
         </div>
-        {errors.username && <p className="text-red-400 text-xs ml-1">{errors.username}</p>}
+        {formErrors.username && <p className="text-red-400 text-xs ml-1">{formErrors.username.message}</p>}
       </div>
 
       {/* PASSWORD FIELD WITH VALIDATION */}
@@ -169,13 +121,13 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
           Password
         </label>
         <PasswordInputWithValidation
-          password={formData.password}
-          onPasswordChange={(password) => handleInputChange('password', password)}
+          password={password}
+          onPasswordChange={(val) => form.setValue('password', val)}
           disabled={loading}
           showStrengthIndicator={true}
           showChecklist={true}
           className="space-y-3"
-          error={errors.password}
+          error={formErrors.password?.message}
         />
       </div>
 
@@ -189,15 +141,14 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
           <input
             type="text"
             placeholder="PW2024001"
-            value={formData.enrollment_id}
-            onChange={(e) => handleInputChange('enrollment_id', e.target.value)}
+            {...form.register('enrollment_id')}
             disabled={loading}
             className={`w-full h-14 pl-12 pr-4 bg-input border rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all ${
-              errors.enrollment_id ? 'border-red-500' : 'border-white/5'
+              formErrors.enrollment_id ? 'border-red-500' : 'border-white/5'
             }`}
           />
         </div>
-        {errors.enrollment_id && <p className="text-red-400 text-xs ml-1">{errors.enrollment_id}</p>}
+        {formErrors.enrollment_id && <p className="text-red-400 text-xs ml-1">{formErrors.enrollment_id.message}</p>}
       </div>
 
       {/* BATCH ID FIELD */}
@@ -207,11 +158,10 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
         </label>
         <div className="relative group">
           <select
-            value={formData.batch_id}
-            onChange={(e) => handleInputChange('batch_id', parseInt(e.target.value))}
+            {...form.register('batch_id', { valueAsNumber: true })}
             disabled={loading}
             className={`w-full h-14 pl-12 pr-4 bg-input border rounded-2xl text-sm text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all appearance-none cursor-pointer ${
-              errors.batch_id ? 'border-red-500' : 'border-white/5'
+              formErrors.batch_id ? 'border-red-500' : 'border-white/5'
             }`}
           >
             <option value={0} className="bg-slate-800">Select Batch</option>
@@ -220,7 +170,7 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
             <option value={3} className="bg-slate-800">Batch 3 - 2024</option>
           </select>
         </div>
-        {errors.batch_id && <p className="text-red-400 text-xs ml-1">{errors.batch_id}</p>}
+        {formErrors.batch_id && <p className="text-red-400 text-xs ml-1">{formErrors.batch_id.message}</p>}
       </div>
 
       {/* OPTIONAL PLATFORM IDs */}
@@ -235,8 +185,7 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
             <input
               type="text"
               placeholder="leetcode123"
-              value={formData.leetcode_id}
-              onChange={(e) => handleInputChange('leetcode_id', e.target.value)}
+              {...form.register('leetcode_id')}
               disabled={loading}
               className="w-full h-14 pl-12 pr-4 bg-input border border-white/5 rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
             />
@@ -253,8 +202,7 @@ export function StudentRegistrationForm({ onSubmit, loading = false }: StudentRe
             <input
               type="text"
               placeholder="gfg123"
-              value={formData.gfg_id}
-              onChange={(e) => handleInputChange('gfg_id', e.target.value)}
+              {...form.register('gfg_id')}
               disabled={loading}
               className="w-full h-14 pl-12 pr-4 bg-input border border-white/5 rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
             />

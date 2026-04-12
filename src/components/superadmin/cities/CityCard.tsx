@@ -34,43 +34,19 @@ export function CityCard({ city, onEdit, onDelete }: CityCardProps) {
 
           {/* Icon */}
           <div className="
-            p-2 rounded-xl
-            bg-chart-2/20
-            border border-chart-2/30
+            p-2 rounded
+            bg-primary/10
+            border border-primary/20
           ">
-            <Building2 className="w-4 h-4 text-chart-2" />
+            <Building2 className="w-4 h-4 text-primary" />
           </div>
 
           {/* Title */}
           <div className="min-w-0">
-            <h3 className="font-semibold text-foreground truncate text-sm">
+            <h3 className="font-semibold text-foreground truncate text-xl mt-1">
               {city.city_name}
             </h3>
 
-            {/* Badges */}
-            <div className="flex items-center gap-2 mt-1">
-              <span className="
-                inline-flex items-center gap-1
-                px-2.5 py-0.5
-                rounded-full text-[10px] font-medium
-                bg-chart-2/20 text-chart-2
-                border border-chart-2/30
-              ">
-                <Layers className="w-3 h-3" />
-                {city.total_batches ?? 0}
-              </span>
-
-              <span className="
-                inline-flex items-center gap-1
-                px-2.5 py-0.5
-                rounded-full text-[10px] font-medium
-                bg-primary/10 text-primary
-                border border-primary/20
-              ">
-                <Users className="w-3 h-3" />
-                {city.total_students ?? 0}
-              </span>
-            </div>
           </div>
         </div>
       </div>

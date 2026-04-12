@@ -190,7 +190,7 @@ export default function StudentHomePage() {
 
         {/* TOPICS SECTION - Always render header, show shimmer only for topic cards */}
 
-        <TopicsSection topics={topics} loading={profileLoading} />
+        <TopicsSection topics={topics} loading={loading} />
 
       </div>
 

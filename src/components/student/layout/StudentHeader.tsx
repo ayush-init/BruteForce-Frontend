@@ -253,8 +253,8 @@ export default function StudentHeader() {
                   <div className="flex items-center gap-3">
                     <Button
                       asChild
-                      size="sm"
-                      className="backdrop-blur-sm border border-border/40 hover-glow rounded-2xl px-4 py-1.5 text-sm font-medium transition-all duration-200"
+                      
+                      className=" h-12! w-23!  hover-glow glass! backdrop-blur! border! border-border!  text-muted-foreground rounded-2xl!  font-medium transition-all duration-200"
                       style={{ padding: 'var(--spacing-sm) var(--spacing-xs)', borderRadius: 'var(--radius-full)' }}
                     >
                       <Link href="/login" className="flex items-center gap-2">

@@ -23,8 +23,8 @@ export function BatchCard({ batch, onEdit, onDelete }: BatchCardProps) {
 
       {/* ✨ Ambient Glow */}
       <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition duration-300">
-        <div className="absolute -top-10 -left-10 w-32 h-32 bg-chart-3/10 blur-3xl rounded-full"></div>
-        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-chart-3/10 blur-3xl rounded-full"></div>
+        <div className="absolute -top-10 -left-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
       </div>
 
       {/* 🔹 HEADER */}
@@ -34,11 +34,11 @@ export function BatchCard({ batch, onEdit, onDelete }: BatchCardProps) {
 
           {/* Icon */}
           <div className="
-            p-2 rounded-xl
-            bg-chart-3/20
-            border border-chart-3/30
+            p-2 rounded
+            bg-primary/10
+            border border-primary/10
           ">
-            <Layers className="w-4 h-4 text-chart-3" />
+            <Layers className="w-4 h-4 text-primary" />
           </div>
 
           {/* Title */}
@@ -52,9 +52,9 @@ export function BatchCard({ batch, onEdit, onDelete }: BatchCardProps) {
               <span className="
                 inline-flex items-center gap-1
                 px-2.5 py-0.5
-                rounded-full text-[10px] font-medium
-                bg-chart-3/20 text-chart-3
-                border border-chart-3/30
+                rounded-2xl text-[10px] font-medium
+                bg-primary/10 text-primary
+                border border-primary/10
               ">
                 <Calendar className="w-3 h-3" />
                 {batch.year}

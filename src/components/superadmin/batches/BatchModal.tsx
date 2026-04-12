@@ -3,12 +3,18 @@
 import { useState, useEffect } from 'react';
 import { Batch } from '@/types/superadmin/batch.types';
 import { City } from '@/types/superadmin/city.types';
-import { Modal } from '@/components/Modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Layers } from 'lucide-react';
 import { BatchSubmitPayload } from '@/types/superadmin/index.types';
+import { Layers } from 'lucide-react';
 
 interface BatchModalProps {
   isOpen: boolean;
@@ -73,13 +79,21 @@ export function BatchModal({
   const isFormValid = formData.batch_name && formData.year && formData.city_id;
 
   return (
-    <Modal
-  isOpen={isOpen}
-  onClose={onClose}
-  title={mode === "create" ? "Create New Batch" : "Edit Batch"}
-  subtitle="Batch will be linked to the selected city and year"
-  icon={<Layers className="text-chart-3 w-7 h-7" />}
->
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md border border-border shadow-2xl rounded-3xl">
+        <div className="px-6 pt-8 pb-6 flex flex-col gap-5 text-center sm:text-left">
+          <DialogHeader className="flex flex-col gap-1.5 space-y-0 border-0">
+            <DialogTitle className="text-3xl p-0 m-0  font-bold tracking-tight">
+              <span className="text-white">
+                {mode === 'create' ? 'Create' : 'Edit'}
+              </span>{' '}
+              <span className="text-primary">Batch</span>
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Batch will be linked to the selected city and year
+            </DialogDescription>
+          </DialogHeader>
+          <div className="w-full">
   <div className="space-y-6" onKeyDown={handleKeyDown}>
 
     {/* 🔹 FORM */}
@@ -92,7 +106,7 @@ export function BatchModal({
         </label>
 
         <Input
-          placeholder="e.g. B3-2025"
+          placeholder="B3-2025"
           value={formData.batch_name}
           onChange={(e) =>
             setFormData({ ...formData, batch_name: e.target.value })
@@ -168,13 +182,13 @@ export function BatchModal({
     {/* 🔹 ACTIONS */}
     <div className="
       flex items-center justify-end gap-3
-      pt-4 border-t border-border/30
+      pt-4
     ">
       <Button
-        variant="outline"
+        
         onClick={onClose}
         disabled={submitting}
-        className="rounded-full"
+        className="text-white! bg-muted-foreground/30!"
       >
         Cancel
       </Button>
@@ -183,7 +197,7 @@ export function BatchModal({
         onClick={handleSubmit}
         disabled={submitting || !isFormValid}
         className="
-          rounded-full
+          
           bg-primary text-primary-foreground
           hover:bg-primary/90
           shadow-md
@@ -197,6 +211,9 @@ export function BatchModal({
       </Button>
     </div>
   </div>
-</Modal>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -47,8 +47,8 @@ export function AdminCard({ admin, onEdit, onDelete }: AdminCardProps) {
           px-3 py-1
           text-[10px] font-semibold tracking-wide
           rounded-full
-          bg-primary/20 text-primary
-          border border-primary/30
+          bg-primary/10 text-primary
+          border border-primary/20
           backdrop-blur
         ">
           {admin.role}

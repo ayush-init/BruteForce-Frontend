@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import {
   Dialog,
   DialogContent,
@@ -18,6 +19,7 @@ import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformI
 import { AdminStudent } from '@/types/student/index.types';
 import BulkUploadModal from './BulkUploadModal';
 import DownloadReportModal from './DownloadReportModal';
+import { CreateStudentInput, UpdateStudentInput } from '@/schemas/student.schema';
 
 interface StudentsModalsProps {
   // Modal states
@@ -34,27 +36,17 @@ interface StudentsModalsProps {
 
   // Form data
   selectedStudent: AdminStudent | null;
-  formName: string;
-  setFormName: (value: string) => void;
-  formEmail: string;
-  setFormEmail: (value: string) => void;
-  formUsername: string;
-  setFormUsername: (value: string) => void;
-  formPassword: string;
-  setFormPassword: (value: string) => void;
-  formEnrollmentId: string;
-  setFormEnrollmentId: (value: string) => void;
-  formLeetcodeId: string;
-  setFormLeetcodeId: (value: string) => void;
-  formGfgId: string;
-  setFormGfgId: (value: string) => void;
   formError: string;
   setFormError: (value: string) => void;
   submitting: boolean;
 
+  // React Hook Forms
+  createForm: UseFormReturn<CreateStudentInput>;
+  editForm: UseFormReturn<UpdateStudentInput>;
+
   // Handlers
-  handleCreateSubmit: (e: React.FormEvent) => void;
-  handleEditSubmit: (e: React.FormEvent) => void;
+  handleCreateSubmit: (values: CreateStudentInput) => void;
+  handleEditSubmit: (values: UpdateStudentInput) => void;
   handleDeleteSubmit: () => void;
   handleBulkUploadSuccess: (result: any) => void;
   selectedBatch: { id: number } | null;
@@ -72,32 +64,23 @@ export default function StudentsModals({
   isDownloadReportOpen,
   setIsDownloadReportOpen,
   selectedStudent,
-  formName,
-  setFormName,
-  formEmail,
-  setFormEmail,
-  formUsername,
-  setFormUsername,
-  formPassword,
-  setFormPassword,
-  formEnrollmentId,
-  setFormEnrollmentId,
-  formLeetcodeId,
-  setFormLeetcodeId,
-  formGfgId,
-  setFormGfgId,
   formError,
   setFormError,
   submitting,
+  createForm,
+  editForm,
   handleCreateSubmit,
   handleEditSubmit,
   handleDeleteSubmit,
   handleBulkUploadSuccess,
   selectedBatch,
 }: StudentsModalsProps) {
+  const formPassword = createForm.watch('password') || '';
   const passwordValidation = usePasswordValidation(formPassword);
-  
   const isPasswordValid = formPassword ? passwordValidation.meetsMinimumRequirements(formPassword) : true;
+  
+  const createFormErrors = createForm.formState.errors;
+  const editFormErrors = editForm.formState.errors;
   return (
     <>
       {/* CREATE MODAL */}
@@ -118,7 +101,7 @@ export default function StudentsModals({
 
           {/* BODY */}
           <div className="p-6 space-y-6">
-            <form onSubmit={handleCreateSubmit} className="space-y-5">
+            <form onSubmit={createForm.handleSubmit(handleCreateSubmit)} className="space-y-5">
               {/* ERROR */}
               {formError && (
                 <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
@@ -132,13 +115,17 @@ export default function StudentsModals({
                 <label className="text-s text-muted-foreground font-medium">
                   Full Name <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="Enter student name"
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    {...createForm.register('name')}
+                    placeholder="Enter student name"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {createFormErrors.name && (
+                    <p className="text-xs text-red-400 mt-1">{createFormErrors.name.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* EMAIL */}
@@ -146,14 +133,18 @@ export default function StudentsModals({
                 <label className="text-s text-muted-foreground font-medium">
                   Email <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  type="email"
-                  value={formEmail}
-                  onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="student@example.com"
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    type="email"
+                    {...createForm.register('email')}
+                    placeholder="student@example.com"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {createFormErrors.email && (
+                    <p className="text-xs text-red-400 mt-1">{createFormErrors.email.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* ENROLLMENT */}
@@ -161,14 +152,17 @@ export default function StudentsModals({
                 <label className="text-s text-muted-foreground font-medium">
                   Enrollment ID <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  value={formEnrollmentId}
-                  onChange={(e) => setFormEnrollmentId(e.target.value)}
-                  placeholder="ENR123456"
-                  required
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    {...createForm.register('enrollment_id')}
+                    placeholder="ENR123456"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {createFormErrors.enrollment_id && (
+                    <p className="text-xs text-red-400 mt-1">{createFormErrors.enrollment_id.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* USERNAME */}
@@ -176,13 +170,17 @@ export default function StudentsModals({
                 <label className="text-s text-muted-foreground font-medium">
                   Username
                 </label>
-                <Input
-                  value={formUsername}
-                  onChange={(e) => setFormUsername(e.target.value)}
-                  placeholder="username"
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    {...createForm.register('username')}
+                    placeholder="username"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {createFormErrors.username && (
+                    <p className="text-xs text-red-400 mt-1">{createFormErrors.username.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* PASSWORD */}
@@ -190,28 +188,30 @@ export default function StudentsModals({
                 <label className="text-sm text-muted-foreground font-medium">
                   Password
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-2 space-y-2">
                   <PasswordInputWithValidation
                     password={formPassword}
-                    onPasswordChange={setFormPassword}
+                    onPasswordChange={(val) => createForm.setValue('password', val)}
                     disabled={submitting}
                     showStrengthIndicator={true}
                     showChecklist={false}
                     className="space-y-2"
                   />
+                  {createFormErrors.password && (
+                    <p className="text-xs text-red-400">{createFormErrors.password.message}</p>
+                  )}
                 </div>
               </div>
 
               {/* PLATFORM IDs */}
-              <div className="grid grid-cols-2 ">
+              <div className="grid grid-cols-2">
                 <div className="space-y-2">
                   <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
                     <LeetCodeIcon className="w-4 h-4 text-leetcode" />
                     LeetCode ID
                   </label>
                   <Input
-                    value={formLeetcodeId}
-                    onChange={(e) => setFormLeetcodeId(e.target.value)}
+                    {...createForm.register('leetcode_id')}
                     placeholder="leetcode_id"
                     disabled={submitting}
                     className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-[90%]"
@@ -223,8 +223,7 @@ export default function StudentsModals({
                     GFG ID
                   </label>
                   <Input
-                    value={formGfgId}
-                    onChange={(e) => setFormGfgId(e.target.value)}
+                    {...createForm.register('gfg_id')}
                     placeholder="gfg_id"
                     disabled={submitting}
                     className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-full"
@@ -245,7 +244,7 @@ export default function StudentsModals({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={submitting || !formName || !formEmail || !formEnrollmentId || !isPasswordValid}
+                  disabled={submitting || !createForm.formState.isValid || !isPasswordValid}
                   className="h-11 w-full font-semibold bg-primary text-black hover:opacity-90 transition-all"
                 >
                   {submitting ? "Adding..." : "Add Student"}
@@ -274,7 +273,7 @@ export default function StudentsModals({
 
           {/* BODY */}
           <div className="p-6 space-y-6">
-            <form onSubmit={handleEditSubmit} className="space-y-5">
+            <form onSubmit={editForm.handleSubmit(handleEditSubmit)} className="space-y-5">
               {/* ERROR */}
               {formError && (
                 <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
@@ -284,60 +283,76 @@ export default function StudentsModals({
               )}
 
               {/* NAME */}
-              <div className="grid grid-cols-3 item-center">
+              <div className="grid grid-cols-3 items-center">
                 <label className="text-s text-muted-foreground font-medium">
                   Full Name <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="Enter student name"
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    {...editForm.register('name')}
+                    placeholder="Enter student name"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {editFormErrors.name && (
+                    <p className="text-xs text-red-400 mt-1">{editFormErrors.name.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* EMAIL */}
-              <div className="grid grid-cols-3 item-center">
+              <div className="grid grid-cols-3 items-center">
                 <label className="text-xs text-muted-foreground font-medium">
                   Email <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  type="email"
-                  value={formEmail}
-                  onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="student@example.com"
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    type="email"
+                    {...editForm.register('email')}
+                    placeholder="student@example.com"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {editFormErrors.email && (
+                    <p className="text-xs text-red-400 mt-1">{editFormErrors.email.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* USERNAME */}
-              <div className="grid grid-cols-3 item-center">
+              <div className="grid grid-cols-3 items-center">
                 <label className="text-xs text-muted-foreground font-medium">
                   Username
                 </label>
-                <Input
-                  value={formUsername}
-                  onChange={(e) => setFormUsername(e.target.value)}
-                  placeholder="username"
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    {...editForm.register('username')}
+                    placeholder="username"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {editFormErrors.username && (
+                    <p className="text-xs text-red-400 mt-1">{editFormErrors.username.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* ENROLLMENT */}
-              <div className="grid grid-cols-3 item-center">
+              <div className="grid grid-cols-3 items-center">
                 <label className="text-s text-muted-foreground font-medium">
                   Enrollment ID
                 </label>
-                <Input
-                  value={formEnrollmentId}
-                  onChange={(e) => setFormEnrollmentId(e.target.value)}
-                  placeholder="ENR123456"
-                  disabled={submitting}
-                  className="col-span-2 h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
-                />
+                <div className="col-span-2">
+                  <Input
+                    {...editForm.register('enrollment_id')}
+                    placeholder="ENR123456"
+                    disabled={submitting}
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all"
+                  />
+                  {editFormErrors.enrollment_id && (
+                    <p className="text-xs text-red-400 mt-1">{editFormErrors.enrollment_id.message}</p>
+                  )}
+                </div>
               </div>
 
               {/* PLATFORM IDs */}
@@ -348,8 +363,7 @@ export default function StudentsModals({
                     LeetCode ID
                   </label>
                   <Input
-                    value={formLeetcodeId}
-                    onChange={(e) => setFormLeetcodeId(e.target.value)}
+                    {...editForm.register('leetcode_id')}
                     placeholder="leetcode_id"
                     disabled={submitting}
                     className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-[90%]"
@@ -361,8 +375,7 @@ export default function StudentsModals({
                     GFG ID
                   </label>
                   <Input
-                    value={formGfgId}
-                    onChange={(e) => setFormGfgId(e.target.value)}
+                    {...editForm.register('gfg_id')}
                     placeholder="gfg_id"
                     disabled={submitting}
                     className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-full"
@@ -383,7 +396,7 @@ export default function StudentsModals({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={submitting || !formName || !formEmail}
+                  disabled={submitting || !editForm.formState.isValid}
                   className="h-11 w-full font-semibold bg-primary text-black hover:opacity-90 transition-all"
                 >
                   {submitting ? "Saving..." : "Save Changes"}

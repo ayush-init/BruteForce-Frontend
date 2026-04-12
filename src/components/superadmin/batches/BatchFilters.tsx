@@ -161,7 +161,7 @@ export function BatchFilters({
         {onViewModeChange && (
           <div className="
             flex items-center gap-1 p-1
-            rounded-xl
+            rounded-2xl
             bg-accent/30 backdrop-blur
             border border-border/30
           ">
@@ -170,7 +170,7 @@ export function BatchFilters({
               className={`
                 p-2 rounded-lg transition-all
                 ${viewMode === "table"
-                  ? "bg-primary/20 text-primary border border-primary/30"
+                  ? "bg-primary/10 text-primary border border-primary/20"
                   : "text-muted-foreground hover:text-foreground"}
               `}
             >
@@ -182,7 +182,7 @@ export function BatchFilters({
               className={`
                 p-2 rounded-lg transition-all
                 ${viewMode === "cards"
-                  ? "bg-chart-3/20 text-chart-3 border border-chart-3/30"
+                  ? "bg-primary/10 text-primary border border-primary/20"
                   : "text-muted-foreground hover:text-foreground"}
               `}
             >

@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { City } from '@/services/city.service';
-import { Modal } from '@/components/Modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Building2 } from 'lucide-react';
 import { CitySubmitPayload } from '@/types/superadmin/index.types';
 
 interface CityModalProps {
@@ -51,17 +56,23 @@ export function CityModal({
   const isFormValid = cityName.trim();
 
   return (
-    <Modal
-  isOpen={isOpen}
-  onClose={onClose}
-  title={mode === "create" ? "Create New City" : "Edit City"}
-  subtitle={
-    mode === "create"
-      ? "City will be available for batch assignment immediately."
-      : "Update city name. This will reflect across all associated batches."
-  }
-  icon={<Building2 className="text-chart-2 w-7 h-7" />}
->
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md border-border/40 shadow-2xl rounded-3xl">
+        <div className="px-6 pt-8 pb-6 flex flex-col gap-5 text-center sm:text-left">
+          <DialogHeader className="flex flex-col gap-1.5 space-y-0 border-0!">
+            <DialogTitle className="text-3xl p-0 m-0 font-bold tracking-tight">
+              <span className="text-white">
+                {mode === 'create' ? 'Create' : 'Edit'}
+              </span>{' '}
+              <span className="text-primary">City</span>
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              {mode === 'create'
+                ? 'City will be available for batch assignment immediately.'
+                : 'Update city name. This will reflect across all associated batches.'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="w-full">
   <div className="space-y-6" onKeyDown={handleKeyDown}>
 
     {/* 🔹 FORM */}
@@ -92,13 +103,12 @@ export function CityModal({
     {/* 🔹 ACTIONS */}
     <div className="
       flex items-center justify-end gap-3
-      pt-4 border-t border-border/30
+      pt-4 
     ">
       <Button
-        variant="outline"
         onClick={onClose}
         disabled={submitting}
-        className="rounded-full"
+        className="text-white! bg-muted-foreground/30!"
       >
         Cancel
       </Button>
@@ -107,7 +117,6 @@ export function CityModal({
         onClick={handleSubmit}
         disabled={submitting || !isFormValid}
         className="
-          rounded-full
           bg-primary text-primary-foreground
           hover:bg-primary/90
           shadow-md
@@ -121,6 +130,9 @@ export function CityModal({
       </Button>
     </div>
   </div>
-</Modal>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

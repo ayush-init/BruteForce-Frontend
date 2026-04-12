@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +18,8 @@ import { Select } from "@/components/Select";
 import { InfiniteScrollDropdown } from "@/components/ui/InfiniteScrollDropdown";
 import { AlertTriangle, Plus, Save } from "lucide-react";
 import { createAdminQuestion } from "@/services/admin.service";
-import { CreateQuestionData } from "@/types/admin/question.types";
+import { createQuestionSchema } from "@/schemas/question.schema";
+import { z } from "zod";
 
 interface CreateQuestionProps {
   open: boolean;
@@ -29,86 +32,51 @@ export default function CreateQuestion({
   onOpenChange,
   onSuccess,
 }: CreateQuestionProps) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const [formData, setFormData] = useState({
-    question_name: "",
-    question_link: "",
-    topic_id: "",
-    level: "MEDIUM" as "EASY" | "MEDIUM" | "HARD",
-    type: "HOMEWORK" as "HOMEWORK" | "CLASSWORK",
+  type FormData = z.infer<typeof createQuestionSchema>;
+  
+  const form = useForm<FormData>({
+    resolver: zodResolver(createQuestionSchema),
+    defaultValues: {
+      question_name: "",
+      question_link: "",
+      topic_id: 0,
+      level: "MEDIUM",
+      platform: "LEETCODE",
+    },
   });
+
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   useEffect(() => {
     if (open) {
-      setFormData({
+      form.reset({
         question_name: "",
         question_link: "",
-        topic_id: "",
+        topic_id: 0,
         level: "MEDIUM",
-        type: "HOMEWORK",
+        platform: "LEETCODE",
       });
       setError("");
     }
-  }, [open]);
+  }, [open, form]);
 
-  // Handle Enter key to trigger form submission
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && open && !loading) {
-        e.preventDefault();
-        if (formRef.current) {
-          formRef.current.requestSubmit();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, loading]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!formData.question_name || !formData.question_link || !formData.topic_id) {
-      setError("Please fill all required fields");
-      return;
-    }
-
-    const topicIdNum = parseInt(formData.topic_id);
-    if (isNaN(topicIdNum)) {
-      setError("Please select a valid topic");
-      return;
-    }
-
+  const handleSubmit = async (values: FormData) => {
     setLoading(true);
     setError("");
 
     try {
-      const data: CreateQuestionData = {
-        question_name: formData.question_name,
-        question_link: formData.question_link,
-        topic_id: topicIdNum,
-        level: formData.level,
-      };
-
-      await createAdminQuestion(data);
+      await createAdminQuestion(values);
       onSuccess();
       onOpenChange(false);
     } catch (err: any) {
-      // Error is handled by API client interceptor
       setError(err.response?.data?.message || "Failed to create question");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setError("");
-  };
+  const formErrors = form.formState.errors;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[520px] h-[95vh] p-0 overflow-hidden rounded-2xl">
@@ -132,7 +100,7 @@ export default function CreateQuestion({
         {/* BODY */}
         <div className="p-6 space-y-6 overflow-y-auto no-scrollbar">
 
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
 
             {/* BASIC INFO */}
             <div className="p-5  rounded-2xl border border-border/50 bg-muted/20 space-y-4">
@@ -140,45 +108,39 @@ export default function CreateQuestion({
                 Basic Information
               </h3>
 
-              <div className="space-y-2 flex justify-between text-base ">
-                <div>
+              <div className="space-y-2">
                 <Label className="text-m text-muted-foreground ">
                   Question Title
                 </Label>
-
-                </div>
-                <div>
                 <Input
-                  className="h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40"
-                  value={formData.question_name}
-                  onChange={(e) =>
-                    handleChange("question_name", e.target.value)
-                  }
+                  className={`h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                    formErrors.question_name ? 'border-red-500' : ''
+                  }`}
+                  {...form.register('question_name')}
                   placeholder="e.g. Two Sum"
                   disabled={loading}
                 />
-
-                </div>
+                {formErrors.question_name && (
+                  <p className="text-xs text-red-400">{formErrors.question_name.message}</p>
+                )}
               </div>
 
-              <div className="space-y-2 flex justify-between text-base ">
-                <div>
+              <div className="space-y-2">
                 <Label className="text-m text-muted-foreground">
                   Question Link
                 </Label>
-                </div>
-                <div>
                 <Input
-                  className="h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40"
-                  value={formData.question_link}
-                  onChange={(e) =>
-                    handleChange("question_link", e.target.value)
-                  }
+                  className={`h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                    formErrors.question_link ? 'border-red-500' : ''
+                  }`}
+                  {...form.register('question_link')}
                   placeholder="https://leetcode.com/..."
                   type="url"
                   disabled={loading}
                 />
-                </div>
+                {formErrors.question_link && (
+                  <p className="text-xs text-red-400">{formErrors.question_link.message}</p>
+                )}
               </div>
             </div>
 
@@ -193,28 +155,30 @@ export default function CreateQuestion({
                   Topic
                 </Label>
                 <InfiniteScrollDropdown
-                  value={formData.topic_id}
-                  onValueChange={(value) => handleChange("topic_id", value)}
+                  value={form.watch('topic_id')?.toString() || ""}
+                  onValueChange={(value) => form.setValue('topic_id', parseInt(value) || 0)}
                   placeholder="Select topic"
                   searchPlaceholder="Search topics..."
                   className="h-11"
                   returnId={true}
                 />
+                {formErrors.topic_id && (
+                  <p className="text-xs text-red-400">{formErrors.topic_id.message}</p>
+                )}
               </div>
 
-              {/* 🔥 Difficulty (UPGRADED) */}
+              {/* Difficulty */}
               <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">
                   Difficulty
                 </Label>
-
                 <div className="flex gap-2 bg-muted/30 p-1 rounded-2xl border border-border/50">
                   {["EASY", "MEDIUM", "HARD"].map((lvl) => (
                     <button
                       key={lvl}
                       type="button"
-                      onClick={() => handleChange("level", lvl)}
-                      className={`flex-1 py-2 text-xs font-semibold rounded transition-all ${formData.level === lvl
+                      onClick={() => form.setValue('level', lvl as "EASY" | "MEDIUM" | "HARD")}
+                      className={`flex-1 py-2 text-xs font-semibold rounded transition-all ${form.watch('level') === lvl
                           ? "bg-primary text-primary-foreground shadow-sm"
                           : "text-muted-foreground hover:bg-muted"
                         }`}
@@ -225,19 +189,21 @@ export default function CreateQuestion({
                 </div>
               </div>
 
-              {/* TYPE */}
+              {/* Platform */}
               <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">
-                  Distribution
+                  Platform
                 </Label>
                 <Select
-                  value={formData.type}
+                  value={form.watch('platform') || "LEETCODE"}
                   onChange={(val: string | number) =>
-                    handleChange("type", val.toString())
+                    form.setValue('platform', val.toString() as "LEETCODE" | "GFG" | "INTERVIEWBIT" | "OTHER")
                   }
                   options={[
-                    { label: "Homework", value: "HOMEWORK" },
-                    { label: "Classwork", value: "CLASSWORK" },
+                    { label: "LeetCode", value: "LEETCODE" },
+                    { label: "GeeksforGeeks", value: "GFG" },
+                    { label: "InterviewBit", value: "INTERVIEWBIT" },
+                    { label: "Other", value: "OTHER" },
                   ]}
                   disabled={loading}
                   className="h-11"
@@ -260,12 +226,7 @@ export default function CreateQuestion({
 
               <Button
                 type="submit"
-                disabled={
-                  loading ||
-                  !formData.question_name ||
-                  !formData.question_link ||
-                  !formData.topic_id
-                }
+                disabled={loading || !form.formState.isValid}
                 className="h-11 w-full font-semibold rounded transition-all hover:scale-[1.02] active:scale-[0.97]"
               >
                 {loading ? (
