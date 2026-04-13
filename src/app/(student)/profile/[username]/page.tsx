@@ -3,7 +3,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { studentProfileService } from '@/services/student/profile.service';
 import { studentAuthService } from '@/services/student/auth.service';
-import { isStudentToken } from '@/lib/auth-utils';
 import { Button } from '@/components/ui/button';
 import {ProfileDataState, CurrentUserState, ApiError} from '@/types/student/index.types';
 import { EditProfileModal } from '@/components/student/profile/EditProfileModal';
@@ -95,7 +94,8 @@ export default function PublicProfilePage() {
 
 
       // Only try to fetch current user if we have a valid student token
-      // Admin tokens should not call getCurrentStudent as it will fail and clear tokens
+      // Admin tokens should not call getCurrentStudent() as it will fail
+      const { isStudentToken } = await import('@/lib/auth-utils');
       if (isStudentToken()) {
         await fetchCurrentUser().catch(() => {
           // Silently fail auth check - profile should still be viewable
