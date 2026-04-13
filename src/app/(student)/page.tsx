@@ -3,30 +3,18 @@
 
 
 import { useEffect, useState, useRef } from 'react';
-
 import Link from 'next/link';
-
 import { useRouter } from 'next/navigation';
-
 import { studentTopicService } from '@/services/student/topic.service';
-
 import { studentAuthService } from '@/services/student/auth.service';
 import { useProfile } from '@/contexts/ProfileContext';
-
 import { isStudentToken } from '@/lib/auth-utils';
-
 import { TopicCard } from '@/components/student/topics/TopicCard';
-
 import { Button } from '@/components/ui/button';
-
 import { Target, Flame, Trophy } from 'lucide-react';
-
 import { HeroSection } from '@/components/student/home/HeroSection';
-
 import { TopicsSection } from '@/components/student/home/TopicsSection';
-
 import { TopicsSectionShimmer } from '@/components/student/home/TopicsSectionShimmer';
-
 import { Topic, User, StudentDataResponse, DashboardStats } from '@/types/student/index.types';
 
 

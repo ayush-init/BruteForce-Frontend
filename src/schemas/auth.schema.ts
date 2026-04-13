@@ -22,11 +22,19 @@ export const registerStudentSchema = z.object({
 export const loginStudentSchema = z
   .object({
     email: z.string().email("Invalid email format").optional(),
-    username: z.string().min(3, "Username must be at least 3 characters").optional(),
+    username: z.string().optional(),
     password: z.string().min(1, "Password is required"),
   })
-  .refine((data) => data.email || data.username, {
-    message: "Either email or username is required",
+  .refine((data) => {
+    // At least one required
+    if (!data.email && !data.username) return false;
+
+    // If username exists → validate length
+    if (data.username && data.username.length < 3) return false;
+
+    return true;
+  }, {
+    message: "Enter a valid email or username (min 3 chars)",
     path: ["email"],
   });
 

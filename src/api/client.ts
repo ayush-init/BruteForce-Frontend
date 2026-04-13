@@ -165,6 +165,8 @@ function isLoginEndpoint(url?: string): boolean {
     '/auth/student/login',
     '/auth/google-login',
     '/auth/refresh-token',
+    '/auth/student/logout',
+    '/auth/admin/logout',
   ];
   return loginEndpoints.some(endpoint => url.includes(endpoint));
 }
