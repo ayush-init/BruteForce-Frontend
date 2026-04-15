@@ -64,7 +64,6 @@ export default function AdminClassDetailsPage() {
 
       // Skip if already fetching
       if (isFetchingAssigned.current) {
-         console.log("Already fetching assigned questions, skipping duplicate call");
          return;
       }
 
@@ -78,7 +77,6 @@ export default function AdminClassDetailsPage() {
          lastFetchAssignedParams.current.search === searchQuery;
 
       if (sameParams) {
-         console.log("Same assigned questions params already fetched, skipping");
          return;
       }
 

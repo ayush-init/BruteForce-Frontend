@@ -11,11 +11,6 @@ import { OnboardingModalProps, OnboardingData } from '@/types/student/index.type
 export function OnboardingModal({ isOpen, user, onClose }: OnboardingModalProps) {
   const { step, setStep, data, setData, confirmChecked, setConfirmChecked, loading, submitOnboarding } = useOnboardingModal(onClose);
 
-  // Debug current step
-  React.useEffect(() => {
-    console.log("OnboardingModal - Current step:", step);
-  }, [step]);
-
   // Initialize data with existing user info
   React.useEffect(() => {
     if (user) {

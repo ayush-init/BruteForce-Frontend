@@ -9,9 +9,7 @@ export function useOnboardingModal(onComplete?: () => void) {
   const [confirmChecked, setConfirmChecked] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Debug step changes
   const handleSetStep = (newStep: number) => {
-    console.log("Step changing from", step, "to", newStep);
     setStep(newStep);
   };
 
@@ -24,7 +22,6 @@ export function useOnboardingModal(onComplete?: () => void) {
     setLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
-      console.log("Token for onboarding submission:", token ? "exists" : "missing");
       
       if (!token) {
         showError("Authentication token missing. Please log in again.");
@@ -39,8 +36,6 @@ export function useOnboardingModal(onComplete?: () => void) {
         github: data.github,
         username: data.username
       };
-      
-      console.log("Submitting onboarding payload:", payload);
       
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/me`, {
         method: 'PUT',

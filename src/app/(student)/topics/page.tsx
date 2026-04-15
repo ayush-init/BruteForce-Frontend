@@ -63,8 +63,8 @@ export default function TopicsPage() {
 
 
   return (
-   
-      <div className="flex flex-col mx-auto max-w-325 xl:max-w-275 2xl:max-w-325 w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+
+      <div className="flex flex-col mx-auto max-w-7xl w-full pb-12 px-4 sm:px-6 lg:px-8 xl:px-12 pt-8">
         <TopicsHeader
           searchQuery={searchQuery}
           setSearchQuery={(query) => {

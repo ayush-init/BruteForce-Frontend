@@ -47,7 +47,6 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 
     // Skip if already fetching
     if (isFetching.current) {
-      console.log("Already fetching profile, skipping duplicate call");
       return;
     }
 

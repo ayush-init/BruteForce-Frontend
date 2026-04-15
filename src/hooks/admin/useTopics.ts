@@ -33,7 +33,6 @@ export function useTopics({
 
     // Skip if already fetching
     if (isFetching.current) {
-      console.log("Already fetching topics, skipping duplicate call");
       return;
     }
 
@@ -47,7 +46,6 @@ export function useTopics({
       lastFetchParams.current.sortBy === sortBy;
 
     if (sameParams) {
-      console.log("Same params already fetched, skipping");
       return;
     }
 
@@ -61,7 +59,6 @@ export function useTopics({
         search,
         sortBy,
       });
-      console.log("topics dataa: ", data);
       if (data?.topics) {
         setTopics(data.topics);
         setTotalRecords(data.pagination?.total || 0);

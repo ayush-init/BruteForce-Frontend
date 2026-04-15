@@ -93,9 +93,6 @@ export function useOtpVerification() {
     try {
       // Call backend to validate OTP
       const response = await studentAuthService.verifyOtp(emailParam || '', otpJoined);
-      console.log('Full API response:', response);
-console.log('Response valid:', response?.valid);
-console.log('Response data:', response?.data);
       // Only redirect if OTP is actually valid
       if (response && (response.valid || response.data?.valid)) {
         showSuccess("OTP verified successfully");

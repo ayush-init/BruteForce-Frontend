@@ -67,28 +67,11 @@ export function useLeaderboard({
   enabled = true,
   initialData
 }: UseLeaderboardOptions = {}) {
-  console.log('🎣 useLeaderboard hook called with:', { 
-    filters, 
-    search, 
-    enabled, 
-    hasInitialData: !!initialData,
-    initialDataLength: initialData?.top10?.length || 0
-  });
-  
   return useQuery({
     queryKey: ["leaderboard", filters, search],
     queryFn: async () => {
-      console.log('🌐 Query function executing - fetching leaderboard data...');
-      console.log('📡 Making API call with filters:', filters, 'search:', search);
       try {
         const result = await studentLeaderboardService.getLeaderboard(filters, search);
-        console.log('📈 Query function SUCCESS - result:', {
-          success: result?.success,
-          top10Length: result?.top10?.length || 0,
-          hasYourRank: !!result?.yourRank,
-          firstStudent: result?.top10?.[0]?.name || 'NO_STUDENTS'
-        });
-        console.log('📊 Full API response:', JSON.stringify(result, null, 2));
         return result;
       } catch (error) {
         // Error is handled by API client interceptor

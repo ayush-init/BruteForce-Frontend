@@ -38,7 +38,6 @@ export default function CitiesPage() {
   const fetchData = async () => {
     // Skip if already fetching (prevents concurrent calls only)
     if (isFetching.current) {
-      console.log("Already fetching cities data, skipping duplicate call");
       return;
     }
 

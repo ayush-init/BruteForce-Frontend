@@ -21,7 +21,7 @@ export default function ClassDetailFilter({ search, onSearchChange, assignedTota
                   placeholder="Search classes..."
                   value={search}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="h-10! w-full pl-9! pr-9! rounded-2xl! dark:bg-transparent!   focus:ring-2 focus:ring-primary/20 focus:bg-accent/60   transition-all placeholder:text-white   "
+                  className="h-10! w-full pl-9! pr-9! rounded-2xl! dark:bg-transparent!   focus:ring-2 focus:ring-primary/20 focus:bg-accent/60   transition-all placeholder:text-foreground "
                />
             </div>
 

@@ -44,7 +44,7 @@ export function useCanEditProfile({ authChecked, currentUser, profileStudent }: 
         const decoded = JSON.parse(jsonPayload);
         tokenUsername = decoded.email?.split('@')[0];
       } catch (e) {
-        console.log(e);
+        // Error parsing token
       }
     }
 

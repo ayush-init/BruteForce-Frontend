@@ -50,7 +50,6 @@ export default function AdminClassesPage() {
 
     // Skip if already fetching
     if (isFetching.current) {
-      console.log("Already fetching classes, skipping duplicate call");
       return;
     }
 
@@ -63,7 +62,6 @@ export default function AdminClassesPage() {
       lastFetchParams.current.search === search;
 
     if (sameParams) {
-      console.log("Same params already fetched, skipping");
       return;
     }
 

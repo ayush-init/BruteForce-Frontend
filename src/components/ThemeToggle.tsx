@@ -11,8 +11,6 @@ export function ThemeToggle() {
     const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialTheme: "light" | "dark" = saved || (systemPrefersDark ? "dark" : "light");
     
-    console.log('ThemeToggle init:', { saved, systemPrefersDark, initialTheme });
-    
     setTheme(initialTheme);
     applyTheme(initialTheme);
 
@@ -60,14 +58,11 @@ export function ThemeToggle() {
   };
 
   const toggleTheme = () => {
-    console.log('Theme toggle clicked, current theme:', theme);
     const newTheme = theme === "dark" ? "light" : "dark";
     
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     applyTheme(newTheme);
-    
-    console.log('Switched to', newTheme, 'mode');
   };
 
   return (

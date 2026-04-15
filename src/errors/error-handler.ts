@@ -188,13 +188,13 @@ function logError(appError: AppError, result: ErrorResult, options?: HandlerOpti
   if (process.env.NODE_ENV !== 'development') return;
 
   console.group(`🚨 Error ${options?.context ? `[${options.context}]` : ''}`);
-  console.log('Status Code:', appError.statusCode);
-  console.log('Error Code:', appError.errorCode || 'N/A');
-  console.log('Message:', result.message);
-  console.log('Type:', result.type);
-  console.log('Action:', result.action);
-  console.log('Action Executed:', result.actionExecuted);
-  console.log('Original Error:', appError.originalError);
+  console.error('Status Code:', appError.statusCode);
+  console.error('Error Code:', appError.errorCode || 'N/A');
+  console.error('Message:', result.message);
+  console.error('Type:', result.type);
+  console.error('Action:', result.action);
+  console.error('Action Executed:', result.actionExecuted);
+  console.error('Original Error:', appError.originalError);
   console.groupEnd();
 }
 

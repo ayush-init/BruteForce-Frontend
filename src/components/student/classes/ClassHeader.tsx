@@ -17,7 +17,7 @@ export function ClassHeader({
     <div className="mb-6 rounded-2xl  bg-gradient-to-br from-background/80 to-background/40  glass backdrop-blur-3xl   sm:p-6 shadow-sm">
 
       {/* TOP META ROW */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 py-2 px-1">
 
         {/* LEFT META */}
         <div className="flex flex-wrap items-center gap-3">

@@ -115,53 +115,40 @@ export default function BulkUploadModal({
 
   // CSV Validation
   const validateCSV = useCallback((data: CsvRowData[]) => {
-    console.log('Starting validation with data:', data);
     
     if (!data || data.length === 0) {
-      console.log('Validation failed: Empty data');
       return 'CSV file is empty or invalid';
     }
 
     const requiredColumns = ['name', 'email', 'enrollment_id'];
     const firstRow = data[0];
-    console.log('First row for column check:', firstRow);
 
     // Check required columns
     const missingColumns = requiredColumns.filter(col => !(col in firstRow));
     if (missingColumns.length > 0) {
-      console.log('Validation failed: Missing columns', missingColumns);
       return `Missing required columns: ${missingColumns.join(', ')}`;
     }
 
     // Validate each row
     for (let i = 0; i < data.length; i++) {
       const row = data[i];
-      console.log(`Validating row ${i + 1}:`, row);
       
       if (!row.name || !row.email || !row.enrollment_id) {
-        console.log(`Validation failed: Missing data in row ${i + 1}`, {
-          name: !!row.name,
-          email: !!row.email,
-          enrollment_id: !!row.enrollment_id
-        });
         return `Row ${i + 1}: Missing required data (name, email, enrollment_id)`;
       }
 
       // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(row.email)) {
-        console.log(`Validation failed: Invalid email format in row ${i + 1}`, row.email);
         return `Row ${i + 1}: Invalid email format - ${row.email}`;
       }
 
       // Domain validation - must contain pwioi.com
       if (!row.email.includes('pwioi.com')) {
-        console.log(`Validation failed: Wrong domain in row ${i + 1}`, row.email);
         return `Row ${i + 1}: Email must contain pwioi.com domain - ${row.email}`;
       }
     }
 
-    console.log('Validation successful!');
     return null; // Valid
   }, []);
 
@@ -172,10 +159,8 @@ export default function BulkUploadModal({
     reader.onload = (e) => {
       try {
         const text = e.target?.result as string;
-        console.log('Raw CSV text:', text);
         
         const lines = text.trim().split('\n');
-        console.log('Split lines:', lines);
         
         if (lines.length < 2) {
           setValidationError('CSV must contain at least a header and one data row');
@@ -191,28 +176,22 @@ export default function BulkUploadModal({
 
         // Parse CSV (simple comma-separated parser)
         const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-        console.log('Parsed headers:', headers);
         const data = [];
 
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-          console.log(`Row ${i} values:`, values);
           const row: CsvRowData = {} as CsvRowData;
           
           headers.forEach((header, index) => {
             row[header] = values[index] || '';
           });
           
-          console.log(`Row ${i} object:`, row);
           data.push(row);
         }
-
-        console.log('Final parsed data:', data);
 
         // Validate parsed data
         const error = validateCSV(data);
         if (error) {
-          console.log('Validation error:', error);
           setValidationError(error);
           setCsvData([]);
           setValidationResult({
@@ -222,7 +201,6 @@ export default function BulkUploadModal({
           });
           setCsvValidated(true);
         } else {
-          console.log('Validation passed!');
           setCsvData(data);
           setValidationResult({
             isValid: true,
@@ -291,11 +269,7 @@ export default function BulkUploadModal({
       formData.append('file', file);
       formData.append('batch_id', selectedBatch);
 
-      console.log('Uploading file:', file.name, 'to batch:', selectedBatch);
-
       const result = await bulkUploadStudents(formData);
-
-      console.log('Upload result:', result);
 
       setUploadResult(result);
       setShowResult(true);
@@ -342,11 +316,11 @@ export default function BulkUploadModal({
   return (
     <>
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="w-[95vw] max-h-[90vh] max-w-[520px] p-0 flex flex-col rounded-2xl">
+        <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-[520px] max-h-[90vh] p-0 flex flex-col rounded-2xl">
 
           {/* HEADER */}
-          <DialogHeader className="px-6 py-5 border-b border-border/40">
-            <DialogTitle className="text-lg font-semibold flex items-center gap-3">
+          <DialogHeader className="px-4 sm:px-6 py-4 sm:py-5 border-b border-border/40">
+            <DialogTitle className="text-base sm:text-lg font-semibold flex items-center gap-2 sm:gap-3">
               <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                 <Upload className="w-4 h-4 text-primary" />
               </div>
@@ -362,15 +336,15 @@ export default function BulkUploadModal({
           <div className="p-6 space-y-6 overflow-y-auto no-scrollbar">
 
             {/* LOCATION */}
-            <div className="space-y-5 p-5 rounded-2xl border border-border/40 bg-muted/20">
+            <div className="space-y-4 sm:space-y-5 p-4 sm:p-5 rounded-2xl border border-border/40 bg-muted/20">
 
-              <p className="text-xs font-semibold text-muted-foreground">
+              <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground">
                 Target Location
               </p>
 
               {/* CITY */}
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">
+                <Label className="text-[10px] sm:text-xs text-muted-foreground">
                   City <span className="text-destructive">*</span>
                 </Label>
 
@@ -384,13 +358,13 @@ export default function BulkUploadModal({
                       value: city.id.toString()
                     }))
                   ]}
-                  className="h-11"
+                  className="h-10 sm:h-11"
                 />
               </div>
 
               {/* YEAR */}
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">
+                <Label className="text-[10px] sm:text-xs text-muted-foreground">
                   Year <span className="text-destructive">*</span>
                 </Label>
 
@@ -404,14 +378,14 @@ export default function BulkUploadModal({
                       value: year.toString()
                     }))
                   ]}
-                  className="h-11"
+                  className="h-10 sm:h-11"
                   disabled={!selectedCity}
                 />
               </div>
 
               {/* BATCH */}
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">
+                <Label className="text-[10px] sm:text-xs text-muted-foreground">
                   Batch <span className="text-destructive">*</span>
                 </Label>
 
@@ -427,7 +401,7 @@ export default function BulkUploadModal({
                       value: batch.id.toString()
                     }))
                   ]}
-                  className="h-11"
+                  className="h-10 sm:h-11"
                   disabled={!selectedYear}
                 />
               </div>
@@ -435,12 +409,12 @@ export default function BulkUploadModal({
             </div>
 
             {/* FILE UPLOAD */}
-            <div className="space-y-3">
-              <Label className="text-xs text-muted-foreground">
+            <div className="space-y-2 sm:space-y-3">
+              <Label className="text-[10px] sm:text-xs text-muted-foreground">
                 CSV File <span className="text-destructive">*</span>
               </Label>
 
-              <div className="border-2 border-dashed border-border/60 rounded-2xl p-6 text-center hover:border-primary/40 transition-colors">
+              <div className="border-2 border-dashed border-border/60 rounded-2xl p-4 sm:p-6 text-center hover:border-primary/40 transition-colors">
                 <input
                   type="file"
                   accept=".csv"
@@ -453,14 +427,14 @@ export default function BulkUploadModal({
                   htmlFor="csv-upload"
                   className="cursor-pointer flex flex-col items-center gap-2"
                 >
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Upload className="w-5 h-5 text-primary" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">
+                    <p className="text-xs sm:text-sm font-medium">
                       {file ? file.name : 'Click to upload CSV'}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">
                       {file ? 'File selected' : 'or drag and drop'}
                     </p>
                   </div>
@@ -468,9 +442,9 @@ export default function BulkUploadModal({
               </div>
 
               {file && (
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Selected:</span>
-                  <span className="font-medium truncate max-w-[200px]">{file.name}</span>
+                  <span className="font-medium truncate max-w-[150px] sm:max-w-[200px]">{file.name}</span>
                   <button
                     onClick={() => {
                       setFile(null);
@@ -478,7 +452,7 @@ export default function BulkUploadModal({
                       setValidationResult(null);
                       setValidationError('');
                     }}
-                    className="text-red-500 hover:text-red-600"
+                    className="text-red-500 hover:text-red-600 text-xs sm:text-sm"
                     disabled={loading}
                   >
                     Remove
@@ -489,19 +463,19 @@ export default function BulkUploadModal({
 
             {/* VALIDATION RESULT */}
             {csvValidated && validationResult && (
-              <div className={`rounded-2xl p-4 ${
+              <div className={`rounded-2xl p-3 sm:p-4 ${
                 validationResult.isValid 
                   ? 'bg-green-500/10 border border-green-500/30 text-green-400' 
                   : 'bg-red-500/10 border border-red-500/30 text-red-400'
               }`}>
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2 sm:gap-3">
                   {validationResult.isValid ? (
-                    <CheckCircle2 className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" />
                   ) : (
-                    <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" />
                   )}
-                  <div className="space-y-2">
-                    <p className="font-medium">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium">
                       {validationResult.isValid 
                         ? validationResult.message
                         : 'CSV Validation Failed'
@@ -510,16 +484,16 @@ export default function BulkUploadModal({
                     
                     {!validationResult.isValid && validationError && (
                       <div className="space-y-1">
-                        <p className="text-sm font-medium">Errors found:</p>
-                        <ul className="text-sm space-y-1 list-disc list-inside">
+                        <p className="text-[10px] sm:text-sm font-medium">Errors found:</p>
+                        <ul className="text-[10px] sm:text-sm space-y-1 list-disc list-inside">
                           <li>{validationError}</li>
                         </ul>
                       </div>
                     )}
                     
                     {validationResult.isValid && validationResult.totalRows > 0 && (
-                      <div className="mt-3 pt-3 border-t border-current/20">
-                        <p className="text-sm">
+                      <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-current/20">
+                        <p className="text-[10px] sm:text-sm">
                           Ready to create {validationResult.totalRows} students
                         </p>
                       </div>
@@ -530,9 +504,9 @@ export default function BulkUploadModal({
             )}
 
             {/* GUIDE */}
-            <div className="rounded-2xl px-4 py-3 bg-muted/20 border border-border/40">
-              <div className="text-center mb-3">
-                <p className="text-sm text-muted-foreground">
+            <div className="rounded-2xl px-3 sm:px-4 py-2 sm:py-3 bg-muted/20 border border-border/40">
+              <div className="text-center mb-2 sm:mb-3">
+                <p className="text-[10px] sm:text-sm text-muted-foreground">
                   Need CSV format help?
                 </p>
               </div>
@@ -564,13 +538,13 @@ export default function BulkUploadModal({
           </div>
 
           {/* FOOTER */}
-          <DialogFooter className="px-6 py-4 border-t border-border/40 flex gap-3">
+          <DialogFooter className="px-4 sm:px-6 py-3 sm:py-4 border-t border-border/40 flex gap-2 sm:gap-3">
 
             <Button
               variant="ghost"
               onClick={handleClose}
               disabled={loading}
-              className="h-11"
+              className="h-10 sm:h-11"
             >
               Cancel
             </Button>
@@ -578,7 +552,7 @@ export default function BulkUploadModal({
             <Button
               disabled={isUploadDisabled}
               onClick={handleUpload}
-              className="h-11 w-full font-semibold bg-primary text-black hover:opacity-90 transition-all"
+              className="h-10 sm:h-11 w-full font-semibold bg-primary text-black hover:opacity-90 transition-all"
             >
               {loading ? "Uploading..." : "Upload Students"}
             </Button>
@@ -590,12 +564,12 @@ export default function BulkUploadModal({
 
       {/* GUIDE MODAL */}
       <Dialog open={showGuide} onOpenChange={setShowGuide}>
-        <DialogContent className="w-[95vw] max-h-[90vh] max-w-[920px] p-0 rounded-2xl">
+        <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-[920px] max-h-[90vh] p-0 rounded-2xl">
 
           {/* HEADER */}
-          <DialogHeader className="px-6 py-4 bg-muted/40">
-            <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
-              <FileText className="w-5 h-5 text-primary" />
+          <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 bg-muted/40">
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-lg font-semibold">
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               CSV Format Guide
             </DialogTitle>
           </DialogHeader>
@@ -604,50 +578,50 @@ export default function BulkUploadModal({
           <div className="p-6 space-y-6 overflow-y-auto no-scrollbar">
 
             {/* REQUIRED COLUMNS */}
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            <div className="space-y-1.5 sm:space-y-2">
+              <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 Required Columns
               </p>
 
-              <div className="bg-background rounded-lg p-4 text-sm font-mono overflow-x-auto">
+              <div className="bg-background rounded-lg p-3 sm:p-4 text-xs sm:text-sm font-mono overflow-x-auto">
                 name, email, enrollment_id
               </div>
             </div>
 
             {/* RULES */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
 
-              <div className="rounded-xl p-4 bg-muted/30 space-y-1">
-                <p className="text-xs text-muted-foreground">Name</p>
-                <p className="text-sm font-semibold">Student's full name</p>
+              <div className="rounded-xl p-3 sm:p-4 bg-muted/30 space-y-1">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Name</p>
+                <p className="text-xs sm:text-sm font-semibold">Student's full name</p>
               </div>
 
-              <div className="rounded-xl p-4 bg-muted/30 space-y-1">
-                <p className="text-xs text-muted-foreground">Email</p>
-                <p className="text-sm font-semibold">Must contain @pwioi.com</p>
+              <div className="rounded-xl p-3 sm:p-4 bg-muted/30 space-y-1">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Email</p>
+                <p className="text-xs sm:text-sm font-semibold">Must contain @pwioi.com</p>
               </div>
 
-              <div className="rounded-xl p-4 bg-muted/30 space-y-1">
-                <p className="text-xs text-muted-foreground">Enrollment ID</p>
-                <p className="text-sm font-semibold">Unique identifier</p>
+              <div className="rounded-xl p-3 sm:p-4 bg-muted/30 space-y-1">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Enrollment ID</p>
+                <p className="text-xs sm:text-sm font-semibold">Unique identifier</p>
               </div>
 
             </div>
 
             {/* EXAMPLE */}
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            <div className="space-y-1.5 sm:space-y-2">
+              <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 Example Row
               </p>
 
-              <div className="bg-background rounded-lg p-4 text-sm font-mono overflow-x-auto">
+              <div className="bg-background rounded-lg p-3 sm:p-4 text-xs sm:text-sm font-mono overflow-x-auto">
                 "Dhruv", "dhruv.sot2428@pwioi.com", "2401010031"
               </div>
             </div>
 
             {/* WARNING */}
-            <div className="flex items-start gap-3 rounded-lg border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400">
-              <AlertCircle className="w-4 h-4 mt-0.5" />
+            <div className="flex items-start gap-2 sm:gap-3 rounded-lg border-yellow-500/30 bg-yellow-500/10 p-3 sm:p-4 text-[10px] sm:text-sm text-yellow-400">
+              <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <p>
                 Do <span className="font-semibold">NOT</span> include city, year, or batch in CSV.
                 Always select batch using dropdown.
@@ -658,17 +632,17 @@ export default function BulkUploadModal({
           </div>
 
           {/* FOOTER */}
-          <div className="px-6 py-4 border-t flex justify-between">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t flex flex-col sm:flex-row justify-between gap-2 sm:gap-0">
             <Button
               variant="outline"
               onClick={downloadSampleCSV}
-              className="rounded"
+              className="rounded w-full sm:w-auto"
             >
               <Download className="w-4 h-4 mr-2" />
               Download Sample CSV
             </Button>
             
-            <Button variant="ghost" onClick={() => setShowGuide(false)}>
+            <Button variant="ghost" onClick={() => setShowGuide(false)} className="w-full sm:w-auto">
               Close
             </Button>
           </div>
@@ -678,74 +652,74 @@ export default function BulkUploadModal({
 
       {/* UPLOAD RESULT MODAL */}
       <Dialog open={showResult} onOpenChange={setShowResult}>
-        <DialogContent className="w-[95vw] max-h-[90vh] max-w-[500px] p-0 overflow-hidden rounded-2xl">
+        <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-[500px] max-h-[90vh] p-0 overflow-hidden rounded-2xl">
           
           {/* HEADER */}
-          <DialogHeader className="px-6 py-4 bg-muted/40">
-            <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
-              <CheckCircle2 className="w-5 h-5 text-green-500" />
+          <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 bg-muted/40">
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-lg font-semibold">
+              <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
               Upload Complete
             </DialogTitle>
           </DialogHeader>
 
           {/* BODY */}
-          <div className="p-6 space-y-4 overflow-y-auto no-scrollbar">
+          <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 overflow-y-auto no-scrollbar">
             
             {/* SUMMARY */}
-            <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-4">
-              <p className="text-green-400 font-medium mb-2">
+            <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-3 sm:p-4">
+              <p className="text-green-400 text-xs sm:text-sm font-medium mb-1 sm:mb-2">
                 {uploadResult?.message || 'Students uploaded successfully'}
               </p>
             </div>
 
             {/* DETAILED STATS */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-border/50">
-                <span className="text-sm text-muted-foreground">Total Rows in CSV</span>
-                <span className="font-semibold">{uploadResult?.totalRows || 0}</span>
+            <div className="space-y-2 sm:space-y-3">
+              <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+                <span className="text-[10px] sm:text-sm text-muted-foreground">Total Rows in CSV</span>
+                <span className="text-xs sm:text-sm font-semibold">{uploadResult?.totalRows || 0}</span>
               </div>
               
-              <div className="flex justify-between items-center py-2 border-b border-border/50">
-                <span className="text-sm text-muted-foreground">Successfully Uploaded</span>
-                <span className="font-semibold text-green-500">{uploadResult?.inserted || 0}</span>
+              <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+                <span className="text-[10px] sm:text-sm text-muted-foreground">Successfully Uploaded</span>
+                <span className="text-xs sm:text-sm font-semibold text-green-500">{uploadResult?.inserted || 0}</span>
               </div>
               
               {(uploadResult?.duplicates && uploadResult.duplicates > 0) && (
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Duplicate Students (Skipped)</span>
-                  <span className="font-semibold text-yellow-500">{uploadResult.duplicates}</span>
+                <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+                  <span className="text-[10px] sm:text-sm text-muted-foreground">Duplicate Students (Skipped)</span>
+                  <span className="text-xs sm:text-sm font-semibold text-yellow-500">{uploadResult.duplicates}</span>
                 </div>
               )}
 
               {(uploadResult?.invalidRows && uploadResult.invalidRows > 0) && (
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Invalid Rows (Skipped)</span>
-                  <span className="font-semibold text-red-500">{uploadResult.invalidRows}</span>
+                <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+                  <span className="text-[10px] sm:text-sm text-muted-foreground">Invalid Rows (Skipped)</span>
+                  <span className="text-xs sm:text-sm font-semibold text-red-500">{uploadResult.invalidRows}</span>
                 </div>
               )}
               
-              <div className="flex justify-between items-center py-2">
-                <span className="text-sm text-muted-foreground">Total Skipped</span>
-                <span className="font-semibold text-orange-500">{uploadResult?.skipped || 0}</span>
+              <div className="flex justify-between items-center py-1.5 sm:py-2">
+                <span className="text-[10px] sm:text-sm text-muted-foreground">Total Skipped</span>
+                <span className="text-xs sm:text-sm font-semibold text-orange-500">{uploadResult?.skipped || 0}</span>
               </div>
             </div>
 
             {/* INFO */}
-            <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
+            <div className="text-[10px] sm:text-xs text-muted-foreground bg-muted/30 rounded-lg p-2 sm:p-3">
               <p>Duplicate students were not uploaded because they already exist in system.</p>
               <p>Invalid rows had incorrect format or missing required fields.</p>
             </div>
           </div>
 
           {/* FOOTER */}
-          <div className="px-6 py-4 border-t">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t">
             <Button 
               onClick={() => {
                 setShowResult(false);
                 setUploadResult(null);
                 handleClose();
               }} 
-              className="w-full"
+              className="w-full h-10 sm:h-11"
             >
               Done
             </Button>

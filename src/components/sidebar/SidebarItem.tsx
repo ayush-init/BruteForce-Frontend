@@ -49,15 +49,14 @@ export function SidebarItem({
            relative flex items-center
           ${isCollapsed ? "justify-center p-3" : "gap-3 px-3 py-2"}
           rounded-lg text-sm font-medium
-
           transition-all duration-200 ease-in-out
 
           ${
             active
               ? `
                 text-primary
-                bg-[rgba(204,255,0,0.08)]
-                shadow-[0_0_14px_rgba(204,255,0,0.18)]
+                
+          
               `
               : `
                 text-foreground/80
@@ -100,15 +99,6 @@ export function SidebarItem({
         {!isCollapsed && (
           <span className="truncate">{label}</span>
         )}
-
-        {/* Hover Glow Overlay */}
-        <span
-          className="
-            absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100
-            transition-opacity duration-200 pointer-events-none
-            bg-gradient-to-r from-transparent via-[rgba(204,255,0,0.08)] to-transparent
-          "
-        />
       </Link>
     </>
   );

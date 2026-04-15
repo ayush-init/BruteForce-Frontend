@@ -35,7 +35,6 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
 
       // Check if we have an admin token before making any API calls
       if (!isAdminToken()) {
-        console.log('No admin token found, clearing invalid tokens and redirecting to login');
         clearAuthTokens(); // Clear any invalid tokens (like student tokens)
         window.location.href = '/superadmin/login';
         return;
@@ -91,7 +90,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
       {/* Mobile Menu Toggle */}
       <button
         onClick={() => setIsSidebarOpen(true)}
-        className="md:hidden h-14 w-10 ms-1 mt-3 -me-2 z-50 p-2 items-center rounded-md bg-card border border-border hover:bg-muted transition-colors"
+        className="md:hidden absolute top-5 left-5 z-50 p-2 items-center rounded-md bg-card border border-border hover:bg-muted transition-colors"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -106,9 +105,10 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
 
       {/* Mobile Menu Drawer */}
       <div className={`
-        md:hidden fixed inset-y-0 left-0 z-50 w-[80%] max-w-75
+        fixed inset-y-0 left-0 z-50 w-[85%] sm:w-[80%] max-w-[320px]
         transition-transform duration-300 ease-in-out
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:hidden
       `}>
         <div className="h-full glass border-r border-border/20 backdrop-blur-md">
           {/* Mobile Menu Header */}
@@ -197,7 +197,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
 
         {/* Topbar */}
         <header className="h-14 glass rounded-2xl border border-border/20 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-30 w-full">
-          <div className="flex items-center gap-3">
+          <div className=" ms-8 lg:ms-0 flex items-center gap-3">
             <Breadcrumb />
           </div>
           <div className="flex items-center gap-4">

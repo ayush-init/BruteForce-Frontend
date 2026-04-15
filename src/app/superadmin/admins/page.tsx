@@ -52,7 +52,6 @@ export default function AdminsPage() {
   const fetchData = async () => {
     // Skip if already fetching (prevents concurrent calls only)
     if (isFetching.current) {
-      console.log("Already fetching admins data, skipping duplicate call");
       return;
     }
 

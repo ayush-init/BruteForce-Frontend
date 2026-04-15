@@ -50,7 +50,7 @@ const Drawer = ({ isOpen, onClose, children }: { isOpen: boolean; onClose: () =>
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 left-0 h-full w-72 glass border-r border-border/50 z-50 transform transition-transform duration-300 ease-in-out translate-x-0">
+      <div className="fixed top-0 left-0 h-full w-[80%] sm:w-72 glass border-r border-border/50 z-50 transform transition-transform duration-300 ease-in-out translate-x-0">
         <div className="p-4">
           <div className="flex items-center justify-end mb-6">
             {/* <h2 className="text-lg font-semibold text-foreground">Menu</h2> */}
@@ -130,7 +130,6 @@ export default function StudentHeader() {
       await studentAuthService.logout();
     } catch (error) {
       // Ignore any errors - user is logging out anyway
-      console.log('Logout API error (ignored):', error);
     }
     
     // Redirect after brief delay to allow toast to be seen

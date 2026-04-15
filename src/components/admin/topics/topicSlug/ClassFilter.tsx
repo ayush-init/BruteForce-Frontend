@@ -24,7 +24,7 @@ export default function ClassFilter({ search, onSearchChange, totalRecords }: Cl
                   placeholder="Search classes..."
                   value={search}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className=" h-10! pl-9! pr-9! rounded-2xl! focus:ring-2 dark:bg-transparent! placeholder:text-white focus:ring-primary/20  focus:bg-accent/60   transition-all   "
+                  className=" h-10! pl-9! pr-9! rounded-2xl! focus:ring-2 dark:bg-transparent! placeholder:text-foreground focus:ring-primary/20  focus:bg-accent/60   transition-all   "
                />
             </div>
             {/* COUNT BADGE */}

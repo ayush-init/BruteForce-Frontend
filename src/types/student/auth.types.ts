@@ -10,6 +10,7 @@ export interface StudentLoginCredentials {
 
 export interface StudentLoginResponse {
   accessToken: string;
+  refreshToken?: string; // Backend sets as HTTP-only cookie
   user: {
     id: number;
     name: string;

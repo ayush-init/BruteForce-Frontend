@@ -15,10 +15,8 @@ export function ThemeToggle() {
   }, []);
 
   const toggleTheme = () => {
-    console.log('UI ThemeToggle clicked, current theme:', theme);
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
-    console.log('Switched to', newTheme, 'mode');
   };
 
   // Don't render until mounted to avoid hydration mismatch

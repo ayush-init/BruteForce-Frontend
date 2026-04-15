@@ -113,30 +113,30 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess, batchSlug
    return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
          <DialogContent
-            className="sm:max-w-[520px] max-h-[90vh] rounded-3xl border border-white/10 
+            className="w-full max-w-[calc(100%-1rem)] sm:max-w-[520px] max-h-[90vh] rounded-3xl border border-white/10 
     bg-gradient-to-br from-background via-background/95 to-background/90 
     backdrop-blur-2xl p-0 shadow-2xl overflow-hidden flex flex-col"
          >
-            <div className="flex-shrink-0 p-6 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+            <div className="flex-shrink-0 p-4 sm:p-6 border-b border-border/50 bg-background/80 backdrop-blur-xl">
                <DialogHeader className="space-y-1">
-                  <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                  <DialogTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
                      Create Class Module
                   </DialogTitle>
-                  <DialogDescription className="text-sm text-muted-foreground">
+                  <DialogDescription className="text-xs sm:text-sm text-muted-foreground">
                      Add a new class under <span className="font-medium text-foreground">{topicSlug}</span>
                   </DialogDescription>
                </DialogHeader>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-5">
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-6 space-y-4 sm:space-y-5">
                {formError && (
-                  <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
+                  <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-xs sm:text-sm rounded-xl">
                      {formError}
                   </div>
                )}
 
                <div>
-                  <label className="text-sm font-medium">
+                  <label className="text-xs sm:text-sm font-medium">
                      Class Name <span className="text-destructive">*</span>
                   </label>
                   <Input
@@ -145,27 +145,27 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess, batchSlug
                      required
                      placeholder="Intro to Arrays"
                      disabled={submitting}
-                     className="mt-1 w-full h-11 rounded-2xl bg-muted/30 border border-border/40 
-          focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
+                     className="mt-1 w-full h-10 sm:h-11 rounded-2xl bg-muted/30 border border-border/40 
+          focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition text-sm"
                   />
                </div>
 
                <div className="space-y-2">
-                  <label className="text-sm font-medium">Description</label>
+                  <label className="text-xs sm:text-sm font-medium">Description</label>
                   <textarea
                      value={description}
                      onChange={(e) => setDescription(e.target.value)}
                      disabled={submitting}
                      placeholder="Optional details about this class."
-                     className="mt-1 w-full h-24 px-3 py-2 rounded-2xl border border-border/40 
-          bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+                     className="mt-1 w-full h-20 sm:h-24 px-3 py-2 rounded-2xl border border-border/40 
+          bg-muted/30 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
                   />
                </div>
 
-               <div className="flex justify-between">
-                  <div className="space-y-2">
-                     <label className="text-sm font-medium">
-                        Duration <span className="text-xs text-muted-foreground">(min)</span>{" "}
+               <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
+                  <div className="space-y-2 w-full sm:w-1/2">
+                     <label className="text-xs sm:text-sm font-medium">
+                        Duration <span className="text-[10px] sm:text-xs text-muted-foreground">(min)</span>{" "}
                         <span className="text-destructive">*</span>
                      </label>
                      <Input
@@ -175,13 +175,13 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess, batchSlug
                         required
                         placeholder="90"
                         disabled={submitting}
-                        className="mt-1 h-12 rounded-2xl bg-muted/30 border border-border/40 
-      focus:ring-2 focus:ring-primary/40 px-4"
+                        className="mt-1 h-10 sm:h-12 rounded-2xl bg-muted/30 border border-border/40 
+      focus:ring-2 focus:ring-primary/40 px-3 sm:px-4 text-sm"
                      />
                   </div>
 
-                  <div className="space-y-2">
-                     <label className="text-sm font-medium">
+                  <div className="space-y-2 w-full sm:w-1/2">
+                     <label className="text-xs sm:text-sm font-medium">
                         Date <span className="text-destructive">*</span>
                      </label>
                      <div className="relative">
@@ -191,17 +191,17 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess, batchSlug
                            onChange={(e) => setClassDate(e.target.value)}
                            required
                            disabled={submitting}
-                           className="mt-1 h-12 rounded-2xl bg-muted/30 border border-border/40 
-        focus:ring-2 focus:ring-primary/40 px-4 pr-10 appearance-none"
+                           className="mt-1 h-10 sm:h-12 rounded-2xl bg-muted/30 border border-border/40 
+        focus:ring-2 focus:ring-primary/40 px-3 sm:px-4 pr-8 sm:pr-10 appearance-none text-sm"
                         />
                      </div>
                   </div>
                </div>
 
                <div className="space-y-2">
-                  <label className="text-sm font-medium">
+                  <label className="text-xs sm:text-sm font-medium">
                      PDF Content{" "}
-                     <span className="text-xs text-muted-foreground">(Optional)</span>
+                     <span className="text-[10px] sm:text-xs text-muted-foreground">(Optional)</span>
                   </label>
 
                   <div>
@@ -214,13 +214,13 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess, batchSlug
                         }}
                         placeholder="Enter PDF URL (Google Drive, etc.)"
                         disabled={submitting}
-                        className="w-full h-11 rounded-2xl bg-muted/30 border border-border/40 
-                    focus:ring-2 focus:ring-primary/40"
+                        className="w-full h-10 sm:h-11 rounded-2xl bg-muted/30 border border-border/40 
+                    focus:ring-2 focus:ring-primary/40 text-sm"
                      />
                   </div>
 
                   <div className="text-center">
-                     <span className="text-xs text-muted-foreground font-medium">OR</span>
+                     <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">OR</span>
                   </div>
 
                   <div>
@@ -234,10 +234,10 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess, batchSlug
                      />
                      <label
                         htmlFor="pdf-file-input-create"
-                        className="flex items-center justify-center w-full h-11 rounded-2xl bg-muted/30 border border-border/40 
+                        className="flex items-center justify-center w-full h-10 sm:h-11 rounded-2xl bg-muted/30 border border-border/40 
                     hover:bg-muted/40 cursor-pointer transition-colors"
                      >
-                        <span className="text-sm font-medium">
+                        <span className="text-xs sm:text-sm font-medium">
                            Choose PDF File
                         </span>
                      </label>
@@ -246,26 +246,26 @@ export default function CreateClassModal({ isOpen, onClose, onSuccess, batchSlug
                   {pdfFile && <PdfPreview file={pdfFile} onRemove={handlePdfRemove} />}
                </div>
 
-               <DialogFooter className="pt-5 flex justify-between items-center border-t border-border/50">
-                  <span className="text-xs text-muted-foreground">
+               <DialogFooter className="pt-4 sm:pt-5 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0 border-t border-border/50">
+                  <span className="text-[10px] sm:text-xs text-muted-foreground">
                      * Required fields
                   </span>
 
-                  <div className="flex gap-3">
+                  <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
                      <Button
                         type="button"
                         variant="ghost"
                         onClick={handleClose}
                         disabled={submitting}
-                        className="rounded-xl px-5"
+                        className="rounded-xl px-4 sm:px-5 h-10 sm:h-11 flex-1 sm:flex-none"
                      >
                         Cancel
                      </Button>
                      <Button
                         type="submit"
                         disabled={submitting}
-                        className="rounded-xl px-6 bg-primary hover:bg-primary/90 
-            shadow-lg shadow-primary/20 transition-all"
+                        className="rounded-xl px-4 sm:px-6 h-10 sm:h-11 bg-primary hover:bg-primary/90 
+            shadow-lg shadow-primary/20 transition-all flex-1 sm:flex-none"
                      >
                         {submitting ? "Creating..." : "Create Class"}
                      </Button>

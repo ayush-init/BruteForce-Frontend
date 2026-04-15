@@ -190,7 +190,6 @@ export function EditUsernameModal({
       onClose();
     } catch (error) {
       // Error is handled by API client interceptor
-      console.log(error);
     } finally {
       setIsSaving(false);
     }
@@ -216,11 +215,11 @@ export function EditUsernameModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-sm overflow-hidden p-0" showCloseButton={false}>
-        <DialogHeader className="p-6 border-b border-border">
+      <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-sm overflow-hidden p-0" showCloseButton={false}>
+        <DialogHeader className="p-4 sm:p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <div>
-              <DialogTitle className="text-xl font-bold">Edit <span className='text-primary' >Username</span></DialogTitle>
+              <DialogTitle className="text-lg sm:text-xl font-bold">Edit <span className='text-primary' >Username</span></DialogTitle>
               <DialogDescription className="text-xs">Update your profile identifier</DialogDescription>
             </div>
           </div>
@@ -229,16 +228,16 @@ export function EditUsernameModal({
               variant="ghost"
               size="sm"
               onClick={handleClose}
-              className="absolute top-4 right-4 h-8 w-8 p-0 hover:bg-muted"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 h-8 w-8 p-0 hover:bg-muted"
             >
               <X className="w-4 h-4" />
             </Button>
           </DialogClose>
         </DialogHeader>
 
-        <div className="px-6 space-y-4 ">
+        <div className="px-4 sm:px-6 space-y-4 ">
           <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
+            <label className="text-xs sm:text-sm font-medium flex items-center gap-2">
               Username
             </label>
             <div className="relative group">
@@ -297,7 +296,7 @@ export function EditUsernameModal({
           </div>
         </div>
 
-        <DialogFooter className="!p-6 !pt-2 border-0! ">
+        <DialogFooter className="!p-4 sm:!p-6 !pt-2 border-0! ">
           <div className="flex gap-2 w-full">
             <Button
               onClick={handleSaveWithToast}

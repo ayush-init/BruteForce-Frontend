@@ -332,7 +332,6 @@ export default function PublicProfilePage() {
       showSuccess('Profile updated successfully!');
     } catch (error) {
       // Error is handled by API client interceptor
-      console.log(error)
     } finally {
       setSavingProfile(false);
     }
@@ -377,7 +376,6 @@ export default function PublicProfilePage() {
       showSuccess('Username updated successfully!');
     } catch (error: unknown) {
       // Error is handled by API client interceptor
-      console.log(error)
     }
   };
 

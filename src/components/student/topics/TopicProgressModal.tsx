@@ -71,7 +71,6 @@ export default function TopicProgressModal({
     try {
       setLoading(true);
       const res = await apiClient.get(`/api/topicprogress/${username}`);
-      console.log('Topic Progress API Response:', res.data);
       setData(res.data);
     } catch (err) {
       console.error('Error fetching topic progress:', err);
@@ -133,19 +132,19 @@ const getColor = (progress: number) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="w-[95vw] max-w-[50%]! h-[90vh] max-h-[85vh] backdrop-blur-3xl p-0 overflow-hidden">
+      <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-[60%] lg:max-w-[50%] h-[90vh] max-h-[85vh] backdrop-blur-3xl p-0 overflow-hidden">
         {/* HEADER */}
-        <DialogHeader className="px-6 py-4 border-b border-border/50">
-          <div className="flex items-center justify-between">
-            <div>
-              <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-primary" />
+        <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border/50">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1">
+              <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 Topic Progress
               </DialogTitle>
               {loading ? (
-                <Skeleton className="h-4 w-48 rounded-md mt-1" />
+                <Skeleton className="h-4 w-32 sm:w-48 rounded-md mt-1" />
               ) : (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {data?.student?.name} • {data?.student?.batch?.name || data?.student?.batch?.batch_name || 'No batch'}
                 </p>
               )}
@@ -155,11 +154,11 @@ const getColor = (progress: number) => {
         </DialogHeader>
 
         {/* BODY */}
-        <div className="flex flex-col flex-1 overflow-hidden p-6 gap-6">
+        <div className="flex flex-col flex-1 overflow-hidden p-4 sm:p-6 gap-4 sm:gap-6">
 
           {/* STATS */}
           {data ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               <Stat icon={<BookOpen />} label="Topics" value={data.topics.length} />
               <Stat 
                 icon={<Target />} 
@@ -185,13 +184,13 @@ const getColor = (progress: number) => {
               />
             </div>
           ) : loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={`stat-skeleton-${index}`} className="rounded-2xl p-4 flex items-center gap-3 backdrop-blur-sm border border-border/60">
-                  <Skeleton className="w-10 h-10 rounded-lg" />
+                <div key={`stat-skeleton-${index}`} className="rounded-2xl p-3 sm:p-4 flex items-center gap-3 backdrop-blur-sm border border-border/60">
+                  <Skeleton className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg" />
                   <div className="space-y-2">
-                    <Skeleton className="h-3 w-12 rounded-md" />
-                    <Skeleton className="h-4 w-8 rounded-md" />
+                    <Skeleton className="h-3 w-10 sm:w-12 rounded-md" />
+                    <Skeleton className="h-3 sm:h-4 w-6 sm:w-8 rounded-md" />
                   </div>
                 </div>
               ))}
@@ -199,11 +198,11 @@ const getColor = (progress: number) => {
           ) : null}
 
           {/* CONTROLS */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Filter className="w-4 h-4 text-muted-foreground" />
 
             <Select value={sortBy} onValueChange={(v) => setSortBy(v as "weak" | "strong" | "name")}>
-              <SelectTrigger className=" h-10 px-4 rounded-2xl border border-border  ">
+              <SelectTrigger className="h-9 sm:h-10 px-3 sm:px-4 rounded-2xl border border-border">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -214,30 +213,30 @@ const getColor = (progress: number) => {
           </div>
 
           {/* LIST */}
-          <div className="flex-1 overflow-y-auto scrollbar-none pr-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex-1 overflow-y-auto scrollbar-none pr-1 sm:pr-2 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
 
             {loading ? (
               // Skeleton loading that matches the topic card layout
               Array.from({ length: 8 }).map((_, index) => (
                 <div
                   key={`skeleton-${index}`}
-                  className="p-4 rounded-2xl backdrop-blur-sm border border-border/60"
+                  className="p-3 sm:p-4 rounded-2xl backdrop-blur-sm border border-border/60"
                 >
                   {/* TOP SECTION - Icon, title, and percentage */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                       {/* Icon skeleton */}
-                      <Skeleton className="w-8 h-8 rounded-lg" />
+                      <Skeleton className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg" />
                       
                       {/* Title and subtitle skeleton */}
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-24 rounded-md" />
-                        <Skeleton className="h-3 w-16 rounded-md" />
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <Skeleton className="h-3 sm:h-4 w-20 sm:w-24 rounded-md" />
+                        <Skeleton className="h-2.5 sm:h-3 w-12 sm:w-16 rounded-md" />
                       </div>
                     </div>
                     
                     {/* Percentage skeleton */}
-                    <Skeleton className="h-4 w-8 rounded-md" />
+                    <Skeleton className="h-3 sm:h-4 w-6 sm:w-8 rounded-md" />
                   </div>
 
                   {/* PROGRESS BAR SKELETON */}
@@ -253,32 +252,32 @@ const getColor = (progress: number) => {
                 return (
                   <div
                     key={topic.id}
-                    className="backdrop-blur-sm glass p-4 rounded-2xl   hover:border-primary/30 transition-all hover:shadow-md"
+                    className="backdrop-blur-sm glass p-3 sm:p-4 rounded-2xl hover:border-primary/30 transition-all hover:shadow-md"
                   >
                     {/* TOP */}
-                    <div className=" flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary">
                           {getTopicIcon(topic.topic_name)}
                         </div>
 
                         <div>
-                          <h3 className="text-sm font-semibold">
+                          <h3 className="text-xs sm:text-sm font-semibold">
                             {topic.topic_name}
                           </h3>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
                             {topic.solvedQuestions} / {topic.totalQuestions}
                           </p>
                         </div>
                       </div>
 
-                      <span className="text-sm font-semibold text-primary">
+                      <span className="text-xs sm:text-sm font-semibold text-primary">
                         {progress}%
                       </span>
                     </div>
 
                     {/* PROGRESS */}
-                    <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+                    <div className="w-full h-1.5 sm:h-2 rounded-full bg-muted overflow-hidden">
                       <div
                         className={`h-full rounded-full ${colorMap[getColor(progress)]} transition-all duration-700`}
                         style={{ width: `${progress}%` }}

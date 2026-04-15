@@ -48,7 +48,6 @@ export default function BatchesPage() {
   const fetchData = async () => {
     // Skip if already fetching (prevents concurrent calls only)
     if (isFetching.current) {
-      console.log("Already fetching batches data, skipping duplicate call");
       return;
     }
 

@@ -64,7 +64,6 @@ export function StudentLoginForm() {
         processPostLogin(data.user);
       }
     } catch (err) {
-      console.log(err);
       handleError(err, { context: 'Login' });
     } finally {
       setLoading(false);

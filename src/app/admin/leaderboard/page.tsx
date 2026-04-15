@@ -78,7 +78,6 @@ export default function AdminLeaderboardPage() {
 
     // Skip if already fetching
     if (isFetchingLeaderboard.current) {
-      console.log("Already refreshing leaderboard, skipping duplicate call");
       return;
     }
 
@@ -96,7 +95,6 @@ export default function AdminLeaderboardPage() {
       lastFetchLeaderboardParams.current.search === search;
 
     if (!force && sameParams) {
-      console.log("Same leaderboard params already fetched, skipping refresh");
       return;
     }
 
@@ -118,7 +116,6 @@ export default function AdminLeaderboardPage() {
       };
 
       const response = await getAdminLeaderboard(query, body);
-      console.log("AdminLeaderboardPage - API Response (Refresh):", response);
       setLeaderboardData(response.data);
     } catch (err: unknown) {
       // Error is handled by API client interceptor
@@ -139,7 +136,6 @@ export default function AdminLeaderboardPage() {
 
       // Skip if already fetching
       if (isFetchingLeaderboard.current) {
-        console.log("Already fetching leaderboard data, skipping duplicate call");
         return;
       }
 
@@ -157,7 +153,6 @@ export default function AdminLeaderboardPage() {
         lastFetchLeaderboardParams.current.search === search;
 
       if (sameParams) {
-        console.log("Same leaderboard params already fetched, skipping");
         return;
       }
 
@@ -202,7 +197,7 @@ export default function AdminLeaderboardPage() {
         setLeaderboardData(response.data);
       } catch (err: unknown) {
         // Error is handled by API client interceptor
-        console.log('Failed to fetch leaderboard data:', err);
+        console.error('Failed to fetch leaderboard data:', err);
         const error = err as ApiError;
         setLeaderboardError(error.message || 'Failed to fetch leaderboard data');
         setLeaderboardData(null);

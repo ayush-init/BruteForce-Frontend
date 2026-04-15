@@ -81,15 +81,11 @@ export default function StudentsModals({
   const createFormErrors = createForm.formState.errors;
   const editFormErrors = editForm.formState.errors;
 
-  // Debug: Log form state to identify validation issues
-  console.log('Form is valid:', createForm.formState.isValid);
-  console.log('Form errors:', createFormErrors);
-  console.log('Form values:', createForm.getValues());
   return (
     <>
       {/* CREATE MODAL */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-[520px] h-[90vh]! p-0 overflow-y-auto no-scrollbar rounded-2xl">
+        <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-[520px] max-h-[90vh] p-0 overflow-y-auto no-scrollbar rounded-2xl">
           {/* HEADER */}
           <DialogHeader className="px-6 py-5 bg-muted/30 border-b border-border/50">
             <DialogTitle className="flex items-center gap-3 text-lg font-semibold">
@@ -115,11 +111,11 @@ export default function StudentsModals({
               )}
 
               {/* NAME */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-s text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Full Name <span className="text-destructive">*</span>
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     {...createForm.register('name')}
                     placeholder="Enter student name"
@@ -133,11 +129,11 @@ export default function StudentsModals({
               </div>
 
               {/* EMAIL */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-s text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Email <span className="text-destructive">*</span>
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     type="email"
                     {...createForm.register('email')}
@@ -152,11 +148,11 @@ export default function StudentsModals({
               </div>
 
               {/* ENROLLMENT */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-s text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Enrollment ID <span className="text-destructive">*</span>
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     {...createForm.register('enrollment_id')}
                     placeholder="ENR123456"
@@ -170,11 +166,11 @@ export default function StudentsModals({
               </div>
 
               {/* USERNAME */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-s text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Username
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     {...createForm.register('username')}
                     placeholder="username"
@@ -188,11 +184,11 @@ export default function StudentsModals({
               </div>
 
               {/* PASSWORD */}
-              <div className="grid grid-cols-3 items-start">
-                <label className="text-sm text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-start gap-2 sm:gap-4">
+                <label className="text-sm text-muted-foreground font-medium sm:mt-3">
                   Password
                 </label>
-                <div className="col-span-2 space-y-2">
+                <div className="col-span-1 sm:col-span-2 space-y-2">
                   <PasswordInputWithValidation
                     password={formPassword}
                     onPasswordChange={(val) => createForm.setValue('password', val)}
@@ -208,9 +204,9 @@ export default function StudentsModals({
               </div>
 
               {/* PLATFORM IDs */}
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                  <label className="text-xs sm:text-sm text-muted-foreground font-medium flex items-center gap-2">
                     <LeetCodeIcon className="w-4 h-4 text-leetcode" />
                     LeetCode ID
                   </label>
@@ -218,11 +214,11 @@ export default function StudentsModals({
                     {...createForm.register('leetcode_id')}
                     placeholder="leetcode_id"
                     disabled={submitting}
-                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-[90%]"
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-full"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                  <label className="text-xs sm:text-sm text-muted-foreground font-medium flex items-center gap-2">
                     <GeeksforGeeksIcon className="w-4 h-4 text-gfg" />
                     GFG ID
                   </label>
@@ -288,11 +284,11 @@ export default function StudentsModals({
               )}
 
               {/* NAME */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-s text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Full Name <span className="text-destructive">*</span>
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     {...editForm.register('name')}
                     placeholder="Enter student name"
@@ -306,11 +302,11 @@ export default function StudentsModals({
               </div>
 
               {/* EMAIL */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-xs text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Email <span className="text-destructive">*</span>
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     type="email"
                     {...editForm.register('email')}
@@ -325,11 +321,11 @@ export default function StudentsModals({
               </div>
 
               {/* USERNAME */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-xs text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Username
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     {...editForm.register('username')}
                     placeholder="username"
@@ -343,11 +339,11 @@ export default function StudentsModals({
               </div>
 
               {/* ENROLLMENT */}
-              <div className="grid grid-cols-3 items-center">
-                <label className="text-s text-muted-foreground font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-4">
+                <label className="text-xs sm:text-sm text-muted-foreground font-medium">
                   Enrollment ID
                 </label>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Input
                     {...editForm.register('enrollment_id')}
                     placeholder="ENR123456"
@@ -361,9 +357,9 @@ export default function StudentsModals({
               </div>
 
               {/* PLATFORM IDs */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                  <label className="text-xs sm:text-sm text-muted-foreground font-medium flex items-center gap-2">
                     <LeetCodeIcon className="w-4 h-4 text-leetcode" />
                     LeetCode ID
                   </label>
@@ -371,11 +367,11 @@ export default function StudentsModals({
                     {...editForm.register('leetcode_id')}
                     placeholder="leetcode_id"
                     disabled={submitting}
-                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-[90%]"
+                    className="h-11! pl-11 pr-4 border border-border focus:border-logo rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 transition-all w-full"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-s text-muted-foreground font-medium flex items-center gap-2">
+                  <label className="text-xs sm:text-sm text-muted-foreground font-medium flex items-center gap-2">
                     <GeeksforGeeksIcon className="w-4 h-4 text-gfg" />
                     GFG ID
                   </label>

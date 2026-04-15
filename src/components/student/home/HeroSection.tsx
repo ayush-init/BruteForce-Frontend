@@ -12,8 +12,8 @@ export function HeroSection() {
 
       {/* 🔥 BACKGROUND */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute left-[10%] top-[20%] w-[600px] h-[600px] bg-[var(--accent-primary)]/10 blur-[140px] rounded-full" />
-        <div className="absolute right-[10%] bottom-[10%] w-[500px] h-[500px] bg-[var(--accent-primary)]/10 blur-[120px] rounded-full" />
+        <div className="absolute left-[10%] top-[20%] w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] bg-[var(--accent-primary)]/10 blur-[80px] sm:blur-[100px] md:blur-[120px] lg:blur-[140px] rounded-full" />
+        <div className="absolute right-[10%] bottom-[10%] w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] bg-[var(--accent-primary)]/10 blur-[70px] sm:blur-[90px] md:blur-[100px] lg:blur-[120px] rounded-full" />
       </div>
 
       {/* 🧠 CONTENT WRAPPER */}

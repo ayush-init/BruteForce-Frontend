@@ -95,7 +95,6 @@ export default function AdminStudentsPage() {
 
     // Skip if already fetching
     if (isFetchingStudents.current) {
-      console.log("Already fetching students, skipping duplicate call");
       return;
     }
 
@@ -108,7 +107,6 @@ export default function AdminStudentsPage() {
       lastFetchStudentsParams.current.search === sSearch;
 
     if (sameParams) {
-      console.log("Same students params already fetched, skipping");
       return;
     }
 
@@ -162,7 +160,7 @@ export default function AdminStudentsPage() {
       lastFetchStudentsParams.current = { page: 0, limit: 0, search: '' };
       fetchStudents();
     } catch (err: unknown) {
-      console.log(err);
+      // Error is handled by API client interceptor
     } finally {
       setSubmitting(false);
     }
@@ -184,7 +182,7 @@ export default function AdminStudentsPage() {
       lastFetchStudentsParams.current = { page: 0, limit: 0, search: '' };
       fetchStudents();
     } catch (err: unknown) {
-      console.log(err);
+      // Error is handled by API client interceptor
     } finally {
       setSubmitting(false);
     }
@@ -201,7 +199,6 @@ export default function AdminStudentsPage() {
       fetchStudents();
     } catch (err: unknown) {
       // Error is handled by API client interceptor
-      console.log(err)
     } finally {
       setSubmitting(false);
     }
@@ -267,7 +264,7 @@ export default function AdminStudentsPage() {
   }
 
   return (
-     <div className="flex flex-col mx-auto  w-full pb-12 ">
+     <div className="flex flex-col mx-auto max-w-[1400px] w-full px-4 sm:px-6 lg:px-8 pb-12">
       <StudentsHeader totalRecords={totalRecords} selectedBatch={selectedBatch} />
       
       <StudentsFilter

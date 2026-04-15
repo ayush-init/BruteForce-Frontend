@@ -46,8 +46,8 @@ return (
           </div>
 
           {/* Title */}
-          <h2 className="text-xl sm:text-2xl font-bold text-foreground truncate">
-            {topicDetails?.topic_name || "Classes"}
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground ">
+            {topicDetails?.topic_name }
           </h2>
 
         </div>

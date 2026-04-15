@@ -59,7 +59,7 @@ export default function BetterTree() {
         setHasError(true);
       }}
       onLoad={() => {
-        console.log("Lottie animation loaded successfully");
+        // Animation loaded successfully
       }}
     />
   );

@@ -98,7 +98,6 @@ export default function StudentLeaderboardPage() {
   const data = leaderboardData?.data;
   const combinedLoading = isLoading || isInitialLoading;
   const handleRefresh = useCallback(() => {
-    console.log("REFETCH CALLED");
     refetch();
   }, [refetch]);
 

@@ -182,7 +182,7 @@ export function RecentQuestionsSidebar() {
           />
 
           {/* Sidebar */}
-          <div className="absolute  right-0 top-0 h-full w-[380px] md:w-[420px]  border border-border shadow-2xl animate-in slide-in-from-right duration-300">
+          <div className="absolute right-0 top-0 h-full w-[85%] sm:w-[380px] md:w-[420px] max-w-[450px] border border-border shadow-2xl animate-in slide-in-from-right duration-300">
             
             <Card className="h-full rounded-none border-none shadow-none bg-transparent">
 

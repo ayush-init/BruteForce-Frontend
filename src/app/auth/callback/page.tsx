@@ -29,9 +29,6 @@ export default function AuthCallback() {
         // Also check for id_token in hash fragment
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const idToken = hashParams.get('id_token');
-        
-        console.log('Credential from query:', credential);
-        console.log('ID token from hash:', idToken);
 
         // Check for error parameters first
         const error = searchParams.get('error');

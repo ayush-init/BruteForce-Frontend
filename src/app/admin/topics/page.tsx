@@ -100,7 +100,7 @@ export default function AdminTopicsPage() {
    }
 
    return (
-       <div className="flex flex-col  w-full pb-12   ">
+       <div className="flex flex-col mx-auto max-w-[1400px] w-full px-4 sm:px-6 lg:px-8 pb-12">
 
          <TopicHeader totalRecords={totalRecords} />
 

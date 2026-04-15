@@ -101,7 +101,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     // Check if we have an admin token before making any API calls
     if (!isAdminToken()) {
-      console.log('No admin token found, clearing invalid tokens and redirecting to login');
       clearAuthTokens(); // Clear any invalid tokens (like student tokens)
       handleLogout(false);
       return;
@@ -111,7 +110,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
 
     if (!token && !cookieToken) {
-      console.log('No admin token found, redirecting to login');
       handleLogout(false);
       return;
     }
@@ -258,7 +256,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         name: batchObj.batch_name,
         year: batchObj.year
       };
-      console.log('Setting batch with slug:', batchData.slug); // Debug log
       setSelectedBatch(batchData);
       setStoredSelections(selectedCity, batchData);
     }
@@ -329,7 +326,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(true)}
-        className="md:hidden h-14 w-10 ms-1 mt-3 -me-2  z-50 p-2 items-center rounded-md bg-card border border-border hover:bg-muted transition-colors"
+        className="md:hidden absolute  h-9 w-9 top-5 left-5 z-50 p-2 items-center rounded-md bg-card border border-border hover:bg-muted transition-colors"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -344,9 +341,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Mobile Menu Drawer */}
       <div className={`
-        md:hidden fixed inset-y-0 left-0 z-50 w-[80%] max-w-75
+        fixed inset-y-0 left-0 z-50 w-[85%] sm:w-[80%] max-w-[320px]
         transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:hidden
       `}>
         <div className="h-full glass border-r border-border/20 backdrop-blur-md">
           {/* Mobile Menu Header */}
@@ -420,7 +418,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Topbar */}
         <header className="h-14 glass border rounded-2xl border-border/20 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-30 w-full">
           {/* Dropdown Selectors */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ms-6 lg:ms-0">
             {selectedCity ? (
               <Select
                 value={selectedCity.id.toString()}

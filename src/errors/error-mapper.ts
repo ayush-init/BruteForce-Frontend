@@ -10,6 +10,11 @@ import { ErrorMapping } from './types';
 // STATUS CODE MAPPINGS (Fallback when errorCode not available)
 // =============================================================================
 export const ERROR_MAPPINGS: Record<number, ErrorMapping> = {
+  0: {
+    message: 'Something went wrong. Please try again.',
+    type: 'error',
+    action: 'logout', // Redirect to login when server is down
+  },
   400: {
     message: 'Please check your input and try again.',
     type: 'error',

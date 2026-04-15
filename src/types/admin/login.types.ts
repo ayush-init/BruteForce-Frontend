@@ -13,6 +13,7 @@ export interface LoginFormProps {
 
 export interface LoginResponse {
   accessToken: string;
+  refreshToken?: string; // Backend sets as HTTP-only cookie
   user?: {
     name: string;
     email: string;

@@ -50,9 +50,6 @@ export default function StudentHomePage() {
     // Check if we have a student token before making API calls
 
     if (!isStudentToken()) {
-
-      console.log("No student token found, skipping API calls");
-
       setLoading(false);
 
       return;
@@ -61,7 +58,6 @@ export default function StudentHomePage() {
 
     // Skip if already fetching
     if (isFetching.current) {
-      console.log("Already fetching topics, skipping duplicate call");
       return;
     }
 
@@ -71,8 +67,6 @@ export default function StudentHomePage() {
       isFetching.current = true;
 
       // Only fetch topics, profile data comes from ProfileContext
-
-      console.log("Fetching topics only...");
 
       const topicsData = await studentTopicService.getTopics({ limit: 8 }).catch((e: unknown) => {
         console.warn("Failed to fetch topics (potentially missing batch)", e);

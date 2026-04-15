@@ -44,14 +44,11 @@ export default function PracticePage() {
     setLoading(true);
     try {
       const data = await studentPracticeService.getQuestions(filters);
-      console.log('Practice API Response:', data); // Debug log
       setQuestions(data.questions || []);
 
       // Extract total items from backend response structure
       const totalItemsCount = data.pagination?.totalQuestions || data.totalItems || data.totalCount || 0;
       const totalPagesCount = data.pagination?.totalPages || data.totalPages || 1;
-
-      console.log('Pagination Data:', { totalItemsCount, totalPagesCount }); // Debug log
 
       setTotalPages(totalPagesCount);
       setTotalItems(totalItemsCount);
@@ -105,8 +102,8 @@ export default function PracticePage() {
   // But for MVP, we just use static options or let them search.
 
   return (
-    
-      <div className="flex flex-col mx-auto max-w-325 xl:max-w-275 2xl:max-w-325 w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+
+      <div className="flex flex-col mx-auto max-w-7xl w-full pb-12 px-4 sm:px-6 lg:px-8 xl:px-12 pt-8">
         <PracticeHeader />
 
         <PracticeFiltersComponent
