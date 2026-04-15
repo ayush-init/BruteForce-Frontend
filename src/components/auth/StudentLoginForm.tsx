@@ -60,7 +60,6 @@ export function StudentLoginForm() {
 
       if (data?.accessToken) {
         localStorage.setItem('accessToken', data.accessToken);
-        document.cookie = `accessToken=${data.accessToken}; path=/; secure; samesite=strict`;
         processPostLogin(data.user);
       }
     } catch (err) {

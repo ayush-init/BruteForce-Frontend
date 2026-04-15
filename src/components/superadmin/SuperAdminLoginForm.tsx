@@ -25,7 +25,6 @@ export function SuperAdminLoginForm() {
       
       if (typeof window !== 'undefined') {
         localStorage.setItem('accessToken', accessToken);
-        document.cookie = `accessToken=${accessToken}; path=/; secure; samesite=strict`;
       }
       
       router.push('/superadmin');

@@ -79,17 +79,13 @@ export default function CreateQuestion({
   const formErrors = form.formState.errors;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-[520px] max-h-[95vh] p-0 overflow-y-auto rounded-2xl">
+      <DialogContent className="w-full max-w-[calc(100%-1rem)] sm:max-w-[520px] max-h-[95vh] p-0! overflow-y-auto!   rounded-2xl">
 
         {/* HEADER */}
         <DialogHeader className="px-6 py-5 bg-muted/30 border-b border-border/50">
-          <DialogTitle className="flex items-center gap-3 text-lg font-semibold">
+          <DialogTitle className="flex items-center gap-1 text-xl font-semibold">
 
-            <div className="p-2 rounded bg-primary/10 border border-primary/20">
-              <Plus className="w-4 h-4 text-primary" />
-            </div>
-
-            Add Question
+            Add <span className="text-primary" >Question</span>
           </DialogTitle>
 
           <DialogDescription className="text-sm text-muted-foreground">
@@ -98,51 +94,66 @@ export default function CreateQuestion({
         </DialogHeader>
 
         {/* BODY */}
-        <div className="p-6 space-y-6 overflow-y-auto no-scrollbar">
+        <div className="p-3 space-y-6 overflow-hidden">
 
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
 
             {/* BASIC INFO */}
-            <div className="p-5  rounded-2xl border border-border/50 bg-muted/20 space-y-4">
-              <h3 className="text-xs font-semibold text-muted-foreground">
-                Basic Information
-              </h3>
+            <div className="p-4 sm:p-5 rounded-2xl border border-border/50 bg-muted/20 space-y-5">
+  
+  {/* Title */}
+  <h3 className="text-sm font-semibold text-muted-foreground">
+    Basic Information
+  </h3>
 
-              <div className="space-y-2">
-                <Label className="text-m text-muted-foreground ">
-                  Question Title
-                </Label>
-                <Input
-                  className={`h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                    formErrors.question_name ? 'border-red-500' : ''
-                  }`}
-                  {...form.register('question_name')}
-                  placeholder="e.g. Two Sum"
-                  disabled={loading}
-                />
-                {formErrors.question_name && (
-                  <p className="text-xs text-red-400">{formErrors.question_name.message}</p>
-                )}
-              </div>
+  {/* Question Title */}
+  <div className="flex flex-col gap-2">
+    <Label className="text-sm text-muted-foreground">
+      Question Title
+    </Label>
 
-              <div className="space-y-2">
-                <Label className="text-m text-muted-foreground">
-                  Question Link
-                </Label>
-                <Input
-                  className={`h-11 rounded border-border/60 bg-background/60 focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                    formErrors.question_link ? 'border-red-500' : ''
-                  }`}
-                  {...form.register('question_link')}
-                  placeholder="https://leetcode.com/..."
-                  type="url"
-                  disabled={loading}
-                />
-                {formErrors.question_link && (
-                  <p className="text-xs text-red-400">{formErrors.question_link.message}</p>
-                )}
-              </div>
-            </div>
+    <Input
+      className={`h-11 sm:h-12 w-full rounded-md border border-border/60 bg-background/60 
+      focus-visible:ring-2 focus-visible:ring-primary/40 transition ${
+        formErrors.question_name ? "border-red-500" : ""
+      }`}
+      {...form.register("question_name")}
+      placeholder="e.g. Two Sum"
+      disabled={loading}
+    />
+
+    {formErrors.question_name && (
+      <p className="text-xs text-red-400">
+        {formErrors.question_name.message}
+      </p>
+    )}
+  </div>
+
+  {/* Question Link */}
+  <div className="flex flex-col gap-2">
+    <Label className="text-sm text-muted-foreground">
+      Question Link
+    </Label>
+
+    <Input
+      className={`h-11 sm:h-12 w-full rounded-md border border-border/60 bg-background/60 
+      focus-visible:ring-2 focus-visible:ring-primary/40 transition ${
+        formErrors.question_link ? "border-red-500" : ""
+      }`}
+      {...form.register("question_link")}
+      placeholder="https://leetcode.com/..."
+      type="url"
+      disabled={loading}
+    />
+
+    {formErrors.question_link && (
+      <p className="text-xs text-red-400">
+        {formErrors.question_link.message}
+      </p>
+    )}
+  </div>
+
+</div>
 
             {/* CONFIG */}
             <div className="p-5 rounded-2xl border border-border/50 bg-muted/20 space-y-4">
@@ -223,10 +234,9 @@ export default function CreateQuestion({
 
               <Button
                 type="button"
-                variant="ghost"
                 onClick={() => onOpenChange(false)}
                 disabled={loading}
-                className="h-11 rounded"
+                className="h-11 rounded bg-foreground! text-secondary!"
               >
                 Cancel
               </Button>
@@ -234,7 +244,7 @@ export default function CreateQuestion({
               <Button
                 type="submit"
                 disabled={loading || !form.formState.isValid}
-                className="h-11 w-full font-semibold rounded transition-all hover:scale-[1.02] active:scale-[0.97]"
+                className="h-11  font-semibold rounded transition-all hover:scale-[1.02] active:scale-[0.97]"
               >
                 {loading ? (
                   "Creating..."

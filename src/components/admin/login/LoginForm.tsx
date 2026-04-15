@@ -25,7 +25,6 @@ export default function LoginForm() {
 
       if (typeof window !== 'undefined') {
         localStorage.setItem('accessToken', accessToken);
-        document.cookie = `accessToken=${accessToken}; path=/; secure; samesite=strict`;
       }
 
       // Full reload to re-mount admin layout with fresh auth state

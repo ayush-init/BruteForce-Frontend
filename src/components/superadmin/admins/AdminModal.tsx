@@ -352,7 +352,7 @@ export function AdminModal({
         <Button
           onClick={onClose}
           disabled={submitting}
-          className="text-white! bg-muted-foreground/30!"
+          className="text-secondary! bg-foreground!"
         >
           Cancel
         </Button>
