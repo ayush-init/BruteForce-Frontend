@@ -61,7 +61,7 @@ export default function StudentLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 relative">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-primary/20 relative ">
       {/* Dot Pattern Background - Only in light theme */}
       {mounted && theme === 'dark' && (
         <DotPattern 

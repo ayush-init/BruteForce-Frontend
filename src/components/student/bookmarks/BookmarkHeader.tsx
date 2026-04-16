@@ -7,14 +7,11 @@ export function BookmarkHeader() {
   return (
     <div className="mb-8 px-5 py-4 backdrop-blur-sm rounded-2xl glass">
       <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 rounded-lg bg-primary/10">
-          <BookmarkIcon className="w-6 h-6 text-primary" />
-        </div>
         <h1 className="text-3xl font-bold text-foreground">
           My <span className='text-primary'>Bookmarks</span>
         </h1>
       </div>
-      <p className="text-muted-foreground ml-11">
+      <p className="text-muted-foreground ">
         Your saved questions for practice
       </p>
     </div>

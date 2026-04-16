@@ -308,7 +308,7 @@ export function RecentQuestionsSidebar() {
                       {questions.map((question, index) => (
                         <Card
                           key={question.question_id}
-                          className=" glass rounded-2xl hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.01]"
+                          className=" glass rounded-2xl hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer "
                           style={{
                             animationDelay: `${index * 60}ms`,
                             animation: "slideIn 0.35s ease forwards",

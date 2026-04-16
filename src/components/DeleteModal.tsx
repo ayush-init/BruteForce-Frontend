@@ -15,7 +15,7 @@ interface DeleteModalProps {
   submitting: boolean;
   title: string;
   itemName?: string;
-  warningText: string;
+  warningText?: string;
 }
 
 export function DeleteModal({ isOpen, onClose, onConfirm, submitting, title, itemName, warningText }: DeleteModalProps) {
@@ -42,21 +42,23 @@ export function DeleteModal({ isOpen, onClose, onConfirm, submitting, title, ite
             Are you sure you want to delete {itemName ? <span className="font-semibold text-foreground bg-accent/40 px-1.5 py-0.5 rounded border border-border/50">{itemName}</span> : 'this item'}? This action cannot be undone.
           </DialogDescription>
 
-          <div className="mt-4 sm:mt-6 w-full text-left">
-            <div className="bg-red-50/80 dark:bg-red-950/30 border border-red-200/60 dark:border-red-900/40 rounded-2xl p-3 sm:p-4 flex gap-3 text-sm text-red-800 dark:text-red-400 shadow-sm">
-              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
-              <p className="leading-snug font-medium p-0 m-0 text-xs sm:text-sm">
-                {warningText}
-              </p>
+          {warningText && (
+            <div className="mt-4 sm:mt-6 w-full text-left">
+              <div className="bg-red-50/80 dark:bg-red-950/30 border border-red-200/60 dark:border-red-900/40 rounded-2xl p-3 sm:p-4 flex gap-3 text-sm text-red-800 dark:text-red-400 shadow-sm">
+                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
+                <p className="leading-snug font-medium p-0 m-0 text-xs sm:text-sm">
+                  {warningText}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-border/60 flex flex-col-reverse sm:flex-row justify-center sm:justify-end items-center gap-3">
           <Button 
              
             onClick={onClose} 
-            className="w-full bg-muted-foreground/30! sm:w-auto font-medium transition-colors rounded text-white! hover:bg-muted/80 shadow-sm"
+            className="w-full bg-foreground! sm:w-auto font-medium transition-colors rounded text-secondary! hover:bg-muted/80 shadow-sm"
           >
             Cancel
           </Button>

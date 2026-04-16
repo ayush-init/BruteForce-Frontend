@@ -89,16 +89,16 @@ export default function CreateTopicModal({ isOpen, onClose, onSuccess }: CreateT
    return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
          <DialogContent className="rounded-2xl p-0 overflow-hidden shadow-xl max-w-[520px]">
-            <DialogHeader className="px-6 py-5 border-b border-border/40">
-               <DialogTitle className="text-lg font-semibold">
-                  Create Topic
+            <DialogHeader className=" py-5 border-b border-border/40">
+               <DialogTitle className="text-3xl font-semibold">
+                  Create <span className='text-primary' >Topic</span>
                </DialogTitle>
                <DialogDescription className="text-xs text-muted-foreground">
                   Add a new topic to your curriculum
                </DialogDescription>
             </DialogHeader>
 
-            <div className="p-6 space-y-6">
+            <div className=" space-y-6">
                <form onSubmit={handleSubmit} className="space-y-6">
                   {formError && (
                      <div className="text-sm px-3 py-2 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
@@ -127,7 +127,7 @@ export default function CreateTopicModal({ isOpen, onClose, onSuccess }: CreateT
                         <span className="text-sm text-muted-foreground truncate">
                            {photoFile ? photoFile.name : "Choose file"}
                         </span>
-                        <span className="px-3 py-1.5 rounded-lg bg-primary text-black text-xs font-semibold">
+                        <span className="px-3 py-1.5 rounded-2xl bg-primary text-black text-xs font-semibold">
                            Browse
                         </span>
                         <input
@@ -158,20 +158,19 @@ export default function CreateTopicModal({ isOpen, onClose, onSuccess }: CreateT
                      </div>
                   )}
 
-                  <DialogFooter className="flex gap-2 pt-2">
+                  <DialogFooter className="   pt-2">
                      <Button
                         type="button"
-                        variant="ghost"
                         onClick={handleClose}
                         disabled={submitting}
-                        className="h-11 px-4"
+                        className="h-11 px-4 bg-foreground! text-secondary!"
                      >
                         Cancel
                      </Button>
                      <Button
                         type="submit"
                         disabled={submitting}
-                        className="h-11 w-full font-semibold bg-primary text-black hover:opacity-90 transition-all"
+                        className="h-11  font-semibold bg-primary text-black hover:opacity-90 transition-all"
                      >
                         {submitting ? "Creating..." : "Create Topic"}
                      </Button>

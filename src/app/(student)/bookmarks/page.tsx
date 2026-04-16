@@ -173,7 +173,7 @@ export default function BookmarksPage() {
           onClose={() => setShowDeleteModal(false)}
           onConfirm={confirmDeleteBookmark}
           title="Delete Bookmark"
-          itemName={deletingBookmark.question.question_name} submitting={false} warningText={''} />
+          itemName={deletingBookmark.question.question_name} submitting={false} />
       )}
     </div>
   );

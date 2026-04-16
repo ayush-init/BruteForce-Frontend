@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { ExternalLink, Edit2, Trash2, CheckCircle2, Loader2 } from 'lucide-react';
+import { ExternalLink, Edit2, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { Bookmark } from '@/types/student/index.types';
@@ -33,7 +33,10 @@ export function BookmarkCard({ bookmark, onEdit, onDelete, updatingBookmark }: B
         : { name: bookmark.question.platform, icon: null };
 
   return (
-    <div className="flex justify-between items-start rounded-2xl border border-border/60 px-6 py-5 hover:border-primary/30 transition-all duration-300">
+    <div className={`flex justify-between items-start rounded-2xl border px-6 py-5 transition-all duration-300 ${bookmark.isSolved
+        ? 'bg-emerald-500/10 border-emerald-400/30 shadow-[0_0_20px_rgba(34,197,94,0.12)]'
+        : 'border-border/60 hover:border-primary/30'
+      }`}>
       {/* LEFT SIDE */}
       <div className="flex flex-col gap-3 flex-1">
 
@@ -51,10 +54,6 @@ export function BookmarkCard({ bookmark, onEdit, onDelete, updatingBookmark }: B
           </h3>
 
           <ExternalLink className="w-4 h-4 opacity-60 group-hover:opacity-100" />
-
-          {bookmark.isSolved && (
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          )}
         </div>
 
         {/* BADGES */}

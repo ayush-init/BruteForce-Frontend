@@ -75,11 +75,9 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="max-w-md overflow-hidden p-0">
         <DialogHeader className="px-6 py-4 border-b border-border/40">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-2xl bg-primary/10">
-              <Bookmark className="w-5 h-5 text-primary" />
-            </div>
-            <DialogTitle className="text-lg font-semibold text-foreground">Edit Bookmark</DialogTitle>
+          <div className="flex items-center gap-1">
+           
+            <DialogTitle className="text-3xl font-semibold text-foreground">Edit <span className='text-primary' >Bookmark</span></DialogTitle>
           </div>
         </DialogHeader>
 
@@ -118,20 +116,19 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
 
             {/* ACTIONS */}
             <DialogFooter className="px-6 py-4">
-              <div className="flex gap-3 w-full">
+              <div className="grid grid-cols-3 gap-3 w-full">
                 <Button
                   type="button"
                   onClick={handleClose}
                   disabled={loading}
-                  variant="outline"
-                  className="flex-1"
+                  className=" col-span-1 bg-foreground! text-white!"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="flex-1"
+                  className="col-span-2  w-full!"
                 >
                   {loading ? 'Updating...' : 'Update Bookmark'}
                 </Button>

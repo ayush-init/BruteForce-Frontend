@@ -22,7 +22,7 @@ export function FilterBar({
               placeholder="Search by name and username..." 
               value={lSearch}
               onChange={(e) => { setLSearch(e.target.value); }}
-              className="pl-9! w-full h-9! border! border-border/40! glass! group! focus-visible:ring-1! transition-all  placeholder:text-white"
+              className="pl-9! w-full h-9!  focus-visible:ring-1! transition-all  placeholder:text-foreground"
           />
         </div>
       </div>

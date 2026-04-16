@@ -84,7 +84,7 @@ export function BatchModal({
         <div className="px-6 pt-8 pb-6 flex flex-col gap-5 text-center sm:text-left">
           <DialogHeader className="flex flex-col gap-1.5 space-y-0 border-0">
             <DialogTitle className="text-3xl p-0 m-0  font-bold tracking-tight">
-              <span className="text-white">
+              <span className="text-foreground">
                 {mode === 'create' ? 'Create' : 'Edit'}
               </span>{' '}
               <span className="text-primary">Batch</span>
@@ -188,7 +188,7 @@ export function BatchModal({
         
         onClick={onClose}
         disabled={submitting}
-        className="text-white! bg-muted-foreground/30!"
+        className="text-secondary! bg-foreground!"
       >
         Cancel
       </Button>
