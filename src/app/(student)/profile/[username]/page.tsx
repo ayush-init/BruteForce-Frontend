@@ -266,13 +266,10 @@ export default function PublicProfilePage() {
 
   return (
     <div className="w-full max-w-325 xl:max-w-275 2xl:max-w-325  mx-auto pb-16 mt-3">
-<<<<<<< Updated upstream
 
       {/* PROFILE HEADER */}
 
 
-=======
->>>>>>> Stashed changes
       <ProfileHeader
         student={student}
         canEdit={canEdit}
@@ -318,10 +315,7 @@ export default function PublicProfilePage() {
         imagePreview={imagePreview}
         imageRemoved={imageRemoved}
       />
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
       <EditUsernameModal
         isOpen={showUsernameEditModal}
         onClose={() => setShowUsernameEditModal(false)}
@@ -330,20 +324,14 @@ export default function PublicProfilePage() {
         handleSaveUsername={handleSaveUsername}
         currentUsername={currentUser?.data?.username}
       />
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
       <TopicProgressModal
         isOpen={showTopicProgressModal}
         onClose={() => setShowTopicProgressModal(false)}
         username={username}
       />
-<<<<<<< Updated upstream
 
       {/* Delete Image Confirmation Dialog */}
-=======
->>>>>>> Stashed changes
       <DeleteImageModal
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
