@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { X, Camera, Trash2, Github, Linkedin, Lock } from 'lucide-react';
 import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { ProfileEditForm, StudentProfile } from '@/types/student/index.types';
+import { ProfileAvatar } from '@/components/ui/ProfileAvatar';
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -63,7 +64,7 @@ export function EditProfileModal({
         <DialogHeader className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border">
           <DialogTitle className="text-base sm:text-lg font-semibold tracking-tight">Edit Profile</DialogTitle>
           <DialogDescription className="hidden">Update your profile information</DialogDescription>
-          
+
         </DialogHeader>
 
         <div className="p-4 sm:p-5 space-y-4">
@@ -71,19 +72,22 @@ export function EditProfileModal({
           {/* Profile Image */}
           <div className="flex flex-col items-center gap-2">
             <div className="relative">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-md">
+              <div className="w-20 h-20 border-border border sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-md">
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Profile Preview" className="w-full h-full object-cover" />
+                  <img src={imagePreview} alt="Profile Preview" className="object-cover" />
                 ) : imageRemoved ? (
-                  <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
-                    {student.name?.charAt(0)?.toUpperCase() || 'U'}
-                  </div>
+                  // <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
+                  //   {student.name?.charAt(0)?.toUpperCase() || 'U'}
+                  // </div>
+                  <ProfileAvatar username={student.name} size={85} />
                 ) : student.profileImageUrl ? (
-                  <img src={student.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                  <img src={student.profileImageUrl} alt="Profile" className=" object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
-                    {student.name?.charAt(0)?.toUpperCase() || 'U'}
-                  </div>
+                  // <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
+                  //   {student.name?.charAt(0)?.toUpperCase() || 'U'}
+                  // </div>
+                  <ProfileAvatar username={student.name} size={85} />
+
                 )}
               </div>
               <button
@@ -125,7 +129,7 @@ export function EditProfileModal({
           {/* GitHub */}
           <div className="space-y-1.5">
             <label className="text-xs sm:text-sm font-medium flex items-center gap-1.5">
-               GitHub URL
+              GitHub URL
             </label>
             <Input
               type="url"

@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { studentProfileService } from '@/services/student/profile.service';
 import { studentAuthService } from '@/services/student/auth.service';
 import { Button } from '@/components/ui/button';
-import {ProfileDataState, CurrentUserState, ApiError} from '@/types/student/index.types';
+import { ProfileDataState, CurrentUserState, ApiError } from '@/types/student/index.types';
 import { EditProfileModal } from '@/components/student/profile/EditProfileModal';
 import { EditUsernameModal } from '@/components/student/profile/EditUsernameModal';
 import { DeleteImageModal } from '@/components/student/profile/DeleteImageModal';
@@ -434,9 +434,7 @@ export default function PublicProfilePage() {
 
 
   const { student, codingStats, streak, leaderboard, recentActivity, heatmap, heatmapStartMonth } = profileData || {
-
     student: {},
-
     codingStats: {},
 
     streak: {},
@@ -459,18 +457,13 @@ export default function PublicProfilePage() {
 
       {/* PROFILE HEADER */}
 
+
       <ProfileHeader
-
         student={student}
-
         canEdit={canEdit}
-
         onEditProfile={() => setShowEditModal(true)}
-
         onShowTopicProgress={() => setShowTopicProgressModal(true)}
-
         onEditUsername={() => setShowUsernameEditModal(true)}
-
       />
 
 
@@ -484,11 +477,8 @@ export default function PublicProfilePage() {
           {/* OVERVIEW STATS */}
 
           <OverviewStats
-
             leaderboard={leaderboard}
-
             streak={streak}
-
           />
 
 
@@ -502,13 +492,9 @@ export default function PublicProfilePage() {
           {/* SOCIAL LINKS */}
 
           <SocialLinks
-
             student={student}
-
             canEdit={canEdit}
-
             onEditSocialLinks={() => setShowEditModal(true)}
-
           />
 
         </div>
@@ -528,11 +514,8 @@ export default function PublicProfilePage() {
           {/* ACTIVITY HEATMAP */}
 
           <ActivityHeatmap
-
             heatmap={heatmap || []}
-
             currentStreak={streak?.currentStreak}
-
             maxStreak={streak?.maxStreak}
 
           />
@@ -552,66 +535,35 @@ export default function PublicProfilePage() {
       {/* MODALS */}
 
       <EditProfileModal
-
         isOpen={showEditModal}
-
         onClose={() => setShowEditModal(false)}
-
         student={student}
-
         editForm={editForm}
-
         setEditForm={setEditForm}
-
         uploading={uploading}
-
         savingProfile={savingProfile}
-
         fileInputRef={fileInputRef}
-
         handleImageUpload={handleImageUpload}
-
         handleDeleteImage={handleDeleteImage}
-
         handleSaveProfile={handleSaveProfile}
-
         imagePreview={imagePreview}
-
         imageRemoved={imageRemoved}
-
       />
-
-
 
       <EditUsernameModal
-
         isOpen={showUsernameEditModal}
-
         onClose={() => setShowUsernameEditModal(false)}
-
         usernameForm={usernameForm}
-
         setUsernameForm={setUsernameForm}
-
         handleSaveUsername={handleSaveUsername}
-
         currentUsername={currentUser?.data?.username}
-
       />
-
-
 
       <TopicProgressModal
-
         isOpen={showTopicProgressModal}
-
         onClose={() => setShowTopicProgressModal(false)}
-
         username={username}
-
       />
-
-
 
       {/* Delete Image Confirmation Dialog */}
       <DeleteImageModal
@@ -620,9 +572,6 @@ export default function PublicProfilePage() {
         onConfirm={confirmDeleteImage}
         uploading={uploading}
       />
-
     </div>
-
   );
-
 }

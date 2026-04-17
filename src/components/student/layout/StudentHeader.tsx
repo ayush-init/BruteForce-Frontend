@@ -20,6 +20,7 @@ import { useProfile } from '@/contexts/ProfileContext';
 import { studentAuthService } from '@/services/student/auth.service';
 import { showSuccess } from '@/ui/toast';
 import Logo from '@/components/Logo';
+import { ProfileAvatar } from '@/components/ui/ProfileAvatar';
 
 // Drawer Component
 const Drawer = ({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) => {
@@ -97,9 +98,8 @@ const DrawerNavItem = ({ href, icon: Icon, label, isActive, onClick }: {
       />
     )}
     <Icon
-      className={`w-5 h-5 transition-all duration-200 ${
-        isActive ? 'text-primary drop-shadow-[0_0_10px_rgba(204,255,0,0.9)]' : ''
-      }`}
+      className={`w-5 h-5 transition-all duration-200 ${isActive ? 'text-primary drop-shadow-[0_0_10px_rgba(204,255,0,0.9)]' : ''
+        }`}
     />
     <span>{label}</span>
   </Link>
@@ -130,18 +130,18 @@ export default function StudentHeader() {
     // Always show success and logout, regardless of API result
     // The user is logging out anyway - token may already be expired
     showSuccess('Logged out successfully.');
-    
+
     // Clear tokens immediately
     localStorage.removeItem('accessToken');
     document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    
+
     // Try to call logout API (best effort - don't wait for it)
     try {
       await studentAuthService.logout();
     } catch (error) {
       // Ignore any errors - user is logging out anyway
     }
-    
+
     // Redirect after brief delay to allow toast to be seen
     setTimeout(() => {
       router.push('/login');
@@ -156,7 +156,7 @@ export default function StudentHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 backdrop-blur-sm  h-16 flex items-center lg:px-10"  style={{ boxShadow: 'var(--shadow-sm)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-sm  h-16 flex items-center lg:px-10" style={{ boxShadow: 'var(--shadow-sm)' }}>
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
 
           {/* Left Side - Hamburger Menu + Logo */}
@@ -253,7 +253,7 @@ export default function StudentHeader() {
                   <div className="flex items-center gap-3">
                     <Button
                       asChild
-                      
+
                       className=" h-11! w-23!  hover-glow bg-primary! backdrop-blur! border! border-border!  text-background font-bold!  rounded-2xl!   transition-all duration-200"
                       style={{ padding: 'var(--spacing-sm) var(--spacing-xs)', borderRadius: 'var(--radius-full)' }}
                     >
@@ -281,7 +281,7 @@ export default function StudentHeader() {
                             className="w-full h-full bg-linear-to-br from-accent-primary to-accent-primary text-primary-foreground flex items-center justify-center text-sm font-bold"
                             style={{ borderRadius: 'var(--radius-full)' }}
                           >
-                            {profile.data.name ? profile.data.name.charAt(0).toUpperCase() : 'U'}
+                            <ProfileAvatar username={profile.data.name} size={40}/>
                           </div>
                         )}
                       </button>
@@ -356,9 +356,9 @@ export default function StudentHeader() {
               if (isAuthenticated && !profileLoading && !profile?.data) {
                 return (
                   <div className="flex items-center gap-3">
-                     <Button
+                    <Button
                       asChild
-                      
+
                       className="h-11! w-23!  hover-glow bg-primary! backdrop-blur! border! border-border!  text-[#090A0F] font-bold!  rounded-2xl!   transition-all duration-200"
                       style={{ padding: 'var(--spacing-sm) var(--spacing-xs)', borderRadius: 'var(--radius-full)' }}
                     >

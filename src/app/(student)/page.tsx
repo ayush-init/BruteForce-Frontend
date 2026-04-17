@@ -41,10 +41,6 @@ export default function StudentHomePage() {
 
 
 
-
-
-
-
   const fetchTopicsOnly = async () => {
 
     // Check if we have a student token before making API calls

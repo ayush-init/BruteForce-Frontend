@@ -20,7 +20,7 @@ export function ProfileAvatar({
     <div 
       className={`rounded-full flex items-center justify-center font-bold opacity-90 ${className} text-white`}
       style={{ 
-        backgroundColor: bgcolor,
+        backgroundColor: bgcolor || "bg-primary",
         width: `${size}px`,
         height: `${size}px`,
         fontSize: `${size * 0.3}px` // Text size is 50% of container size
