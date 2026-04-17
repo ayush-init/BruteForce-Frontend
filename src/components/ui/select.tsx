@@ -47,7 +47,7 @@ export function SelectTrigger({
         border-border border-border
 
         text-m font-medium
-
+        cursor-pointer
         transition-all duration-200
 
         hover:bg-accent/60

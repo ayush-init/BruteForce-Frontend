@@ -50,13 +50,12 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
 
   return (
   <div className="
-    flex items-center justify-between px-6 py-4 backdrop-blur-md
-    rounded-2xl glass 
+    flex flex-col sm:flex-row sm:items-center justify-between px-3 py-3 sm:px-6 sm:py-4 backdrop-blur-md rounded-2xl glass gap-3
   ">
-    
+
     {/* LEFT INFO */}
-    <div className="flex items-center gap-6">
-      <div className="text-sm text-muted-foreground font-medium">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-6 w-full sm:w-auto">
+      <div className="text-xs sm:text-sm text-muted-foreground font-medium">
         Showing{" "}
         <span className="px-1 text-foreground font-semibold">
           {(currentPage - 1) * limit + 1}
@@ -73,7 +72,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
       </div>
 
       {showLimitSelector && onLimitChange && (
-        <div className="flex items-center gap-3 text-sm">
+        <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm flex-wrap">
           <span className="text-muted-foreground font-medium">Show</span>
 
           <Input
@@ -84,7 +83,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
             onChange={handleInputChange}
             onBlur={handleBlur}
             className="
-              w-[90px] h-9! rounded-2xl bg-transparent!
+              w-17.5 sm:w-22.5 h-8 sm:h-9! rounded-2xl bg-transparent!
               border border-border/40!
               hover:bg-accent/60
               transition
@@ -94,7 +93,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
             placeholder="5"
           />
 
-          <span className="text-muted-foreground font-medium">
+          <span className="text-muted-foreground font-medium hidden sm:inline">
             per page
           </span>
         </div>
@@ -103,8 +102,8 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
 
     {/* RIGHT CONTROLS */}
     <div className="
-      flex items-center gap-1 px-2 py-1 rounded-2xl
-       border border-border/40
+      flex flex-wrap items-center justify-center sm:justify-start gap-1 px-2 py-2 sm:py-1 rounded-2xl
+       border border-border/40 w-full sm:w-auto
     ">
 
       {/* PREV */}
@@ -131,6 +130,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
         const page = i + 1;
         const isActive = page === currentPage;
 
+        // Show fewer pages on mobile (3) vs desktop (5)
         if (
           totalPages > 5 &&
           page !== 1 &&
@@ -141,7 +141,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
             return (
               <span
                 key={page}
-                className="px-2 text-muted-foreground text-sm"
+                className="px-2 text-muted-foreground text-xs sm:text-sm hidden sm:inline"
               >
                 ...
               </span>
@@ -155,7 +155,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
             key={page}
             onClick={() => onPageChange(page)}
             className={`
-              h-8 min-w-[32px] px-2 rounded-full text-sm font-medium
+              h-8 min-w-[32px] px-2 rounded-full text-xs sm:text-sm font-medium
               transition-all duration-200
 
               ${

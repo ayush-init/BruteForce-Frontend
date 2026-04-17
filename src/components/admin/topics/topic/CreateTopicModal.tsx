@@ -88,7 +88,7 @@ export default function CreateTopicModal({ isOpen, onClose, onSuccess }: CreateT
 
    return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-         <DialogContent className="rounded-2xl p-0 overflow-hidden shadow-xl max-w-[520px]">
+         <DialogContent className="rounded-2xl  overflow-hidden shadow-xl max-w-[520px]">
             <DialogHeader className=" py-5 border-b border-border/40">
                <DialogTitle className="text-3xl font-semibold">
                   Create <span className='text-primary' >Topic</span>

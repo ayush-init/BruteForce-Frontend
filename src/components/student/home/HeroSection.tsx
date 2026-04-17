@@ -25,7 +25,7 @@ export function HeroSection() {
           {/* TAG */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--logo)]/10 border border-[var(--logo)]/20 text-xs font-semibold text-[var(--logo)] uppercase tracking-wider backdrop-blur-sm">
             <Zap className="w-4 h-4" />
-            <p>Your Coding Portal</p>
+            <p>Your DSA Portal</p>
           </div>
 
           {/* BRAND */}

@@ -105,7 +105,7 @@ export function ProblemSolvingStats({ codingStats }: ProblemSolvingStatsProps) {
             Problem Solving Stats
           </h2>
           <p className="text-[var(--text-sm)] text-[var(--text-secondary)]">
-            Track your coding journey across all difficulty levels.
+            Track your DSA journey across all difficulty levels.
           </p>
         </div>
 
