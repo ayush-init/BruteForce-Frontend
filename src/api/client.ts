@@ -40,7 +40,8 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 const apiClient: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
-  timeout: 30000, // 30 second timeout
+  // timeout: 30000, // 30 second timeout
+  timeout: 90000, // 90 second timeout
 });
 
 // Request Interceptor - Attach auth token
