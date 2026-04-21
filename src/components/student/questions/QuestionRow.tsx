@@ -14,7 +14,8 @@ export const QuestionRow = ({
   topicName,
   questionId,
   isBookmarked = false,
-  onBookmarkClick
+  onBookmarkClick,
+  marginBottom = false
 }: QuestionRowProps) => {
 
   const isHomework = type === 'HOMEWORK';
@@ -75,7 +76,7 @@ export const QuestionRow = ({
 
  return (
   <div
-    className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3
+    className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${marginBottom ? '-mb-5' : ''}
     px-4 py-3 rounded-2xl border transition-all duration-300
 
     ${isSolved

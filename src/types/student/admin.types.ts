@@ -45,4 +45,5 @@ export interface QuestionRowProps {
   questionId: number;
   isBookmarked: boolean;
   onBookmarkClick: (questionId: number, question: PracticeQuestion) => void;
+  marginBottom?: boolean;
 }

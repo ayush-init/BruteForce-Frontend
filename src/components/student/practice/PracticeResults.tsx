@@ -98,6 +98,7 @@ return (
               questionId={parseInt(q.id)}
               isBookmarked={q.isBookmarked || false}
               onBookmarkClick={handleBookmarkClick}
+              marginBottom={false}
             />
           </div>
         ))

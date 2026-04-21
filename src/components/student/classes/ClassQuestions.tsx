@@ -57,7 +57,7 @@ export function ClassQuestions({ questions, onRefresh }: ClassQuestionsProps) {
       </div>
 
       {/* LIST */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-0 ">
 
         {questions.length > 0 ? (
           questions.map((q: PracticeQuestion, idx: number) => (
@@ -80,6 +80,7 @@ export function ClassQuestions({ questions, onRefresh }: ClassQuestionsProps) {
                   questionId={Number(q.id)}
                   isBookmarked={q.isBookmarked || false}
                   onBookmarkClick={handleBookmarkClick}
+                  marginBottom={true}
                 />
               </div>
             </div>
